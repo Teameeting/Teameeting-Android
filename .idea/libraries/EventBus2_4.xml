@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="EventBus2.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/EventBus2.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

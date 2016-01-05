@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="main_red">#FD5856</color>
+    <color name="main_blue">#17B6FD</color>
+    <color name="red">#FF0000</color>
+    <color name="grey">#C0C0C0</color>
+    <color name="grey_txt">#919090</color>
+    <color name="grey_white">#e9e9e9</color>
+    <color name="right_bg">#696969</color>
+    <color name="divider_color">#ffcdcdcd</color>
+    <color name="color_login_successfully">#22FF00</color>
+    <color name="gray_txt">#7b7b7b</color>
+    <color name="color_explain">#999898</color>
+    <!-- In-call UI -->
+    <!-- <color name="incall_textConnected">#99CE3F</color>  green -->
+    <color name="black">#000000</color>
+    <color name="black_alpha_half">#88000000</color>
+    <color name="mcu_black">#353738</color>
+    <color name="none">#00FFFFFF</color>
+    <color name="darkGray">#808080</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray_white">#ebecee</color>
+    <color name="snow_white">#FFFAFA</color>
+    <color name="blue_green">#0681ff</color>
+    <color name="milkWhite">#bebebe</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="grayBlue">#69819f</color>
+    <color name="lightBlue">#0FB2CB</color>
+    <color name="middleBlue">#3CC29F</color>
+    <color name="cyan">#B7EF00</color>
+    <color name="vifrification">#00000000</color>
+    <color name="bg">#e7e3e7</color>
+    <color name="select_blue">#0377ef</color>
+    <color name="black_gray">#4D4D4D</color>
+    <color name="gold">#FFD700</color>
+ <!-- 金色 -->
+    <color name="ivory">#FFFFF0</color>
+ <!-- 象牙色 -->
+    <color name="gainsboro">#DCDCDC</color>
+ <!-- 淡灰色 -->
+    <color name="mediumslateblue">#7B68EE</color>
+ <!-- 中暗蓝色 -->
+    <color name="skyblue">#C4E0F6</color>
+    <color name="transparent">#00000000</color>
+    <color name="orange_yellow">#FF9600</color>
+    <color name="toolbar_white">#F6F6F6</color>
+    <color name="toolbar_blue">#3CA1F1</color>
+    <color name="toolbar_gray">#767C8A</color>
+    <color name="layout_content_black">#141415</color>
+    <color name="layout_content_green">#00d632</color>
+    <color name="dialog_black">#131314</color>
+    <color name="toolbar_black">#878D96</color>
+    <color name="bluegreen">#17b6fd</color>
+    <color name="common_top_bar_blue">#22292c</color>
+    <color name="btn_login_normal">#007086</color>
+    <color name="btn_login_pressed">#303744</color>
+    <color name="btn_logout_normal">#d33f3f</color>
+    <color name="btn_logout_pressed">#DA5A4D</color>
+    <color name="btn_register_normal">#2dafa3</color>
+    <color name="btn_register_pressed">#4ebcd3</color>
+    <color name="common_bottom_bar_normal_bg">#2d2f31</color>
+    <color name="common_bottom_bar_selected_bg">#161718</color>
+    <color name="common_botton_bar_blue">#2ea7e0</color>
+    <color name="common_bg">#fcfcfc</color>
+    <color name="btn_pressed_green_solid">#B6DA53</color>
+    <color name="divider_list">#cccccc</color>
+    <color name="top_bar_normal_bg">#4ebcd3</color>
+    <color name="error_item_color">#F6EBE6</color>
+    <color name="bottom_bar_normal_bg">#2D2F31</color>
+    <color name="bottom_text_color_normal">#ffffff</color>
+    <color name="btn_white_normal">#f7f8f8</color>
+    <color name="btn_white_pressed">#b5b5b6</color>
+    <color name="btn_green_noraml">#68C270</color>
+    <color name="btn_green_pressed">#6FCD78</color>
+    <color name="btn_gray_normal">#c0c0c0</color>
+    <color name="btn_gray_pressed_status">#b5b5b6</color>
+    <color name="btn_gray_pressed">#666667</color>
+    <color name="btn_blue_normal">#1e90ff</color>
+    <color name="btn_blue_pressed">#0066FF</color>
+    <color name="orange">#FFA500</color>
+    <color name="gray_pressed">#b5b5b6</color>
+    <color name="gray_normal">#666667</color>
+    <color name="grid_state_pressed">#1Affffff</color>
+    <color name="grid_state_focused">#80000000</color>
+    <color name="voip_interface_text_color">#bababa</color>
+    <color name="black_deep">#FF000000</color>
+    <color name="setting_bg_nor">#ffffff</color>
+    <color name="setting_bg_p">#f5f5f5</color>
+    <color name="setting_line_color">#cccccc</color>
+    <color name="pull_refresh_textview">#000000</color>
+
+</resources>

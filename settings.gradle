@@ -1,0 +1,2 @@
+include ':app', ':SweetAlertDialogLibrary'
+include ':sweetAlertDialogLibrary'

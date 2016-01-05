@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:slideswitch="http://schemas.android.com/apk/res/org.dync.teameeting"
+    android:id="@+id/rl_seetingLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_room_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="@string/str_invite_people"
+        android:textColor="@color/white"
+        android:textSize="@dimen/largest_most_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_join_room"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_join_room"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_join_room"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_invite_message"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_invite_message"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_message_invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_invite_weixin"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_invite_weixin"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_weixin_invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_copy_link"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_copy_link"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_copy_link"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <LinearLayout
+        android:id="@+id/ll_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:layout_margin="10dp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/more_item_height">
+            <ImageView
+                android:layout_marginLeft="5dp"
+                android:layout_width="30dp"
+                android:layout_height="35dp"
+                android:background="@drawable/view_notifications"
+                />
+
+            <ImageView
+                android:id="@+id/iv_notifications"
+                android:layout_marginLeft="5dp"
+                android:layout_width="31dp"
+                android:layout_height="@dimen/more_item_height"
+                android:src="@drawable/view_notifications_no"
+                />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/more_item_height"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/str_notifications"
+            android:textColor="@color/white"
+            android:textSize="@dimen/larger_txt_size" />
+
+        <org.dync.teameeting.widgets.SlideSwitch
+            android:id="@+id/ss_SlideSwitch"
+            android:layout_width="55dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="20dp"
+            slideswitch:isOpen="true"
+            slideswitch:shape="circle"
+            slideswitch:themeColor="@color/orange_yellow" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_rename_room"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_rename_room"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_rename_room"
+        android:textColor="@color/white"
+    android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_delete_room"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_delete_room"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_delete_room"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+</LinearLayout>

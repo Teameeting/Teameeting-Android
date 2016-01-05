@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Teameeting</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="loading">正在登录请稍候..</string>
+    <string name="str_no_internet_connection">无网络连接</string>
+    <string name="str_no_internet_tip">我们遇到了一些麻烦,因为你的设备没有连接到互联网</string>
+    <string name="str_connect_internet">连接网络</string>
+    <string name="str_content_empty">您还没有填写信息呢...</string>
+    <!-- 主界面 -->
+    <string name="str_get_room">创建房间</string>
+    <string name="str_hintm">会议名称 （可选）</string>
+    <string name="str_rent_rooms">最近会议</string>
+    <string name="str_cancel_create">取消</string>
+    <string name="str_invite_people">邀请好友加入会议？</string>
+    <string name="str_close">关闭</string>
+    <string name="str_message_invite">短信邀请</string>
+    <string name="str_weixin_invite">微信邀请</string>
+    <string name="str_copy_link">拷贝链接</string>
+    <string name="str_join_room">进入会议</string>
+    <string name="str_notifications">会议提醒</string>
+    <string name="str_delete_room">删除会议</string>
+    <string name="str_rename_room">修改会议名称</string>
+    <string name="str_copy">复制</string>
+    <string name="str_message">短信</string>
+    <string name="str_weixin">微信</string>
+    <string name="str_invite_people_to_room">你想通过什么方法邀请好友进入会议?</string>
+    <string name="str_copy_link_invite">你也可以复制粘贴会议的安全链接来邀请好友</string>
+    <string name="exit_once_more">再点击一次退出</string>
+    <string name="str_chat">聊天室</string>
+    <string name="str_hint_send_message">发送消息</string>
+    <string name="str_send_message">发送</string>
+    <string name="str_meeting_remind">等待别人进入会议......</string>
+    <string name="title_activity_share">ShareActivity</string>
+    <string name="title_activity_push_set">PushSetActivity</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="room_emty_tite">创建你的第一个房间</string>
+    <string name="room_empty_content_str">创建一个带视屏的房间，把房间分享给您的同事或者好友，无论你在哪里，他们都能看到你</string>
+
+
+  <!-- 进入会议界面   -->
+    
+    <string name="str_join_meeting">加入会议</string>
+    <string name="str_edittext_meeting_id_hint">请输入会议 ID</string>
+</resources>

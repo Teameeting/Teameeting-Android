@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rl_seetingLayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="@string/str_invite_people"
+        android:textColor="@color/white"
+        android:textSize="@dimen/largest_most_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_invite_message"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_invite_message"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_message_invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_invite_weixin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_invite_weixin"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_weixin_invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/tv_copy_link"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/more_item_height"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/view_copy_link"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/str_copy_link"
+        android:textColor="@color/white"
+        android:textSize="@dimen/larger_txt_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/grey" />
+
+</LinearLayout>

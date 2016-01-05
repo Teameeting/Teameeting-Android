@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/chact_margin_left"
+    android:layout_height="match_parent"
+
+    android:animateLayoutChanges="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_chat_topbar"
+        style="@style/TopBar_Style"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@color/black_gray"
+        android:visibility="visible"
+        >
+
+        <TextView
+            style="@style/Title_Txt"
+            android:text="@string/str_chat"
+            android:textColor="#ffffff"
+            android:textStyle="normal" />
+
+        <ImageButton
+            android:id="@+id/imgbtn_back"
+            style="@style/Btn_left"
+            android:layout_width="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/close"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_chat_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white" >
+
+        <Button
+            android:id="@+id/btn_chat_send"
+            android:layout_width="@dimen/btn_send_width"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/orange"
+            android:text="@string/str_send_message" />
+
+        <EditText
+            android:id="@+id/et_chat_msg"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_chat_send"
+            android:background="@null"
+            android:hint="@string/str_hint_send_message"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listView_chat"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/rl_chat_bottom"
+        android:layout_below="@id/rl_chat_topbar"
+        android:background="#CF000000"
+        android:divider="@null"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:listSelector="@color/transparent"
+        android:scrollbarStyle="outsideOverlay" >
+    </ListView>
+    <TextView
+        android:id="@+id/text_notuse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+</RelativeLayout>
