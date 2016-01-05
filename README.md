@@ -73,4 +73,15 @@ Submitted for the first time.Implement initialization, create a conference room,
 2.访问网络的框架修改完成。
 
 
-
+``` python
+@requires_authorization
+def somefunc(param1='', param2=0):
+    '''A docstring'''
+    if param1 > param2: # interesting
+        print 'Greater'
+    return (param2 - param1 + 1) or None
+class SomeClass:
+    pass
+>>> message = '''interpreter
+... prompt'''
+```
