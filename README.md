@@ -72,8 +72,5 @@ Submitted for the first time.Implement initialization, create a conference room,
 1.设置推送状态 主界面没更新
 2.访问网络的框架修改完成。
 
-##### 2015年12月30日13:42:08
-1.
-
 
 
