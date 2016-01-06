@@ -67,7 +67,124 @@ public class TMMsgSender extends MsgClient {
         return  this.MCSndMsgTo(strUserid, strPass, strRoomid, strMsg, arrUser);
     }
 
+    /**
+     * implement for JMClientHelper
+    * */
 
+/*
+    @Override
+    public void OnReqLogin(int code, String status, String userid) {
+        String s = "OnReqLogin status:"+status+", userid"+userid;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.arg1 = code;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnRespLogin(int code, String status, String userid) {
+        String s = "OnRespLogin status:"+status+", userid"+userid;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.arg1 = code;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnReqSndMsg(String msg) {
+        String s = "OnReqSndMsg msg:" + msg;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnRespSndMsg(String msg) {
+        String s = "OnRespSndMsg msg:" + msg;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnReqGetMsg(String msg) {
+        String s = "OnReqGetMsg msg:"+ msg;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnRespGetMsg(String msg) {
+        String s = "OnRespGetMsg msg:"+ msg;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnReqLogout(int code, String status, String userid) {
+        String s = "OnReqLogout status:"+status+", userid"+userid;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.arg1 = code;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnRespLogout(int code, String status, String userid) {
+        String s = "OnRespLogout status:"+status+", userid"+userid;
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.arg1 = code;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnMsgServerConnected() {
+        String s = "OnMsgServerConnected was called";
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnMsgServerDisconnect() {
+        String s = "OnMsgServerDisconnect was called";
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }
+
+    @Override
+    public void OnMsgServerConnectionFailure() {
+        String s = "OnMsgServerConnectionFailure was called";
+        System.out.println(s);
+        Message mmsg = Message.obtain();
+        mmsg.what = 1;
+        mmsg.obj = s;
+        mHandler.sendMessage(mmsg);
+    }*/
 
 
     /**
@@ -94,7 +211,6 @@ public class TMMsgSender extends MsgClient {
         }else{
             mMessage.what = EventType.MSG_MESSAGE_LOGIN_FAILED.ordinal();
         }
-
         EventBus.getDefault().post(mMessage);
     }
 
@@ -102,7 +218,6 @@ public class TMMsgSender extends MsgClient {
     public void OnReqSndMsg(String msg) {
         String s = "OnReqSndMsg msg:" + msg;
         System.out.println(s);
-
 
         try {
             JSONObject json = new JSONObject(msg);
@@ -112,11 +227,11 @@ public class TMMsgSender extends MsgClient {
             mMessage = new Message();
             Bundle bundle = new Bundle();
             bundle.putString("message",content);
-            // bundle.putString("name",from);
+
             mMessage.setData(bundle);
             mMessage.what = EventType.MSG_MESSAGE_RECEIVE.ordinal();
             EventBus.getDefault().post(mMessage);
-
+            
         } catch (JSONException e) {
             e.printStackTrace();
         }

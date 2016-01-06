@@ -5,19 +5,8 @@
  */
 package org.dync.teameeting.ui.adapter;
 
-import android.content.Context;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
+import java.util.HashSet;
+import java.util.List;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.bean.MeetingList;
@@ -25,8 +14,19 @@ import org.dync.teameeting.widgets.swipe.FrontLayout;
 import org.dync.teameeting.widgets.swipe.SwipeLayout;
 import org.dync.teameeting.widgets.swipe.SwipeLayout.SwipeListener;
 
-import java.util.HashSet;
-import java.util.List;
+import android.content.Context;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 /**
  * @author ZLang <br/>

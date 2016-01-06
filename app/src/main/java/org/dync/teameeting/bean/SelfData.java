@@ -82,7 +82,7 @@ public class SelfData
         return requestid;
     }
 
-    public static class InformationEntity
+    public class InformationEntity
     {
         private int uactype;
         private int ulogindev;
