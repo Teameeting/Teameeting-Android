@@ -80,10 +80,10 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
             int code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,userId, mPass, meetingId,"");
             if(code==0){
                 if(mDebug){
-                    Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");
+                    Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Successed");
                 }
             }else if(mDebug){
-                Log.e(TAG, "joinMeeting: "+"TMEnterRoom Failed");
+                Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Failed");
             }
             Intent intent = new Intent(JoinMeetingActivity.this,MeetingActivity.class);
             intent.putExtra("meetingId", meetingId);

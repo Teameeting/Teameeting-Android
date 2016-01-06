@@ -98,8 +98,6 @@ public class RoomItem  implements Serializable{
 		this.mMeetingId = mMeetingId;
 	}
 
-
-
 	public String getmJoinTime() {
 		return mJoinTime;
 	}
@@ -139,18 +137,5 @@ public class RoomItem  implements Serializable{
 	public void setmMeetDesc(String mMeetDesc) {
 		this.mMeetDesc = mMeetDesc;
 	}
-
-
-
-
-	
-	
-	
-
-	
-
-
-
-
 
 }

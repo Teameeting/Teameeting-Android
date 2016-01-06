@@ -1,6 +1,7 @@
 package org.dync.teameeting.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class MeetingList
      * pushable : 1
      */
 
-    private List<MeetingListEntity> meetingList;
+    private List<MeetingListEntity> meetingList = new ArrayList<MeetingListEntity>();
 
     public void setCode(int code)
     {
@@ -87,8 +88,6 @@ public class MeetingList
         private int owner;
         private int pushable;
         private int mMeetType2 = 0;
-
-
 
         private boolean applyTyep = true; //true:success  false : wait
 

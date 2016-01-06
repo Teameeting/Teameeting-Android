@@ -562,8 +562,7 @@ public class MeetingActivity extends MeetingBaseActivity implements JniceEvent,
                     mCameraButton
                             .setImageResource(R.drawable.btn_camera_off_select);
                     mMettingAnim.rotationOrApaha(mCameraButton, mMeetingCameraFlag);
-                    mMettingAnim.translationAlphaAnimator(mSwitchCameraButton, 0,
-                            (mLeftDistanceCameraBtn - mLeftDistanceHangUpBtn), 300,
+                    mMettingAnim.translationAlphaAnimator(mSwitchCameraButton, 0, (mLeftDistanceCameraBtn - mLeftDistanceHangUpBtn), 300,
                             false);
                     mMettingAnim.translationAlphaAnimator(mCameraOffButton, 0,
                             (mLeftDistanceCameraBtn - mLeftDistanceVoiceBtn), 300,
@@ -608,6 +607,7 @@ public class MeetingActivity extends MeetingBaseActivity implements JniceEvent,
 
         // 推送测试
         String sign = TeamMeetingApp.getMyself().getmAuthorization();
+
         ChatMessage to = new ChatMessage(Type.OUTPUT, pushMsg,"name");
         to.setDate(new Date());
         mDatas.add(to);

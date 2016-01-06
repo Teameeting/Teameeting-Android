@@ -40,6 +40,7 @@ import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.utils.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -253,18 +254,17 @@ public class MainActivity extends BaseActivity
             mListView.smoothScrollToPositionFromTop(position, 0, 2000);
         } else
         {
-            int incompleteItemheight = mListView.getHeight()
-                    - (visibleItem - 1) * itemHeight;
+            int incompleteItemheight = mListView.getHeight() - (visibleItem - 1) * itemHeight;
+            mDy = itemHeight * (position - maxItemTop - 1) + incompleteItemheight;
+            mListView.setSelection(mListView.getBottom());
+            mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, 1500);
 
-            mDy = itemHeight * (position - maxItemTop - 1)
-                    + incompleteItemheight;
+
             Log.e(TAG, "maxItemTop " + maxItemTop + " incompleteItemheight "
                     + incompleteItemheight);
             // mListView.smoothScrollToPositionFromTop(maxItemTop, 0, 1000);
             // mListView.smoothScrollToPosition(maxItemTop-1);
-            mListView.setSelection(mListView.getBottom());
             // mListView.animate().translationY(-mDy).setDuration(2000);
-            mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, 1500);
 
         }
 
@@ -279,8 +279,8 @@ public class MainActivity extends BaseActivity
      */
     private int getItemHeight(final ListView listView)
     {
-        View view = mAdapter.getView(0, null, listView);
 
+        View view = mAdapter.getView(0, null, listView);
         view.measure(0, 0);
         int i = (int) ScreenUtils.dip2Dimension(10.0f, this);
         Log.e(TAG, " i " + i);
@@ -451,7 +451,6 @@ public class MainActivity extends BaseActivity
         }
     };
 
-
     /**
      * soft keyboard Listener
      */
@@ -461,32 +460,44 @@ public class MainActivity extends BaseActivity
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
         {
 
-            String roomName = mCreateRoom.getText().toString();
+            String meetingName = mCreateRoom.getText().toString();
 
-            if (roomName.length() == 0 || roomName == null)
+            if (meetingName.length() == 0 || meetingName == null)
             {
-                roomName = "Untitled room";
+                meetingName = "Untitled room";
             }
             mSign = getSign();
             if (mDebug)
                 if (mDebug)
-                    Log.e(TAG, "onEditorAction: roomName" + roomName + mSign);
+                    Log.e(TAG, "onEditorAction: roomName" + meetingName + mSign);
 
-            mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
-            mCreateRoom.setVisibility(View.GONE);
-            mRoomCancel.setVisibility(View.GONE);
-            String pushable = "1";
-            String meetdesc = "";//会议描述
-            String meetenablde = "1";//是否可用或者私密
-
-            mNetWork.applyRoom(mSign, roomName, "0", "", meetenablde, pushable);
-            mAdapter.notifyDataSetChanged();
-            mCreateRoomFlag = true;
+            applyRoom(meetingName);
 
             return false;
         }
     };
 
+    private void applyRoom(String meetingName)
+    {
+        mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
+        mCreateRoom.setVisibility(View.GONE);
+        mRoomCancel.setVisibility(View.GONE);
+        String pushable = "1";
+        String meetdesc = "";//会议描述
+        String meetenablde = "1";//是否可用或者私密
+
+        MeetingList.MeetingListEntity meetingList = new MeetingList.MeetingListEntity();
+        meetingList.setMeetname(meetingName);
+        meetingList.setPushable(1);
+        meetingList.setApplyTyep(false);
+
+        mRoomMeetingList.add(0,meetingList);
+        mAdapter.notifyDataSetChanged();
+        mListView.setSelection(0);
+        mNetWork.applyRoom(mSign, meetingName, "0", "", meetenablde, pushable);
+        //创建房间问题。
+        mCreateRoomFlag = true;
+    }
     /**
      * moreSetting
      * @param position
@@ -583,7 +594,9 @@ public class MainActivity extends BaseActivity
         mPosition = position;
         meetingId = data.getStringExtra("meetingId");
         String meetingName = data.getStringExtra("meetingName");
+
         listViewSetScroll(position);
+
         Message msg = new Message();
         msg.what = UPDATE_RENAME_SHOW;
         Bundle bundle = new Bundle();
@@ -653,10 +666,17 @@ public class MainActivity extends BaseActivity
             mSign = getSign();
             Gson gson = new Gson();
             MeetingList meetingList = gson.fromJson(meetingListStr, MeetingList.class);
+            List<MeetingList.MeetingListEntity> list = meetingList.getMeetingList();
+            Collections.reverse(list);
             mRoomMeetingList.clear();
-            mRoomMeetingList.addAll(meetingList.getMeetingList());
+            mRoomMeetingList.addAll(list);
+        }
+        if (mListView != null)
+        {
+            mListView.setSelection(0);
         }
     }
+
 
 
     public void netWorkTypeStart(int type)
@@ -731,10 +751,13 @@ public class MainActivity extends BaseActivity
                 break;
             case MSG_APPLY_ROOM_SUCCESS:
                 String meetingId = msg.getData().getString("meetingId");
+
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS "+meetingId);
                 String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
+
                 int code  = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,userid,mPass,meetingId,"");
+
                 if(code==0){
                     if (mDebug)
                         Log.e(TAG, "TMCreateRoom "+"Successed");
