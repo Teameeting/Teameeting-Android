@@ -706,8 +706,7 @@ public class MainActivity extends BaseActivity
         public void onClick(SweetAlertDialog sweetAlertDialog)
         {
             sweetAlertDialog.dismiss();
-            // 设置是否一只提示 没有网络状态
-            // mNetWork.getRoomList(mSign, 1 + "", 20 + "");
+
         }
     };
 
