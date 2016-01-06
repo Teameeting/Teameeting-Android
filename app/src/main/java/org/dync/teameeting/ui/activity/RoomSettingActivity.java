@@ -19,6 +19,7 @@ import org.dync.teameeting.widgets.SlideSwitch.SlideListener;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
@@ -31,13 +32,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import javax.security.auth.login.LoginException;
 
-public class RoomSettingActivity extends BaseActivity implements android.view.View.OnClickListener
-{
+public class RoomSettingActivity extends BaseActivity implements View.OnClickListener {
     private Context context;
     private Boolean mDebug = TeamMeetingApp.mIsDebug;
     private String TAG = "RoomSettingActivity";
@@ -47,11 +50,13 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
     private TextView mTvInviteWeixin;
     private TextView mTvCopyLink;
     private LinearLayout mLlNotifications;
+    private LinearLayout mLlMeetingPrivate;
     private TextView mTvRenameRoom;
     private TextView mTvDeleteRoom;
     private TextView mTvClose;
     private SlideSwitch mSlideSwitch;
-   MeetingList.MeetingListEntity mMeetingEntity;
+    private SlideSwitch mSlideSwitchPrivate;
+    MeetingList.MeetingListEntity mMeetingEntity;
     private String mMeetingName;
     private String mMeetingId;
 
@@ -61,34 +66,37 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
 
     private String mShareUrl = "没有设置连接";
     private ImageView ivNotifation;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_setting);
         mShareHelper = new ShareHelper(RoomSettingActivity.this);
         context = this;
         initData();
         initLayout();
-        initNotifationState();
+        inintNotifationState();
+
     }
 
-    private void initData()
-    {
+    private void initData() {
         Intent intent = getIntent();
         mPosition = intent.getIntExtra(Intent_KEY.POSITION, 0);
         Bundle extras = intent.getExtras();
         mMeetingEntity = (MeetingList.MeetingListEntity) extras.getSerializable(Intent_KEY.MEETING_ENTY);
         mMeetingId = mMeetingEntity.getMeetingid();
-        if (mDebug)
-        {
+        mMeetingName = mMeetingEntity.getMeetname();
+        if (mDebug) {
             Log.e(TAG, mMeetingEntity.toString());
         }
     }
 
-    void initLayout()
-    {
+    void initLayout() {
         mTvRoomName = (TextView) findViewById(R.id.tv_room_name);
         mTvRoomName.setText(mMeetingName);
         mTvJoninRoom = (TextView) findViewById(R.id.tv_join_room);
@@ -116,9 +124,13 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
         mTvClose = (TextView) findViewById(R.id.tv_close);
         mTvClose.setOnClickListener(this);
         mSlideSwitch = (SlideSwitch) findViewById(R.id.ss_SlideSwitch);
-        mSlideSwitch.setSlideListener(slideListener);
+        mSlideSwitch.setSlideListener(slideNotificationListener);
 
+        mSlideSwitchPrivate = (SlideSwitch) findViewById(R.id.ss_SlideSwitch_private);
+        mSlideSwitchPrivate.setSlideListener(mslideMeetingPrivateListener);
 
+        mLlMeetingPrivate = (LinearLayout) findViewById(R.id.ll_private);
+        mLlMeetingPrivate.setOnClickListener(this);
 
         ivNotifation = (ImageView) findViewById(R.id.iv_notifications);
 
@@ -126,13 +138,11 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
         bottomMenu.setOnTouchQuickSpeedListener(onTouchSpeedListener);
     }
 
-    private void initNotifationState()
-    {
+    private void inintNotifationState() {
         boolean state = mMeetingEntity.getPushable() == 1 ? true : false;
         mSlideSwitch.setState(state);
-        if (!state)
-        {
-            Anims.ScaleAnim(ivNotifation,0,1,10);
+        if (!state) {
+            Anims.ScaleAnim(ivNotifation, 0, 1, 10);
         }
 
 
@@ -141,52 +151,59 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
     /**
      * 　Touch slide Listener
      */
-    OnTouchSpeedListener onTouchSpeedListener = new OnTouchSpeedListener()
-    {
+    OnTouchSpeedListener onTouchSpeedListener = new OnTouchSpeedListener() {
 
         @Override
-        public void touchSpeed(int velocityX, int velocityY)
-        {
+        public void touchSpeed(int velocityX, int velocityY) {
             setResult(ExtraType.RESULT_CODE_ROOM_SETTING_CLOSE);
             finishActivity();
         }
     };
 
     /**
-     * slideListener
+     * mslideMeetingPrivateListener
+     */
+    SlideListener mslideMeetingPrivateListener = new SlideListener() {
+        @Override
+        public void open() {
+
+        }
+
+        @Override
+        public void close() {
+
+        }
+    };
+
+    /**
+     * slideNotificationListener
      */
 
-    SlideListener slideListener = new SlideListener()
-    {
+    SlideListener slideNotificationListener = new SlideListener() {
         @Override
-        public void open()
-        {
+        public void open() {
             mSign = getSign();
-            mNetWork.updateRoomPushable(mSign,mMeetingId, 1 + "");
-            Anims.ScaleAnim(ivNotifation,1,0,500);
+            mNetWork.updateRoomPushable(mSign, mMeetingId, 1 + "");
+            Anims.ScaleAnim(ivNotifation, 1, 0, 500);
             Toast.makeText(context, "打开推送", Toast.LENGTH_SHORT).show();
         }
 
         @Override
-        public void close()
-        {
+        public void close() {
             mSign = getSign();
-            mNetWork.updateRoomPushable(mSign, mMeetingId,0 + "");
-            Anims.ScaleAnim(ivNotifation,0,1,500);
-            String url = "meeting/getMeetingInfo/"+ mMeetingId;
+            mNetWork.updateRoomPushable(mSign, mMeetingId, 0 + "");
+            Anims.ScaleAnim(ivNotifation, 0, 1, 500);
+            String url = "meeting/getMeetingInfo/" + mMeetingId;
 
-            Log.e(TAG, "close: mMeetingId"+mMeetingId);
-            HttpContent.get(url, new TextHttpResponseHandler()
-            {
+            Log.e(TAG, "close: mMeetingId" + mMeetingId);
+            HttpContent.get(url, new TextHttpResponseHandler() {
                 @Override
-                public void onFailure(int i, Header[] headers, String respospone, Throwable throwable)
-                {
+                public void onFailure(int i, Header[] headers, String respospone, Throwable throwable) {
                     Log.e(TAG, "onFailure:  respospone" + respospone);
                 }
 
                 @Override
-                public void onSuccess(int i, Header[] headers, String respospone)
-                {
+                public void onSuccess(int i, Header[] headers, String respospone) {
                     Log.e(TAG, "onSuccess:  respospone" + respospone);
                 }
             });
@@ -195,11 +212,9 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
     };
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         Intent intent = null;
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.tv_close:
                 setResult(ExtraType.RESULT_CODE_ROOM_SETTING_CLOSE);
                 if (mDebug)
@@ -231,14 +246,20 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
 
                 break;
             case R.id.ll_notifications:
-                if (mSlideSwitch.isOpen)
-                {
+                if (mSlideSwitch.isOpen) {
                     mSlideSwitch.moveToDest(false);
-                } else
-                {
+                } else {
                     mSlideSwitch.moveToDest(true);
                 }
                 break;
+            case R.id.ll_private:
+                if (mSlideSwitchPrivate.isOpen) {
+                    mSlideSwitchPrivate.moveToDest(false);
+                } else {
+                    mSlideSwitchPrivate.moveToDest(true);
+                }
+                break;
+
             case R.id.tv_rename_room:
 
                 intent = new Intent();
@@ -263,18 +284,15 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
 
     }
 
-    private void finishActivity()
-    {
+    private void finishActivity() {
         finish();
         overridePendingTransition(R.anim.activity_close_enter,
                 R.anim.activity_close_exit);
     }
 
     @Override
-    public void onEventMainThread(Message msg)
-    {
-        switch (EventType.values()[msg.what])
-        {
+    public void onEventMainThread(Message msg) {
+        switch (EventType.values()[msg.what]) {
             case MSG_UPDATE_ROOM_PUSHABLE_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "onEventMainThread: MSG_UPDATE_ROOM_PUSHABLE_SUCCESS");
@@ -285,4 +303,6 @@ public class RoomSettingActivity extends BaseActivity implements android.view.Vi
                 break;
         }
     }
+
+
 }

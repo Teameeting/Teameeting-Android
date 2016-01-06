@@ -19,7 +19,7 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
     private boolean mDebug = TeamMeetingApp.mIsDebug;
     private EditText mEtMeetingId;
     private ImageButton mIbtnJoinMeeting,mIbtnback;
-    private String mPass="123456";
+    private final String mPass = TeamMeetingApp.getmSelfData().getAuthorization();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +45,7 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.ibtn_join_meeting:
-
-
                 joinMeeting();
-
-
                 break;
 
 
@@ -62,7 +58,6 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
     TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-
 
             joinMeeting();
             return false;
@@ -80,10 +75,10 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
             int code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,userId, mPass, meetingId,"");
             if(code==0){
                 if(mDebug){
-                    Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Successed");
+                    Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");
                 }
             }else if(mDebug){
-                Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Failed");
+                Log.e(TAG, "joinMeeting: "+"TMEnterRoom Failed");
             }
             Intent intent = new Intent(JoinMeetingActivity.this,MeetingActivity.class);
             intent.putExtra("meetingId", meetingId);

@@ -37,7 +37,7 @@ public class TestActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				Toast.makeText(context, "测试", 0).show();
+				Toast.makeText(context, "测试", Toast.LENGTH_SHORT).show();
 				pushTest();
 			}
 		});

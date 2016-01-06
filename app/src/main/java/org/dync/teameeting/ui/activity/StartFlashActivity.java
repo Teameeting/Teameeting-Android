@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -15,6 +16,7 @@ import org.dync.teameeting.R;
 import org.dync.teameeting.http.NetWork;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.msgs.TMMsgSender;
+import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.NetType;
@@ -34,17 +36,31 @@ public class StartFlashActivity extends BaseActivity
 {
 
     private static final String TAG = "StartFlashActivity";
-
+    private final int MessageConnectedFailed = 0x01;
     public SweetAlertDialog mNetErrorSweetAlertDialog;
 
     private ImageView mView;
     private Context context;
     public  static TMMsgSender mMsgSender;
-
-    private final String mServer = "192.168.7.39";
+    private final String mServer = "192.168.7.27";
     private final int mPort = 9210;
-    private final String mPass = "123456";
     private String mUserid ;
+    private String mSign;
+
+    /*message login deal with */
+    private Handler mHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what==MessageConnectedFailed){
+                messageLogin();
+            }
+
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -169,6 +185,35 @@ public class StartFlashActivity extends BaseActivity
         }
     };
 
+    public void netWorkTypeStart(int type)
+    {
+
+        if (type == NetType.TYPE_NULL.ordinal())
+        {
+            mNetErrorSweetAlertDialog.show();
+        } else
+        {
+            // initNetWork();
+        }
+    }
+
+    /**
+     * messageLogin
+     */
+
+    private  void messageLogin(){
+
+        if(mMsgSender.TMConnStatus()== JMClientType.CONNECTED){
+            if (mDebug)
+                Log.e(TAG, "messageLogin: success");
+            mMsgSender.TMLogin(mUserid, mSign);
+        }else{
+            if (mDebug)
+                Log.e(TAG, "messageLogin: failed");
+            mHandler.sendEmptyMessageDelayed(MessageConnectedFailed,500);
+        }
+    }
+
     /**
      * For EventBus callback.
      */
@@ -179,8 +224,10 @@ public class StartFlashActivity extends BaseActivity
             case MSG_ININT_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_ININT_SUCCESS");
-                String sign = TeamMeetingApp.getmSelfData().getAuthorization();
-                mNetWork.getRoomLists(sign, 1 + "", 20 + "");
+                mSign = TeamMeetingApp.getmSelfData().getAuthorization();
+                mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
+                messageLogin();
+
                 break;
             case MSG_ININT_FAILED:
                 if (mDebug)
@@ -233,7 +280,7 @@ public class StartFlashActivity extends BaseActivity
                 if(mDebug){
                     Log.e(TAG,"MSG_MESSAGE_SERVER_CONNECTED");
                 }
-                mMsgSender.TMLogin(mUserid, mPass);
+
 
                 break;
 
@@ -241,18 +288,5 @@ public class StartFlashActivity extends BaseActivity
                 break;
         }
     }
-
-    public void netWorkTypeStart(int type)
-    {
-
-        if (type == NetType.TYPE_NULL.ordinal())
-        {
-            mNetErrorSweetAlertDialog.show();
-        } else
-        {
-           // initNetWork();
-        }
-    }
-
 
 }

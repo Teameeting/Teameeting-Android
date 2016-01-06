@@ -40,7 +40,6 @@ import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.utils.ScreenUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -76,7 +75,7 @@ public class MainActivity extends BaseActivity
     private int mDy;
     private int mPosition;
     private String mShareUrl = "没有设置连接";
-    private String mPass="123456";
+    private final String mPass = getSign();
     private String mUserId = TeamMeetingApp.getTeamMeetingApp().getDevId();
 
     private Handler mUIHandler = new Handler()
@@ -279,8 +278,8 @@ public class MainActivity extends BaseActivity
      */
     private int getItemHeight(final ListView listView)
     {
-
         View view = mAdapter.getView(0, null, listView);
+
         view.measure(0, 0);
         int i = (int) ScreenUtils.dip2Dimension(10.0f, this);
         Log.e(TAG, " i " + i);
@@ -451,6 +450,7 @@ public class MainActivity extends BaseActivity
         }
     };
 
+
     /**
      * soft keyboard Listener
      */
@@ -594,9 +594,7 @@ public class MainActivity extends BaseActivity
         mPosition = position;
         meetingId = data.getStringExtra("meetingId");
         String meetingName = data.getStringExtra("meetingName");
-
         listViewSetScroll(position);
-
         Message msg = new Message();
         msg.what = UPDATE_RENAME_SHOW;
         Bundle bundle = new Bundle();
@@ -707,7 +705,8 @@ public class MainActivity extends BaseActivity
         public void onClick(SweetAlertDialog sweetAlertDialog)
         {
             sweetAlertDialog.dismiss();
-
+            // 设置是否一只提示 没有网络状态
+            // mNetWork.getRoomList(mSign, 1 + "", 20 + "");
         }
     };
 
@@ -751,13 +750,10 @@ public class MainActivity extends BaseActivity
                 break;
             case MSG_APPLY_ROOM_SUCCESS:
                 String meetingId = msg.getData().getString("meetingId");
-
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS "+meetingId);
                 String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-
                 int code  = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,userid,mPass,meetingId,"");
-
                 if(code==0){
                     if (mDebug)
                         Log.e(TAG, "TMCreateRoom "+"Successed");
