@@ -668,6 +668,7 @@ public class MainActivity extends BaseActivity
             MeetingList meetingList = gson.fromJson(meetingListStr, MeetingList.class);
             List<MeetingList.MeetingListEntity> list = meetingList.getMeetingList();
             Collections.reverse(list);
+            //Collections.reverse(list);
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
         }
