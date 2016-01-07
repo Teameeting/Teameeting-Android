@@ -26,15 +26,18 @@ public class ShareHelper
 		this.context = context;
 	}
 
-	public void shareSMS(String smsMessage, String webUrl)
-	{
-		String smsBody = smsMessage + "链接地址ַ:" + webUrl;
-		Uri smsToUri = Uri.parse("smsto:");  
-		Intent sendIntent = new Intent(Intent.ACTION_VIEW, smsToUri);
 
-		sendIntent.putExtra("sms_body", smsBody);
-		sendIntent.setType("vnd.android-dir/mms-sms");
-		
+	/**
+	 * 调用系统界面，给指定的号码发送短信，并附带短信内容
+	 *
+	 * @param context
+	 * @param number
+	 * @param body
+	 */
+	public void shareSMS(Context context, String number, String body) {
+		Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+		sendIntent.setData(Uri. parse("smsto:" + number));
+		sendIntent.putExtra( "sms_body", body);
 		context.startActivity(sendIntent);
 	}
 

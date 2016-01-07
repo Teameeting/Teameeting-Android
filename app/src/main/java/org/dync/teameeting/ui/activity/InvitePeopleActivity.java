@@ -79,7 +79,7 @@ public class InvitePeopleActivity extends Activity
 				return;
 			case R.id.tv_invite_message:
 				finishActivity();
-				mShareHelper.shareSMS("邀请你加入我们的会议", mShareUrl);
+				mShareHelper.shareSMS(InvitePeopleActivity.this, "", mShareUrl);
 				break;
 			case R.id.tv_invite_weixin:
 				mShareHelper.shareWeiXin("分享到... ", "诚挚邀请你加入我们会议吧！点击链接：",

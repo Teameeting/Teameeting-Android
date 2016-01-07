@@ -235,6 +235,11 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
+
+
+
+
+
     @Override
     public void onClick(View view) {
         Intent intent = null;
@@ -254,14 +259,15 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tv_invite_message:
                 // SMS
-                mShareHelper.shareSMS("邀请你加入我们的会议", mShareUrl);
-                finishActivity();
+                mShareUrl ="让我们在会议中见!"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
+                mShareHelper.shareSMS(this, "", mShareUrl);
 
                 break;
             case R.id.tv_invite_weixin:
                 // weixin
+                mShareUrl ="让我们在会议中见!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
                 mShareHelper
-                        .shareWeiXin("分享到... ", "诚挚邀请你加入我们会议吧！点击链接：", mShareUrl);
+                        .shareWeiXin("分享到... ", "", mShareUrl);
                 finishActivity();
                 break;
             case R.id.tv_copy_link:
