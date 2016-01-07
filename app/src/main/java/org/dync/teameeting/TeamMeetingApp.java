@@ -13,6 +13,7 @@ import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.anyrtc.Anyrtc;
 import org.dync.teameeting.bean.MySelf;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.receiver.NetWorkReceiver;
@@ -49,6 +50,7 @@ public class TeamMeetingApp extends Application
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
 
+        Anyrtc.InitAnyrtc("mzw0001", "defq34hj92mxxjhaxxgjfdqi1s332dd", "d74TcmQDMB5nWx9zfJ5al7JdEg3XwySwCkhdB9lvnd1", "org.dync.app");
     }
 
     /**

@@ -16,29 +16,18 @@ import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
 import org.dync.teameeting.widgets.SlideSwitch;
 import org.dync.teameeting.widgets.SlideSwitch.SlideListener;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
-import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-
-import javax.security.auth.login.LoginException;
 
 public class RoomSettingActivity extends BaseActivity implements View.OnClickListener {
     private Context context;
