@@ -40,6 +40,7 @@ import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.utils.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -665,8 +666,6 @@ public class MainActivity extends BaseActivity
             Gson gson = new Gson();
             MeetingList meetingList = gson.fromJson(meetingListStr, MeetingList.class);
             List<MeetingList.MeetingListEntity> list = meetingList.getMeetingList();
-            Collections.reverse(list);
-            //Collections.reverse(list);
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
         }
