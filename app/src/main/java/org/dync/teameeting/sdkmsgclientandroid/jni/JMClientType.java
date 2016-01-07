@@ -28,9 +28,7 @@ public class JMClientType {
     public static final int TMCMD_LEAVE = 2;
     public static final int TMCMD_CREATE = 3;
     public static final int TMCMD_DESTROY = 4;
-    public static final int TMCMD_START = 5;
-    public static final int TMCMD_STOP = 6;
-    public static final int TMCMD_DCOMM = 7;
-    public static final int TMCMD_REFRESH = 8;
-    public static final int TMCMD_MEETCMD_INVALID = 9;
+    public static final int TMCMD_REFRESH = 5;
+    public static final int TMCMD_DCOMM = 6;
+    public static final int TMCMD_MEETCMD_INVALID = 7;
 }

@@ -28,6 +28,7 @@ public class JMClientApp {
     public native int OptRoom(int cmd, String strUserid, String strPass, String strRoomid, String strRemain);
     public native int SndMsgTo(String strUserid, String strPass, String strRoomid, String strMsg, String[] arrUser);
 
+    public native int NotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg);
 
 
     /**

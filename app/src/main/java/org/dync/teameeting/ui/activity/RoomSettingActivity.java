@@ -66,11 +66,9 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
     private String mShareUrl = "没有设置连接";
     private ImageView ivNotifation;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
+    private boolean mMeetingPrivateFlag=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +78,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         context = this;
         initData();
         initLayout();
-        inintNotifationState();
+        inintSwitchState();
 
     }
 
@@ -94,6 +92,8 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         if (mDebug) {
             Log.e(TAG, mMeetingEntity.toString());
         }
+
+        mSign = getSign();
     }
 
     void initLayout() {
@@ -138,13 +138,15 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         bottomMenu.setOnTouchQuickSpeedListener(onTouchSpeedListener);
     }
 
-    private void inintNotifationState() {
+    private void inintSwitchState() {
         boolean state = mMeetingEntity.getPushable() == 1 ? true : false;
         mSlideSwitch.setState(state);
         if (!state) {
             Anims.ScaleAnim(ivNotifation, 0, 1, 10);
         }
 
+        mMeetingPrivateFlag = mMeetingEntity.getMeetusable() == 2 ? true : false;
+        mSlideSwitchPrivate.setState(mMeetingPrivateFlag);
 
     }
 
@@ -160,18 +162,40 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
+
+    private  void  meetingPrivateUIUpdate(){
+        if(mMeetingPrivateFlag){
+            mTvIniviteMessage.setTextColor(getResources().getColor(R.color.black));
+            mTvInviteWeixin.setTextColor(getResources().getColor(R.color.black));
+            mTvCopyLink.setTextColor(getResources().getColor(R.color.black));
+            mTvIniviteMessage.setClickable(false);
+            mTvInviteWeixin.setClickable(false);
+            mTvCopyLink.setClickable(false);
+        }else{
+            mTvIniviteMessage.setTextColor(getResources().getColor(R.color.white));
+            mTvInviteWeixin.setTextColor(getResources().getColor(R.color.white));
+            mTvCopyLink.setTextColor(getResources().getColor(R.color.white));
+            mTvIniviteMessage.setClickable(true);
+            mTvInviteWeixin.setClickable(true);
+            mTvCopyLink.setClickable(true);
+        }
+    }
+
     /**
      * mslideMeetingPrivateListener
      */
     SlideListener mslideMeetingPrivateListener = new SlideListener() {
-        @Override
         public void open() {
-
+            mNetWork.updateRoomEnable(mSign,mMeetingId,"2");
+            mMeetingPrivateFlag =true;
+            meetingPrivateUIUpdate();
         }
 
         @Override
         public void close() {
-
+            mNetWork.updateRoomEnable(mSign,mMeetingId,"1");
+            mMeetingPrivateFlag = false;
+            meetingPrivateUIUpdate();
         }
     };
 
@@ -182,7 +206,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
     SlideListener slideNotificationListener = new SlideListener() {
         @Override
         public void open() {
-            mSign = getSign();
+
             mNetWork.updateRoomPushable(mSign, mMeetingId, 1 + "");
             Anims.ScaleAnim(ivNotifation, 1, 0, 500);
             Toast.makeText(context, "打开推送", Toast.LENGTH_SHORT).show();
@@ -190,7 +214,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
         @Override
         public void close() {
-            mSign = getSign();
+
             mNetWork.updateRoomPushable(mSign, mMeetingId, 0 + "");
             Anims.ScaleAnim(ivNotifation, 0, 1, 500);
             String url = "meeting/getMeetingInfo/" + mMeetingId;

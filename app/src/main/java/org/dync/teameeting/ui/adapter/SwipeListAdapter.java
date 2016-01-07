@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.bean.MeetingList;
+import org.dync.teameeting.utils.StringHelper;
 import org.dync.teameeting.widgets.swipe.FrontLayout;
 import org.dync.teameeting.widgets.swipe.SwipeLayout;
 import org.dync.teameeting.widgets.swipe.SwipeLayout.SwipeListener;
@@ -85,7 +86,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingList.MeetingListEntit
     private void setData(MeetingList.MeetingListEntity meetingListEntity, ViewHolder mHolder)
     {
         mHolder.mRoomName.setText("" + meetingListEntity.getMeetname());
-        mHolder.mRoomTime.setText("创建: " + meetingListEntity.getJointime());
+        mHolder.mRoomTime.setText("创建: " + StringHelper.formatDuration(meetingListEntity.getJointime()));
         mHolder.mRoomPeopleCount.setText("" + meetingListEntity.getMemnumber());
 
         if (meetingListEntity.getMemnumber() > 0)

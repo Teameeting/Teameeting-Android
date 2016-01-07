@@ -525,54 +525,33 @@ public class NetWork
     public void updateRoomEnable(final String sign, final String meetingid,
                                  final String enable)
     {
-        new Thread()
+        String url = "meeting/updateRoomEnable";
+        RequestParams params = new RequestParams();
+        params.put("sign", sign);
+        params.put("meetingid", meetingid);
+        params.put("enable", enable);
+
+        HttpContent.post(url, params, new TmTextHttpResponseHandler()
         {
             @Override
-            public synchronized void run()
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
             {
-                // TODO Auto-generated method stub
-                super.run();
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("sign", sign);
-                params.put("meetingid", meetingid);
-                params.put("enable", enable);
-
-                try
+                super.onSuccess(statusCode, code, message, responseString, headers);
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: updateRoomEnable" + responseString);
+                if (code == 200)
                 {
-                    String ss = getResponseStr(params,
-                            "meeting/updateRoomEnable");
-                    if (mDebug)
-                        Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
-                        JSONObject jsonObject = new JSONObject(ss);
-                        Bundle bundle = new Bundle();
-                        Message msg = new Message();
-                        int code = jsonObject.getInt("code");
-                        String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
-                            msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_SUCCESS
-                                    .ordinal();
-                        } else
-                        {
-                            msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_FAILED
-                                    .ordinal();
-                        }
-
-                        bundle.putString("message", message);
-                        msg.setData(bundle);
-                        EventBus.getDefault().post(msg);
-                    }
-
-                } catch (JSONException e)
+                    msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_SUCCESS.ordinal();
+                } else
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_FAILED.ordinal();
                 }
+                bundle.putString("message", message);
+                msg.setData(bundle);
+                EventBus.getDefault().post(msg);
             }
-        }.start();
+        });
+
 
     }
 

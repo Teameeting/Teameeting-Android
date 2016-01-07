@@ -202,7 +202,6 @@ public class StartFlashActivity extends BaseActivity
      */
 
     private  void messageLogin(){
-
         if(mMsgSender.TMConnStatus()== JMClientType.CONNECTED){
             if (mDebug)
                 Log.e(TAG, "messageLogin: success");
