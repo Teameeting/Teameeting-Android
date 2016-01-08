@@ -18,17 +18,16 @@ public class JMClientApp {
     private static native long Create(JMClientHelper helper);
 
     public native int ConnStatus();
-    public native int Init(String strServer, int port);
+    public native int Init(String strUid, String strToken, String strServer, int port);
     public native int Unin();
 
-    public native int Login(String strUserid, String strPass);
-    public native int SndMsg(String strUserid, String strPass, String strRoomid, String strMsg);
-    public native int GetMsg(String strUserid, String strPass);
-    public native int Logout(String strUserid, String strPass);
-    public native int OptRoom(int cmd, String strUserid, String strPass, String strRoomid, String strRemain);
-    public native int SndMsgTo(String strUserid, String strPass, String strRoomid, String strMsg, String[] arrUser);
 
-    public native int NotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg);
+    public native int SndMsg(String strRoomid, String strMsg);
+    public native int GetMsg();
+    public native int OptRoom(int cmd, String strRoomid, String strRemain);
+    public native int SndMsgTo(String strRoomid, String strMsg, String[] arrUser);
+
+    public native int NotifyMsg(String strRoomid, String strMsg);
 
 
     /**

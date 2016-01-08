@@ -26,40 +26,31 @@ public class TMMsgSender extends MsgClient {
         return this.MCConnStatus();
     }
 
-    public int TMInit(String strServer, int nPort) {
-        return this.MCInit(strServer, nPort);
+    public int TMInit(String strUid, String strToken, String strServer, int nPort) {
+        return this.MCInit(strUid, strToken, strServer, nPort);
     }
 
     public int TMUnin() {
         return this.MCUnin();
     }
 
-
-    public int TMLogin(String strUserid, String strPass) {
-        return this.MCLogin(strUserid, strPass);
+    public int TMSndMsg(String strRoomid, String strMsg) {
+        return this.MCSndMsg(strRoomid, strMsg);
     }
 
-    public int TMSndMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
-        return this.MCSndMsg(strUserid, strPass, strRoomid, strMsg);
+    public int TMGetMsg() {
+        return this.MCGetMsg();
     }
 
-    public int TMGetMsg(String strUserid, String strPass) {
-        return this.MCGetMsg(strUserid, strPass);
+    public int TMOptRoom(int cmd, String strRoomid, String strRemain) {
+        return this.MCOptRoom(cmd, strRoomid, strRemain);
     }
 
-    public int TMLogout(String strUserid, String strPass) {
-        return this.MCLogout(strUserid, strPass);
+    public int TMSndMsgTo(String strRoomid, String strMsg, String[] arrUser) {
+        return  this.MCSndMsgTo(strRoomid, strMsg, arrUser);
     }
 
-    public int TMOptRoom(int cmd, String strUserid, String strPass, String strRoomid, String strRemain) {
-        return this.MCOptRoom(cmd, strUserid, strPass, strRoomid, strRemain);
-    }
-
-    public int TMSndMsgTo(String strUserid, String strPass, String strRoomid, String strMsg, String[] arrUser) {
-        return  this.MCSndMsgTo(strUserid, strPass, strRoomid, strMsg, arrUser);
-    }
-
-    public int TMNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
-        return this.MCNotifyMsg(strUserid, strPass, strRoomid, strMsg);
+    public int TMNotifyMsg(String strRoomid, String strMsg) {
+        return this.MCNotifyMsg(strRoomid, strMsg);
     }
 }

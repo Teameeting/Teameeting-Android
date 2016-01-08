@@ -42,9 +42,9 @@ public abstract class MsgClient{
        return mMApp.ConnStatus();
     }
 
-    protected int MCInit(String strServer, int nPort) {
+    protected int MCInit(String strUid, String strToken, String strServer, int nPort) {
        if (null != mMApp) {
-           return mMApp.Init(strServer, nPort);
+           return mMApp.Init(strUid, strToken, strServer, nPort);
        }  else {
            return -1;
        }
@@ -58,57 +58,41 @@ public abstract class MsgClient{
         }
     }
 
-    protected int MCLogin(String strUserid, String strPass) {
+    protected int MCSndMsg(String strRoomid, String strMsg) {
         if (null != mMApp) {
-            return mMApp.Login(strUserid, strPass);
+            return mMApp.SndMsg(strRoomid, strMsg);
         } else {
             return -1;
         }
     }
 
-    protected int MCSndMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
+    protected int MCGetMsg() {
         if (null != mMApp) {
-            return mMApp.SndMsg(strUserid, strPass, strRoomid, strMsg);
+            return mMApp.GetMsg();
         } else {
             return -1;
         }
     }
 
-    protected int MCGetMsg(String strUserid, String strPass) {
+    protected int MCOptRoom(int cmd, String strRoomid, String strRemain) {
         if (null != mMApp) {
-            return mMApp.GetMsg(strUserid, strPass);
+            return mMApp.OptRoom(cmd, strRoomid, strRemain);
         } else {
             return -1;
         }
     }
 
-    protected int MCLogout(String strUserid, String strPass) {
+    protected int MCSndMsgTo(String strRoomid, String strMsg, String[] arrUser) {
         if (null != mMApp) {
-            return mMApp.Logout(strUserid, strPass);
+            return mMApp.SndMsgTo(strRoomid, strMsg, arrUser);
         } else {
             return -1;
         }
     }
 
-    protected int MCOptRoom(int cmd, String strUserid, String strPass, String strRoomid, String strRemain) {
+    protected int MCNotifyMsg(String strRoomid, String strMsg) {
         if (null != mMApp) {
-            return mMApp.OptRoom(cmd, strUserid, strPass, strRoomid, strRemain);
-        } else {
-            return -1;
-        }
-    }
-
-    protected int MCSndMsgTo(String strUserid, String strPass, String strRoomid, String strMsg, String[] arrUser) {
-        if (null != mMApp) {
-            return mMApp.SndMsgTo(strUserid, strPass, strRoomid, strMsg, arrUser);
-        } else {
-            return -1;
-        }
-    }
-
-    protected int MCNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
-        if (null != mMApp) {
-            return mMApp.NotifyMsg(strUserid, strPass, strRoomid, strMsg);
+            return mMApp.NotifyMsg(strRoomid, strMsg);
         } else {
             return -1;
         }
