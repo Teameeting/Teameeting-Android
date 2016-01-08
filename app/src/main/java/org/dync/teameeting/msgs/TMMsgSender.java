@@ -65,12 +65,8 @@ public class TMMsgSender extends MsgClient {
         return  this.MCSndMsgTo(strUserid, strPass, strRoomid, strMsg, arrUser);
     }
 
-    protected int MCNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
-        if (null != mMApp) {
-            return mMApp.NotifyMsg(strUserid, strPass, strRoomid, strMsg);
-        } else {
-            return -1;
-        }
+    public int TMNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
+        return this.MCNotifyMsg(strUserid, strPass, strRoomid, strMsg);
     }
 
 
@@ -107,11 +103,13 @@ public class TMMsgSender extends MsgClient {
 
         try {
             JSONObject json = new JSONObject(msg);
+            int tags = json.getInt("tags");
             String content = json.getString("cont");
             Log.e(TAG, "OnReqSndMsg: " +content);
 
             mMessage = new Message();
             Bundle bundle = new Bundle();
+            bundle.putInt("tags", tags);
             bundle.putString("message",content);
             // bundle.putString("name",from);
             mMessage.setData(bundle);
@@ -121,9 +119,6 @@ public class TMMsgSender extends MsgClient {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     @Override
