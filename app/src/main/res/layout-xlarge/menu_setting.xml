@@ -6,6 +6,8 @@
     xmlns:slideswitch="http://schemas.android.com/apk/res/org.dync.teameeting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
     >
 
 
@@ -19,8 +21,8 @@
             android:id="@+id/tv_room_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/str_invite_people"
             android:textColor="@color/white"
             android:textSize="@dimen/largest_most_txt_size"/>
@@ -171,6 +173,44 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:background="@color/grey"/>
+        <!--    private meeting-->
+        <LinearLayout
+            android:id="@+id/ll_private"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/more_item_height"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/view_rename_room"
+                android:drawablePadding="20dp"
+                android:text="@string/str_meeting_private"
+                android:textColor="@color/white"
+                android:textSize="@dimen/larger_txt_size" />
+
+            <org.dync.teameeting.widgets.SlideSwitch
+                android:id="@+id/ss_SlideSwitch_private"
+                android:layout_width="55dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                slideswitch:isOpen="true"
+                slideswitch:shape="circle"
+                slideswitch:themeColor="@color/orange_yellow" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@color/grey" />
 
         <TextView
             android:id="@+id/tv_rename_room"

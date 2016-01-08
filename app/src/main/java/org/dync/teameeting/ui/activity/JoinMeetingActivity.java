@@ -76,7 +76,7 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
         String meetingId = mEtMeetingId.getText().toString();
         if(meetingId.length()!=0&&meetingId!=null){
             String userId = TeamMeetingApp.getTeamMeetingApp().getDevId();
-            int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,userId, mPass, meetingId,"");
+            int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, meetingId,"");
             if(code==0){
                 if(mDebug){
                     Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");

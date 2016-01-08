@@ -407,7 +407,7 @@ public class MainActivity extends BaseActivity
                     {
                         Log.i(TAG, "meetingId-fl_front" + meetingId);
                     }
-                     code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,mUserId, mPass, meetingId,"");
+                     code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, meetingId,"");
                     if(code==0){
                         if(mDebug){
                             Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Successed");
@@ -433,7 +433,7 @@ public class MainActivity extends BaseActivity
                     mNetWork.deleteRoom(mSign, meetingId);
                     mRoomMeetingList.remove(position);
                     mAdapter.notifyDataSetChanged();
-                    code =mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY,mUserId, mPass, meetingId,"");
+                    code =mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId,"");
                     if(code==0){
                         if(mDebug){
                             Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Successed");
@@ -559,10 +559,7 @@ public class MainActivity extends BaseActivity
             {
                 mSign = getSign();
                 mNetWork.signOut(mSign);
-                String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-                mMsgSender.TMLogout(userid, mPass);
-                if (mDebug)
-                    Log.e(TAG, "Exit-signOut");
+
                 this.finish();
             }
             return true;
@@ -637,7 +634,7 @@ public class MainActivity extends BaseActivity
         mAdapter.notifyDataSetChanged();
 
         String userId = mRoomMeetingList.get(position).getMeetinguserid();
-        int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY,mUserId, mPass, meetingId,"");
+        int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId,"");
         if(code==0){
             if(mDebug){
                 Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Successed");
@@ -775,7 +772,7 @@ public class MainActivity extends BaseActivity
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS "+meetingId);
                 String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-                int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,userid,mPass,meetingId,"");
+                int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,meetingId,"");
                 if(code==0){
                     if (mDebug)
                         Log.e(TAG, "TMCreateRoom "+"Successed");

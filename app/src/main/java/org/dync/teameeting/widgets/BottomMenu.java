@@ -23,7 +23,7 @@ public class BottomMenu extends ViewGroup
 {
 
     private Context mContext;
-    private static String TAG = "xbl";
+    private static String TAG = "BottomMenu";
     private boolean mDebug = TeamMeetingApp.mIsDebug;
     private Scroller mScroller = null;
 
@@ -152,10 +152,10 @@ public class BottomMenu extends ViewGroup
     {
 
         Log.e(TAG, "onLayout: "+seetingLayout.getMeasuredHeight() );
-        if (!TeamMeetingApp.isPad)
+/*        if (!TeamMeetingApp.isPad)
         {
             t = mTop;
-        }
+        }*/
 
         for (int i = 0; i < getChildCount(); i++)
         {

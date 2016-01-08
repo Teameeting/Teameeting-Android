@@ -47,19 +47,6 @@ public class StartFlashActivity extends BaseActivity
     private String mUserid ;
     private String mSign;
 
-    /*message login deal with */
-    private Handler mHandler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what==MessageConnectedFailed){
-                messageLogin();
-            }
-
-        }
-    };
-
 
 
     @Override
@@ -100,7 +87,7 @@ public class StartFlashActivity extends BaseActivity
 
         mUserid = TeamMeetingApp.getTeamMeetingApp().getDevId();
 
-        chatMessageInint();
+
 
         Animation loadAnimation = AnimationUtils.loadAnimation(this,
                 R.anim.splash);
@@ -116,7 +103,7 @@ public class StartFlashActivity extends BaseActivity
 
         mMsgSender = new TMMsgSender(this, new ChatMessageClient());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
-        int msg = mMsgSender.TMInit(mServer, mPort);
+        int msg = mMsgSender.TMInit(mUserid,mSign,mServer, mPort);
         if(msg ==0){
             if(mDebug)
                 Log.e(TAG, "Chat Message Inint successed");
@@ -205,22 +192,6 @@ public class StartFlashActivity extends BaseActivity
     }
 
     /**
-     * messageLogin
-     */
-
-    private  void messageLogin(){
-        if(mMsgSender.TMConnStatus()== JMClientType.CONNECTED){
-            if (mDebug)
-                Log.e(TAG, "messageLogin: success");
-            mMsgSender.TMLogin(mUserid, mSign);
-        }else{
-            if (mDebug)
-                Log.e(TAG, "messageLogin: failed");
-            mHandler.sendEmptyMessageDelayed(MessageConnectedFailed,500);
-        }
-    }
-
-    /**
      * For EventBus callback.
      */
     public void onEventMainThread(Message msg)
@@ -232,7 +203,9 @@ public class StartFlashActivity extends BaseActivity
                     Log.e(TAG, "MSG_ININT_SUCCESS");
                 mSign = TeamMeetingApp.getmSelfData().getAuthorization();
                 mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
-                messageLogin();
+              //  messageLogin();
+
+                chatMessageInint();
 
                 break;
             case MSG_ININT_FAILED:

@@ -4,14 +4,16 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
     android:gravity="center"
+    android:layout_gravity="center"
     android:orientation="vertical" >
 
     <org.dync.teameeting.widgets.BottomMenu
         android:id="@+id/bottomMenu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:tag="580" >
-
+        android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
+        android:tag="500" >
         <include layout="@layout/menu_setting" />
     </org.dync.teameeting.widgets.BottomMenu>
 
