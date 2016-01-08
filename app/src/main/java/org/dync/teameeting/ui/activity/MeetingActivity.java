@@ -408,10 +408,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     break;
 
                 case R.id.meeting_camera:
-                    //mRtkClient.setLocalVideoDisabled();
 
                     if (!mMeetingCameraOffFlag)
                     {
+                        mAnyM2Mutlier.SetLocalVideoEnabled(true);
                         mCameraButton.setImageResource(R.drawable.btn_camera_on);
                         mMeetingCameraOffFlag = true;
                         return;
@@ -471,12 +471,12 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     {
                         mVoiceButton.setImageResource(R.drawable.btn_voice_off);
                         mCloseVoice.setVisibility(View.VISIBLE);
-                        //mRtkClient.setLocalVoiceDisabled();
+                        mAnyM2Mutlier.SetLocalAudioEnabled(false);
                     } else
                     {
                         mVoiceButton.setImageResource(R.drawable.btn_voice_on);
                         mCloseVoice.setVisibility(View.INVISIBLE);
-                        //mRtkClient.setLocalVoiceEnabled();
+                        mAnyM2Mutlier.SetLocalAudioEnabled(true);
                     }
                     mMeetingVoiceFlag = !mMeetingVoiceFlag;
 
@@ -487,6 +487,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
                     break;
                 case R.id.meeting_camera_off:
+                    mAnyM2Mutlier.SetLocalVideoEnabled(false);
                     mCameraButton
                             .setImageResource(R.drawable.btn_camera_off_select);
                     mMettingAnim.rotationOrApaha(mCameraButton, mMeetingCameraFlag);
@@ -719,8 +720,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
      */
     @Override
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
-        mAnyM2Mutlier.Subscribe(publishId, true);
+        //mAnyM2Mutlier.Subscribe(publishId, true);
         Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
+        StartFlashActivity.mMsgSender.TMNotifyMsg(mUserId,mPass,mMeetingId,publishId);
     }
 
     @Override
@@ -756,8 +758,13 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         switch (EventType.values()[msg.what])
         {
             case MSG_MESSAGE_RECEIVE:
+                int tags = msg.getData().getInt("tags");
                 String message= msg.getData().getString("message");
                 String name = msg.getData().getString("name");
+                if(tags == 4) {
+                    mAnyM2Mutlier.Subscribe(message, true);
+                    return;
+                }
                 if (mDebug)
                     Log.e(TAG, "MSG_MESSAGE_RECEIVE  "+message);
 

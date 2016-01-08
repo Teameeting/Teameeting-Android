@@ -103,11 +103,13 @@ public class TMMsgSender extends MsgClient {
 
         try {
             JSONObject json = new JSONObject(msg);
+            int tags = json.getInt("tags");
             String content = json.getString("cont");
             Log.e(TAG, "OnReqSndMsg: " +content);
 
             mMessage = new Message();
             Bundle bundle = new Bundle();
+            bundle.putInt("tags", tags);
             bundle.putString("message",content);
             // bundle.putString("name",from);
             mMessage.setData(bundle);
@@ -117,9 +119,6 @@ public class TMMsgSender extends MsgClient {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     @Override
