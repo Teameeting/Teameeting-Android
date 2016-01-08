@@ -785,7 +785,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
         //mAnyM2Mutlier.Subscribe(publishId, true);
         Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
-        StartFlashActivity.mMsgSender.TMNotifyMsg(mUserId,mPass,mMeetingId,publishId);
+        mMsgSender.TMNotifyMsg(mUserId,mPass,mMeetingId,publishId);
     }
 
     @Override
