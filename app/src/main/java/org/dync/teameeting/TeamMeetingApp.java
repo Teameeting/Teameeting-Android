@@ -14,8 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.anyrtc.Anyrtc;
-import org.dync.teameeting.bean.MySelf;
 import org.dync.teameeting.bean.SelfData;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.receiver.NetWorkReceiver;
 import org.dync.teameeting.utils.ScreenUtils;
 
@@ -24,28 +24,29 @@ import cn.jpush.android.api.JPushInterface;
 public class TeamMeetingApp extends Application
 {
 
-    public static boolean mIsDebug = true;// 是否需要打印bug，
+    public static boolean mIsDebug = true;// debug deal with
     private static final String TAG = "Application";
     private static final boolean mDebug = true;
     private static TeamMeetingApp mTeamMeetingApp;
-    private static MySelf mMySelf;
+
     private static SelfData mSelfData;
     private NetWorkReceiver mNetReceiver;
     public static boolean isPad = false;
+    private static TMMsgSender mMsgSender;
 
     @Override
     public void onCreate()
     {
         // TODO Auto-generated method stub
         super.onCreate();
-        mMySelf = new MySelf();
+
         mSelfData = new SelfData();
         registerReceiver();
 
         isPad = ScreenUtils.isPad(this);
         if (mDebug)
         {
-            Log.e(TAG, "onCreate: 当前设备是一个否是平板" + isPad);
+            Log.e(TAG, "onCreate: isPad" + isPad);
         }
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
@@ -72,16 +73,24 @@ public class TeamMeetingApp extends Application
     }
 
 
-    public static TeamMeetingApp getTeamMeetingApp()
-    {
+    public static TeamMeetingApp getTeamMeetingApp() {
 
         return mTeamMeetingApp;
     }
 
-    public static MySelf getMyself()
-    {
-        return mMySelf;
+
+
+
+    /*chat message deal with*/
+    public static TMMsgSender getmMsgSender(){
+        return  mMsgSender;
     }
+
+    public  void setmMsgSender(TMMsgSender msgSender){
+        mMsgSender = msgSender;
+    }
+
+
 
     public static void setSelfData(SelfData selfData)
     {

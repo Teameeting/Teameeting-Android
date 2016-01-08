@@ -10,8 +10,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 
-import java.util.StringTokenizer;
-
 /**
  * Get screen associated auxiliary class
  *

@@ -15,8 +15,6 @@
  */
 package org.dync.teameeting.widgets;
 
-import org.dync.teameeting.R;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -36,6 +34,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+
+import org.dync.teameeting.R;
 
 public class SlideSwitch extends View
 {

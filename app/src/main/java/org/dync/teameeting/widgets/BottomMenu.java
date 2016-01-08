@@ -1,20 +1,17 @@
 package org.dync.teameeting.widgets;
 
-import org.dync.teameeting.R;
-import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.utils.ScreenUtils;
-import org.w3c.dom.ls.LSException;
-
 import android.content.Context;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
+
+import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.utils.ScreenUtils;
 
 /**
  * org.dync.teammeeting.ui.BottomMenu

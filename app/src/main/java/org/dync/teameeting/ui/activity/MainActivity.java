@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,21 +27,21 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import org.dync.teameeting.R;
-import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
-import org.dync.teameeting.structs.Intent_KEY;
-import org.dync.teameeting.ui.adapter.SwipeListAdapter;
-import org.dync.teameeting.ui.adapter.SwipeListAdapter.SwipeListOnClick;
-import org.dync.teameeting.http.NetWork;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingList;
-import org.dync.teameeting.ui.helper.DialogHelper;
+import org.dync.teameeting.http.NetWork;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.ExtraType;
+import org.dync.teameeting.structs.Intent_KEY;
 import org.dync.teameeting.structs.NetType;
+import org.dync.teameeting.ui.adapter.SwipeListAdapter;
+import org.dync.teameeting.ui.adapter.SwipeListAdapter.SwipeListOnClick;
+import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.utils.ScreenUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity
     private String mShareUrl = "没有设置连接";
     private final String mPass = getSign();
     private String mUserId = TeamMeetingApp.getTeamMeetingApp().getDevId();
+    private TMMsgSender mMsgSender;
 
     private Handler mUIHandler = new Handler()
     {
@@ -144,6 +146,8 @@ public class MainActivity extends BaseActivity
         Intent intent = getIntent();
         String meetingListStr = intent.getExtras().getString(NetWork.MEETING_LIST);
         upDataMeetingList(meetingListStr);
+
+        mMsgSender = TeamMeetingApp.getmMsgSender();
     }
 
     /**
@@ -166,6 +170,7 @@ public class MainActivity extends BaseActivity
         mRoomCancel.setOnClickListener(mOnClickListener);
         mJoinMeeting.setOnClickListener(mOnClickListener);
 
+        initSwipeRefreshLayout();
 
         mAdapter = new SwipeListAdapter(mContext, mRoomMeetingList, mSwipeListOnClick);
         mListView.setAdapter(mAdapter);
@@ -205,6 +210,26 @@ public class MainActivity extends BaseActivity
 
                     }
                 });
+    }
+
+    private void initSwipeRefreshLayout()
+    {
+        //修改刷新控件
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setColorScheme(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.notifyDataSetChanged();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //这里主要用来更新时间
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
     }
 
     /**
@@ -258,8 +283,6 @@ public class MainActivity extends BaseActivity
             mDy = itemHeight * (position - maxItemTop - 1) + incompleteItemheight;
             mListView.setSelection(mListView.getBottom());
             mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, 1500);
-
-
             Log.e(TAG, "maxItemTop " + maxItemTop + " incompleteItemheight "
                     + incompleteItemheight);
             // mListView.smoothScrollToPositionFromTop(maxItemTop, 0, 1000);
@@ -384,7 +407,7 @@ public class MainActivity extends BaseActivity
                     {
                         Log.i(TAG, "meetingId-fl_front" + meetingId);
                     }
-                     code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,mUserId, mPass, meetingId,"");
+                     code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,mUserId, mPass, meetingId,"");
                     if(code==0){
                         if(mDebug){
                             Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Successed");
@@ -410,7 +433,7 @@ public class MainActivity extends BaseActivity
                     mNetWork.deleteRoom(mSign, meetingId);
                     mRoomMeetingList.remove(position);
                     mAdapter.notifyDataSetChanged();
-                    code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY,mUserId, mPass, meetingId,"");
+                    code =mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY,mUserId, mPass, meetingId,"");
                     if(code==0){
                         if(mDebug){
                             Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Successed");
@@ -537,7 +560,7 @@ public class MainActivity extends BaseActivity
                 mSign = getSign();
                 mNetWork.signOut(mSign);
                 String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-                StartFlashActivity.mMsgSender.TMLogout(userid, mPass);
+                mMsgSender.TMLogout(userid, mPass);
                 if (mDebug)
                     Log.e(TAG, "Exit-signOut");
                 this.finish();
@@ -614,7 +637,7 @@ public class MainActivity extends BaseActivity
         mAdapter.notifyDataSetChanged();
 
         String userId = mRoomMeetingList.get(position).getMeetinguserid();
-        int code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY,mUserId, mPass, meetingId,"");
+        int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY,mUserId, mPass, meetingId,"");
         if(code==0){
             if(mDebug){
                 Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Successed");
@@ -752,7 +775,7 @@ public class MainActivity extends BaseActivity
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS "+meetingId);
                 String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-                int code  = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,userid,mPass,meetingId,"");
+                int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,userid,mPass,meetingId,"");
                 if(code==0){
                     if (mDebug)
                         Log.e(TAG, "TMCreateRoom "+"Successed");

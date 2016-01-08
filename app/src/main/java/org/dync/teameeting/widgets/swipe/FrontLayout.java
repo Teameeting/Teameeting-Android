@@ -1,11 +1,11 @@
 package org.dync.teameeting.widgets.swipe;
 
-import org.dync.teameeting.widgets.swipe.SwipeLayout.Status;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
+
+import org.dync.teameeting.widgets.swipe.SwipeLayout.Status;
 
 public class FrontLayout extends RelativeLayout
 {

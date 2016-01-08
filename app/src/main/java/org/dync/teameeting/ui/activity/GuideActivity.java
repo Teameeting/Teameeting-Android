@@ -1,13 +1,5 @@
 package org.dync.teameeting.ui.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-
-import org.dync.teameeting.R;
-import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.TeamMeetingApp;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +13,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+
+import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.http.NetWork;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author zhangqilu

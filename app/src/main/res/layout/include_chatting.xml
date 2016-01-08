@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_chat_topbar"
         style="@style/TopBar_Style"
         android:layout_height="@dimen/height_top_bar"
-        android:background="@color/black_gray" >
+        android:background="@color/black_gray">
 
         <TextView
             style="@style/Title_Txt"
             android:text="@string/str_chat"
             android:textColor="#ffffff"
-            android:textStyle="normal" />
+            android:textStyle="normal"/>
 
         <ImageButton
             android:id="@+id/imgbtn_back"
             style="@style/Btn_left"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/close" />
+            android:src="@drawable/close"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -30,7 +30,7 @@
         android:layout_width="fill_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/white" >
+        android:background="@color/white">
 
         <Button
             android:id="@+id/btn_chat_send"
@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@color/orange"
-            android:text="@string/str_send_message" />
+            android:text="@string/str_send_message"/>
 
         <EditText
             android:id="@+id/et_chat_msg"
@@ -51,21 +51,26 @@
             android:hint="@string/str_hint_send_message"
             android:paddingLeft="10dp"
             android:singleLine="true"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/listView_chat"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_above="@id/rl_chat_bottom"
         android:layout_below="@id/rl_chat_topbar"
         android:background="#CF000000"
-        android:divider="@null"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:listSelector="@color/transparent"
-        android:scrollbarStyle="outsideOverlay" >
-    </ListView>
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/listView_chat"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@null"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:listSelector="@color/transparent"
+            android:scrollbarStyle="outsideOverlay">
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

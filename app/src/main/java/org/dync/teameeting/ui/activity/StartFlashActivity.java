@@ -2,7 +2,6 @@ package org.dync.teameeting.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,13 +12,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import org.dync.teameeting.R;
-import org.dync.teameeting.http.NetWork;
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.msgs.TMMsgSender;
+import org.dync.teameeting.http.NetWork;
+import org.dync.teameeting.chatmessage.ChatMessageClient;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
-import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.NetType;
+import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.utils.LocalUserInfo;
 
 import cn.jpush.android.api.CustomPushNotificationBuilder;
@@ -41,8 +41,8 @@ public class StartFlashActivity extends BaseActivity
 
     private ImageView mView;
     private Context context;
-    public  static TMMsgSender mMsgSender;
-    private final String mServer = "192.168.7.27";
+    private TMMsgSender mMsgSender;
+    private final String mServer = "192.168.7.39";
     private final int mPort = 9210;
     private String mUserid ;
     private String mSign;
@@ -99,25 +99,32 @@ public class StartFlashActivity extends BaseActivity
         mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this, sweetClickListener);
 
         mUserid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-        /*message inint */
-        mMsgSender = new TMMsgSender(this);
-        int msg = mMsgSender.TMInit(mServer, mPort);
-        if(msg ==0){
-            if(mDebug)
-                Log.e(TAG, "Message Inint successed");
 
-        }
-        else if(mDebug){
-            Log.e(TAG, "Message Inint failed");
-        }
-
-
+        chatMessageInint();
 
         Animation loadAnimation = AnimationUtils.loadAnimation(this,
                 R.anim.splash);
         loadAnimation.setAnimationListener(mAnimationListener);
         mView.setAnimation(loadAnimation);
 
+    }
+
+    /**
+     * chatMessageInint
+     */
+    private void chatMessageInint(){
+
+        mMsgSender = new TMMsgSender(this, new ChatMessageClient());
+        TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
+        int msg = mMsgSender.TMInit(mServer, mPort);
+        if(msg ==0){
+            if(mDebug)
+                Log.e(TAG, "Chat Message Inint successed");
+
+        }
+        else if(mDebug){
+            Log.e(TAG, "Chat Message Inint failed");
+        }
     }
 
     private AnimationListener mAnimationListener = new AnimationListener()

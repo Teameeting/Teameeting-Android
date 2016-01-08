@@ -8,7 +8,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
@@ -74,7 +73,7 @@ public class SwipeLayout extends FrameLayout implements SwipeLayoutInterface
 
 	}
 
-	private SimpleOnGestureListener mOnGestureListener = new GestureDetector.SimpleOnGestureListener()
+	private SimpleOnGestureListener mOnGestureListener = new SimpleOnGestureListener()
 	{
 
 		@Override
@@ -398,7 +397,7 @@ public class SwipeLayout extends FrameLayout implements SwipeLayoutInterface
 	}
 
 	@Override
-	public boolean onInterceptTouchEvent(android.view.MotionEvent ev)
+	public boolean onInterceptTouchEvent(MotionEvent ev)
 	{
 
 		return mDragHelper.shouldInterceptTouchEvent(ev) & mGestureDetector.onTouchEvent(ev);

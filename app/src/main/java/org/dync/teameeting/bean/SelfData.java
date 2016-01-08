@@ -31,6 +31,7 @@ public class SelfData
     private InformationEntity information;
     private String message;
     private long requestid;
+    private boolean mIsNetConnected;
 
     public void setAuthorization(String authorization)
     {
@@ -80,6 +81,11 @@ public class SelfData
     public long getRequestid()
     {
         return requestid;
+    }
+
+    public void setmIsNetConnected(boolean mIsNetConnected)
+    {
+        this.mIsNetConnected = mIsNetConnected;
     }
 
     public class InformationEntity

@@ -8,8 +8,8 @@ import android.util.Log;
 
 import com.ypy.eventbus.EventBus;
 
-import org.dync.teameeting.http.NetWork;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.http.NetWork;
 
 import cn.jpush.android.api.JPushInterface;
 

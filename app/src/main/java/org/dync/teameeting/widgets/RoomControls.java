@@ -5,12 +5,12 @@
  */
 package org.dync.teameeting.widgets;
 
-import org.dync.teameeting.ui.helper.Anims;
-import org.dync.teameeting.utils.ScreenUtils;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
+import org.dync.teameeting.ui.helper.Anims;
+import org.dync.teameeting.utils.ScreenUtils;
 
 /**
  * cn.zldemo.touchitem.view.RoomControls

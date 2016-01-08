@@ -3,11 +3,10 @@ package org.dync.teameeting.msgs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
-import android.provider.MediaStore;
-import android.util.Log;
 
 import com.ypy.eventbus.EventBus;
 
+import org.dync.teameeting.dao.ChatEnity;
 import org.dync.teameeting.structs.EventType;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,24 +93,37 @@ public class TMMsgSender extends MsgClient {
     }
 
     @Override
-    public void OnReqSndMsg(String msg) {
+    public void OnReqSndMsg(String msg)
+    {
         String s = "OnReqSndMsg msg:" + msg;
-        System.out.println(s);
 
-        try {
+        ChatEnity chatEnity = new ChatEnity();
+        try
+        {
             JSONObject json = new JSONObject(msg);
             String content = json.getString("cont");
-            Log.e(TAG, "OnReqSndMsg: " +content);
+            String pass = json.getString("pass");
+            String ntime = json.getString("ntime");
+
+            chatEnity.setContent(content);
+            chatEnity.setSendtime(ntime);
+            chatEnity.setName(pass);
+
+
 
             mMessage = new Message();
             Bundle bundle = new Bundle();
-            bundle.putString("message",content);
+            bundle.putString("message", content);
+            bundle.putSerializable("ChatEnity", chatEnity);
+
             // bundle.putString("name",from);
+
             mMessage.setData(bundle);
             mMessage.what = EventType.MSG_MESSAGE_RECEIVE.ordinal();
             EventBus.getDefault().post(mMessage);
 
-        } catch (JSONException e) {
+        } catch (JSONException e)
+        {
             e.printStackTrace();
         }
 

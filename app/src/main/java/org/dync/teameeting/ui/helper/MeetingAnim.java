@@ -6,12 +6,11 @@
 package org.dync.teameeting.ui.helper;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.Animator.AnimatorListener;
 import android.view.View;
-import android.widget.ImageButton;
 
 /**
  * 

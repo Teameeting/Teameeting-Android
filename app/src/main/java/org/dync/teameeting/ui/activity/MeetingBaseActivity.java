@@ -5,24 +5,24 @@
  */
 package org.dync.teameeting.ui.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.dync.teameeting.R;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+
+import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.http.NetWork;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author ZLang <br/>
@@ -34,12 +34,12 @@ public class MeetingBaseActivity extends Activity
     private RelativeLayout mainView;
     Random random = new Random();
     public int mTopMargin = 0;
+    public String mSign;
+    NetWork mNetWork;
     private boolean isShowMessage = true;
     private List<LinearLayout> viewList;
     private int top;
-    private int[] colors = new int[]{R.color.skyblue,
-            R.color.blue_btn_bg_color, R.color.grey_txt, R.color.right_bg,
-            R.color.grayBlue, R.color.blue_btn_bg_color, R.color.skyblue,
+    private int[] colors = new int[]{R.color.skyblue, R.color.blue_btn_bg_color, R.color.grey_txt, R.color.right_bg, R.color.grayBlue, R.color.layout_content_black, R.color.skyblue,
             R.color.vifrification, R.color.grayBlue, R.color.mediumslateblue,};
 
     @Override
@@ -47,8 +47,8 @@ public class MeetingBaseActivity extends Activity
     {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        mNetWork = new NetWork();
 
-        //判断是否是平板
         mainView = (RelativeLayout) View.inflate(this,
                 R.layout.activity_meeting, null);
 
@@ -58,9 +58,10 @@ public class MeetingBaseActivity extends Activity
         //startShowMessage();
     }
 
-
-
-
+    public String getSign()
+    {
+        return TeamMeetingApp.getmSelfData().getAuthorization();
+    }
     public void addAutoView(String msg ,String name)
     {
 
