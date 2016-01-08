@@ -24,31 +24,6 @@ public class ChatMessageClient  implements JMClientHelper{
     /**
      * implement for JMClientHelper
      * */
-    @Override
-    public void OnReqLogin(int code, String status, String userid) {
-        String s = "OnReqLogin status:"+status+", userid"+userid;
-        if (mDebug){
-            Log.e(TAG, "OnReqLogin: "+s);
-        }
-    }
-
-    @Override
-    public void OnRespLogin(int code, String status, String userid) {
-        String s = "OnRespLogin status:"+status+", userid"+userid;
-        mMessage = new Message();
-        if(code==0){
-
-            mMessage.what = EventType.MSG_MESSAGE_LOGIN_SUCCESS.ordinal();
-        }else{
-            mMessage.what = EventType.MSG_MESSAGE_LOGIN_FAILED.ordinal();
-        }
-
-        EventBus.getDefault().post(mMessage);
-
-        if (mDebug){
-            Log.e(TAG, "OnRespLogin: "+s);
-        }
-    }
 
     @Override
     public void OnReqSndMsg(String msg)
@@ -119,38 +94,6 @@ public class ChatMessageClient  implements JMClientHelper{
         if (mDebug){
             Log.e(TAG, "OnRespGetMsg: "+s);
         }
-
-    }
-
-    @Override
-    public void OnReqLogout(int code, String status, String userid) {
-        String s = "OnReqLogout status:"+status+", userid"+userid;
-
-
-        if (mDebug){
-            Log.e(TAG, "OnReqLogout: "+s);
-        }
-
-    }
-
-    @Override
-    public void OnRespLogout(int code, String status, String userid) {
-        String s = "OnRespLogout status:"+status+", userid"+userid;
-
-        mMessage = new Message();
-        if(code==0){
-
-            mMessage.what = EventType.MSG_MESSAGE_LOGOUT_SUCCESS.ordinal();
-        }else{
-            mMessage.what = EventType.MSG_MESSAGE_LOGOUT_FAILED.ordinal();
-        }
-
-        EventBus.getDefault().post(mMessage);
-
-        if (mDebug){
-            Log.e(TAG, "OnRespLogout: "+s);
-        }
-
 
     }
 
