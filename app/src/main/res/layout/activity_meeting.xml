@@ -9,17 +9,17 @@
     <android.opengl.GLSurfaceView
         android:id="@+id/glview_call"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
     <!-- TopBar -->
     <RelativeLayout
         android:id="@+id/rl_meeting_topbar"
         style="@style/TopBar_Style"
-        android:background="@color/black_gray" >
+        android:background="@color/black_gray">
 
         <ImageButton
             android:id="@+id/imgbtn_chat"
             style="@style/Btn_left"
-            android:src="@drawable/btn_chat" />
+            android:src="@drawable/btn_chat"/>
 
         <TextView
             android:id="@+id/tv_room_name"
@@ -27,14 +27,14 @@
             android:text="Room name"
             android:textColor="#ffffff"
             android:textSize="@dimen/top_bar_text_size"
-            android:textStyle="normal" />
+            android:textStyle="normal"/>
 
         <ImageButton
             android:id="@+id/imgbtn_invite"
             style="@style/Btn_right"
             android:background="@android:color/transparent"
 
-            android:src="@drawable/btn_invite" />
+            android:src="@drawable/btn_invite"/>
     </RelativeLayout>
 
     <!-- Control Layout -->
@@ -48,7 +48,7 @@
         android:layout_marginBottom="20dp"
         android:background="@color/transparent"
         android:orientation="horizontal"
-        android:padding="10dp" >
+        android:padding="10dp">
 
         <ImageButton
             android:id="@+id/meeting_camera"
@@ -57,7 +57,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_camera_on" />
+            android:src="@drawable/btn_camera_on"/>
 
         <ImageButton
             android:id="@+id/meeting_hangup"
@@ -66,7 +66,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_hang_up" />
+            android:src="@drawable/btn_hang_up"/>
 
         <ImageButton
             android:id="@+id/meeting_voice"
@@ -75,7 +75,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_voice_on" />
+            android:src="@drawable/btn_voice_on"/>
 
         <ImageButton
             android:id="@+id/meeting_camera_switch"
@@ -85,7 +85,7 @@
             android:background="@null"
             android:scaleType="centerInside"
             android:src="@drawable/btn_camera_switch"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/meeting_camera_off"
@@ -95,7 +95,7 @@
             android:background="@null"
             android:scaleType="centerInside"
             android:src="@drawable/btn_camera_off"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </org.dync.teameeting.widgets.RoomControls>
 
     <ImageView
@@ -106,7 +106,8 @@
         android:layout_below="@+id/rl_meeting_topbar"
         android:background="@color/white"
         android:src="@drawable/mic_muted"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
+
     <TextView
         android:id="@+id/tv_remind"
         android:layout_width="200dp"
@@ -116,17 +117,17 @@
         android:layout_marginBottom="@dimen/remind_buttom"
         android:gravity="center_horizontal"
         android:text="@string/str_meeting_remind"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
+
+
     <RelativeLayout
         android:id="@+id/rl_chating"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" >
+        android:visibility="gone">
 
-        <include layout="@layout/include_chatting" />
+        <include layout="@layout/include_chatting"/>
     </RelativeLayout>
-
-
 
 
 </RelativeLayout>

@@ -5,11 +5,6 @@ import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
-
-import org.apache.http.Header;
-
-import javax.security.auth.login.LoginException;
 
 /**
  * Created by 小白龙 on 2015/12/25 0025.

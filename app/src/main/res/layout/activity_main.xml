@@ -11,7 +11,7 @@
         android:id="@+id/main_tb_layout"
         style="@style/TopBar_Style"
         android:layout_height="@dimen/height_top_bar"
-        android:background="@color/black_deep" >
+        android:background="@color/black_deep">
 
         <TextView
             android:id="@+id/tv_cancel_create_room"
@@ -19,21 +19,21 @@
             android:text="@string/str_cancel_create"
             android:textColor="#ffffff"
             android:textSize="20sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             style="@style/Title_Txt"
             android:text="@string/str_rent_rooms"
             android:textColor="#ffffff"
             android:textSize="@dimen/top_bar_text_size"
-            android:textStyle="normal" />
+            android:textStyle="normal"/>
 
         <ImageButton
             android:id="@+id/ibtn_join_meeting"
             style="@style/Btn_right"
             android:background="@android:color/transparent"
             android:paddingRight="15dp"
-            android:src="@drawable/btn_invite" />
+            android:src="@drawable/btn_invite"/>
 
     </RelativeLayout>
 
@@ -42,7 +42,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/main_tb_layout"
         android:layout_marginBottom="@dimen/btn_create_room_height"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/et_create_room"
@@ -57,7 +57,7 @@
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="@dimen/largest_most_txt_size"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -65,12 +65,18 @@
             android:background="@color/black_alpha_half"
             >
 
-            <ListView
-                android:id="@+id/lv_listView"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_container"
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none" />
-
+                android:layout_height="match_parent">
+                <ListView
+                    android:id="@+id/lv_listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:headerDividersEnabled="true"
+                    android:scrollbars="none"/>
+            </android.support.v4.widget.SwipeRefreshLayout>
             <include
                 android:id="@+id/empty_layout"
                 layout="@layout/list_empty_layout" />
@@ -86,6 +92,6 @@
         android:background="@drawable/btn_get_room"
         android:text="@string/str_get_room"
         android:textColor="@color/white"
-        android:textSize="@dimen/largest_most_txt_size" />
+        android:textSize="@dimen/largest_most_txt_size"/>
 
 </RelativeLayout>

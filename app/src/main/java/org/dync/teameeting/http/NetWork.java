@@ -1,13 +1,10 @@
 package org.dync.teameeting.http;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
-import android.webkit.WebView;
 
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.ypy.eventbus.EventBus;
 
 import org.apache.http.Header;
@@ -20,7 +17,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.dync.teameeting.bean.MySelf;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
@@ -57,7 +53,6 @@ public class NetWork
      * Http
      */
     private DefaultHttpClient mHttpClient;
-    private MySelf mMySelf;
 
     private SelfData mSelfData;
 
@@ -76,7 +71,7 @@ public class NetWork
         Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
         while (iterator.hasNext())
         {
-            Map.Entry<String, String> enter = iterator.next();
+            Entry<String, String> enter = iterator.next();
             listParams.add(new BasicNameValuePair(enter.getKey(), enter
                     .getValue()));
         }
@@ -318,9 +313,6 @@ public class NetWork
             {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: applyRoom" + responseString);
-
-
-
                 if (code == 200)
                 {
                     //Bundle bundle = new Bundle();
@@ -653,6 +645,7 @@ public class NetWork
 
                 bundle.putString("message", message);
                 msg.setData(bundle);
+                EventBus.getDefault().post(msg);
             }
         });
 
@@ -671,57 +664,37 @@ public class NetWork
     public void getMeetingMsgList(final String sign, final String meetingid,
                                   final String pageNum, final String pageSize)
     {
-        new Thread()
+
+        String url = "meeting/getMeetingMsgList";
+        RequestParams params = new RequestParams();
+        params.put("sign", sign);
+        params.put("meetingid", meetingid);
+        params.put("pageNum", pageNum);
+        params.put("pageSize", pageSize);
+
+        HttpContent.post(url, params, new TmTextHttpResponseHandler()
         {
             @Override
-            public synchronized void run()
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
             {
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("sign", sign);
-                params.put("meetingid", meetingid);
-                params.put("pageNum", pageNum);
-                params.put("pageSize", pageSize);
-                try
-                {
-
-                    String ss = getResponseStr(params,
-                            "meeting/getMeetingMsgList");
-
-                    if (mDebug)
-                        Log.e(TAG, "ss " + ss);
-                    if (ss != null)
+                super.onSuccess(statusCode, code, message, responseString, headers);
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: getMeetingMsgList"+responseString);
+                if (mDebug)
+                    if (code == 200)
                     {
-                        JSONObject jsonObject = new JSONObject(ss);
-                        Bundle bundle = new Bundle();
-                        Message msg = new Message();
-                        int code = jsonObject.getInt("code");
-                        String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
-
-                            msg.what = EventType.MSG_GET_MEETING_MSG_LIST_SUCCESS
-                                    .ordinal();
-
-                        } else
-                        {
-
-                            msg.what = EventType.MSG_GET_MEETING_MSG_LIST_FAILED
-                                    .ordinal();
-                        }
-
-                        bundle.putString("message", message);
-                        msg.setData(bundle);
-                        EventBus.getDefault().post(msg);
+                        msg.what = EventType.MSG_GET_MEETING_MSG_LIST_SUCCESS.ordinal();
+                    } else
+                    {
+                        msg.what = EventType.MSG_GET_MEETING_MSG_LIST_FAILED.ordinal();
                     }
 
-                } catch (JSONException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                bundle.putString("message", message);
+                msg.setData(bundle);
+                EventBus.getDefault().post(msg);
             }
-        }.start();
+        });
+
 
     }
 

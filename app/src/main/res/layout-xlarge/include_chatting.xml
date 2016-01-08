@@ -60,20 +60,25 @@
             android:singleLine="true"
             android:textSize="18sp" />
     </RelativeLayout>
-
-    <ListView
-        android:id="@+id/listView_chat"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_above="@id/rl_chat_bottom"
         android:layout_below="@id/rl_chat_topbar"
         android:background="#CF000000"
-        android:divider="@null"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:listSelector="@color/transparent"
-        android:scrollbarStyle="outsideOverlay" >
-    </ListView>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/listView_chat"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@null"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:listSelector="@color/transparent"
+            android:scrollbarStyle="outsideOverlay">
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
     <TextView
         android:id="@+id/text_notuse"
         android:layout_width="wrap_content"

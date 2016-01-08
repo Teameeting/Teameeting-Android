@@ -1,11 +1,5 @@
 package org.dync.teameeting.ui.activity;
 
-import org.dync.teameeting.R;
-import org.dync.teameeting.ui.helper.ShareHelper;
-import org.dync.teameeting.structs.ExtraType;
-import org.dync.teameeting.widgets.BottomMenu;
-import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
+import org.dync.teameeting.R;
+import org.dync.teameeting.structs.ExtraType;
+import org.dync.teameeting.ui.helper.ShareHelper;
+import org.dync.teameeting.widgets.BottomMenu;
+import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
 
 public class InvitePeopleActivity extends Activity
 {

@@ -1,8 +1,5 @@
 package org.dync.teameeting.ui.helper;
 
-import java.util.List;
-
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +7,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * 

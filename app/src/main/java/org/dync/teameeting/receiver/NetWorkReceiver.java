@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.ypy.eventbus.EventBus;
 
+
 public class NetWorkReceiver extends BroadcastReceiver {
 	private static final String TAG = "NetWorkReceiver";
 	private static final boolean mDebug= TeamMeetingApp.mIsDebug;
@@ -48,7 +49,7 @@ public class NetWorkReceiver extends BroadcastReceiver {
 
 		if (info == null || !mConnectivity.getBackgroundDataSetting()) {
 			bundle.putInt("net_type", NetType.TYPE_NULL.ordinal());
-			TeamMeetingApp.getMyself().setmIsNetConnected(false);
+			TeamMeetingApp.getmSelfData().setmIsNetConnected(false);
 			msg.setData(bundle);
 			Log.d(TAG, "========>"
 					+ NetType.values()[bundle.getInt("net_type")].toString());
@@ -62,13 +63,13 @@ public class NetWorkReceiver extends BroadcastReceiver {
 		if (netType == ConnectivityManager.TYPE_WIFI) {
 			if (info.isConnected()) {
 				bundle.putInt("net_type", NetType.TYPE_WIFI.ordinal());
-				TeamMeetingApp.getMyself().setmIsNetConnected(true);
+				TeamMeetingApp.getmSelfData().setmIsNetConnected(true);
 			} else {
 				bundle.putInt("net_type", NetType.TYPE_NULL.ordinal());
-				TeamMeetingApp.getMyself().setmIsNetConnected(false);
+				TeamMeetingApp.getmSelfData().setmIsNetConnected(false);
 			}
 		} else if (netType == ConnectivityManager.TYPE_MOBILE) {
-			TeamMeetingApp.getMyself().setmIsNetConnected(true);
+			TeamMeetingApp.getmSelfData().setmIsNetConnected(true);
 			switch (netSubtype) {
 			case TelephonyManager.NETWORK_TYPE_1xRTT:
 				bundle.putInt("net_type", NetType.TYPE_2G.ordinal()); // ~
@@ -128,7 +129,7 @@ public class NetWorkReceiver extends BroadcastReceiver {
 				break;
 			}
 		} else {
-			TeamMeetingApp.getMyself().setmIsNetConnected(true);
+			TeamMeetingApp.getmSelfData().setmIsNetConnected(true);
 			bundle.putInt("net_type", NetType.TYPE_UNKNOWN.ordinal());
 		}
 		if(mDebug)

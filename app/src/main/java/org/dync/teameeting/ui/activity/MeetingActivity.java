@@ -1,15 +1,18 @@
 package org.dync.teameeting.ui.activity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RunnableFuture;
 
 import org.anyrtc.AnyrtcM2Mutlier;
 import org.anyrtc.m2multier.M2MPublisher;
 import org.anyrtc.m2multier.M2MultierEvents;
 import org.dync.teameeting.R;
+import org.dync.teameeting.dao.CRUDChat;
+import org.dync.teameeting.dao.ChatEnity;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.ui.adapter.ChatMessageAdapter;
@@ -22,8 +25,8 @@ import org.dync.teameeting.ui.helper.MeetingAnim.AnimationEndListener;
 import org.dync.teameeting.widgets.PopupWindowCustom;
 import org.dync.teameeting.widgets.PopupWindowCustom.OnPopupWindowClickListener;
 import org.dync.teameeting.widgets.RoomControls;
-import org.dync.teameeting.utils.ChatMessage;
-import org.dync.teameeting.utils.ChatMessage.Type;
+import org.dync.teameeting.bean.ChatMessage;
+import org.dync.teameeting.bean.ChatMessage.Type;
 import org.webrtc.StatsReport;
 
 import android.animation.Animator;
@@ -33,6 +36,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -98,7 +102,8 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private TextView mTvRemind;
     private String mUserId;
     private final String mPass = TeamMeetingApp.getmSelfData().getAuthorization();
-    private boolean mMessageShowFlag=true;
+    private boolean mMessageShowFlag = true;
+    private TMMsgSender mMsgSender;
 
 
     @Override
@@ -170,6 +175,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     /* Init UI */
     private void initView()
     {
+        mMsgSender=TeamMeetingApp.getmMsgSender();
         mNetWork = new NetWork();
         mMettingAnim = new MeetingAnim();
         mMettingAnim.setAnimEndListener(mAnimationEndListener);
@@ -178,6 +184,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
 
         // Create UI controls.
+
         mTopbarLayout = (RelativeLayout) findViewById(R.id.rl_meeting_topbar);
         mControlLayout = (RoomControls) findViewById(R.id.rl_meeting_control);
 
@@ -211,6 +218,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mMsg = (EditText) findViewById(R.id.et_chat_msg);
         mSendMessage.setOnClickListener(onClickListener);
         mChatClose.setOnClickListener(onClickListener);
+
+        //下拉刷新
+        initSwipeRefreshLayout();
 
         mAdapter = new ChatMessageAdapter(this, mDatas);
         mChatView.setAdapter(mAdapter);
@@ -247,6 +257,35 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
         }
         return super.onTouchEvent(event);
+    }
+
+    private void initSwipeRefreshLayout()
+    {
+        //修改刷新控件
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setColorScheme(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                mSign = getSign();
+                if (mDebug)
+                {
+                    Log.e(TAG, "onRefresh:mSign" + mSign);
+                }
+                mNetWork.getMeetingMsgList(mSign, "400000000396", 1 + "", 20 + "");
+                new Handler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        //这里主要用来更新时间
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
     }
 
     /**
@@ -408,10 +447,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     break;
 
                 case R.id.meeting_camera:
-                    //mRtkClient.setLocalVideoDisabled();
 
                     if (!mMeetingCameraOffFlag)
                     {
+                        mAnyM2Mutlier.SetLocalVideoEnabled(true);
                         mCameraButton.setImageResource(R.drawable.btn_camera_on);
                         mMeetingCameraOffFlag = true;
                         return;
@@ -455,7 +494,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.meeting_hangup:
                     finish();
 
-                    int code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE,mUserId,mPass,mMeetingId,"");
+                    int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE,mUserId,mPass,mMeetingId,"");
                     if(code==0){
                         if(mDebug){
                             Log.e(TAG, "TMLeaveRoom Successed");
@@ -471,12 +510,12 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     {
                         mVoiceButton.setImageResource(R.drawable.btn_voice_off);
                         mCloseVoice.setVisibility(View.VISIBLE);
-                        //mRtkClient.setLocalVoiceDisabled();
+                        mAnyM2Mutlier.SetLocalAudioEnabled(false);
                     } else
                     {
                         mVoiceButton.setImageResource(R.drawable.btn_voice_on);
                         mCloseVoice.setVisibility(View.INVISIBLE);
-                        //mRtkClient.setLocalVoiceEnabled();
+                        mAnyM2Mutlier.SetLocalAudioEnabled(true);
                     }
                     mMeetingVoiceFlag = !mMeetingVoiceFlag;
 
@@ -487,6 +526,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
                     break;
                 case R.id.meeting_camera_off:
+                    mAnyM2Mutlier.SetLocalVideoEnabled(false);
                     mCameraButton
                             .setImageResource(R.drawable.btn_camera_off_select);
                     mMettingAnim.rotationOrApaha(mCameraButton, mMeetingCameraFlag);
@@ -517,12 +557,39 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.imgbtn_back:
                     //startShowMessage();
                     mMessageShowFlag = true;
-                    mChatLayout.setVisibility(View.GONE);
+
                     mIMM.hideSoftInputFromWindow(mMsg.getWindowToken(), 0);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mChatLayout.setVisibility(View.GONE);
+                        }
+                    },400);
                     break;
             }
         }
+
+
     };
+
+    private void outChatMessage()
+    {
+        Log.e(TAG, "outChatMessage: ");
+        //从数据库读取消息
+
+        List<ChatEnity> chatEnities = CRUDChat.selectChatLsit(this, mMeetingId);
+        mDatas.clear();
+        for (int i = 0; i < chatEnities.size(); i++)
+        {
+            ChatEnity chat = chatEnities.get(i);
+            ChatMessage to = new ChatMessage(Type.INPUT, chat.getContent(), "name", chat.getSendtime());
+            mDatas.add(to);
+            mAdapter.notifyDataSetChanged();
+            mChatView.setSelection(mDatas.size() - 1);
+            mMsg.setText("");
+        }
+
+    }
 
     private void sendMessageChat()
     {
@@ -534,18 +601,15 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             return;
         }
 
-        // 推送测试
-        String sign = TeamMeetingApp.getMyself().getmAuthorization();
-        ChatMessage to = new ChatMessage(Type.OUTPUT, pushMsg,"name");
-        to.setDate(new Date());
+        ChatMessage to = new ChatMessage(Type.OUTPUT, pushMsg, "name", System.currentTimeMillis() + "");
         mDatas.add(to);
         mAdapter.notifyDataSetChanged();
         mChatView.setSelection(mDatas.size() - 1);
         mMsg.setText("");
 
-        mNetWork.pushMeetingMsg(sign, mMeetingId, "推送消息", "推送概要");
+        mNetWork.pushMeetingMsg(getSign(), mMeetingId, "推送消息", "推送概要");
 
-        int code = StartFlashActivity.mMsgSender.TMSndMsg(mUserId,mPass,mMeetingId,pushMsg);
+        int code = mMsgSender.TMSndMsg(mUserId,mPass,mMeetingId,pushMsg);
         if(code==0){
             if(mDebug){
                 Log.e(TAG, "sendMessageChat: "+"TMSndMsg Successed");
@@ -719,8 +783,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
      */
     @Override
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
-        mAnyM2Mutlier.Subscribe(publishId, true);
+        //mAnyM2Mutlier.Subscribe(publishId, true);
         Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
+        mMsgSender.TMNotifyMsg(mUserId,mPass,mMeetingId,publishId);
     }
 
     @Override
@@ -748,6 +813,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
     }
 
+
     /**
      * For EventBus callback.
      */
@@ -756,13 +822,18 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         switch (EventType.values()[msg.what])
         {
             case MSG_MESSAGE_RECEIVE:
+                int tags = msg.getData().getInt("tags");
                 String message= msg.getData().getString("message");
                 String name = msg.getData().getString("name");
+                if(tags == 4) {
+                    mAnyM2Mutlier.Subscribe(message, true);
+                    return;
+                }
                 if (mDebug)
                     Log.e(TAG, "MSG_MESSAGE_RECEIVE  "+message);
 
-                ChatMessage to = new ChatMessage(Type.INPUT, message,name);
-                to.setDate(new Date());
+                ChatMessage to = new ChatMessage(Type.INPUT, message,name,System.currentTimeMillis()+"");
+
                 mDatas.add(to);
                 mAdapter.notifyDataSetChanged();
                 mChatView.setSelection(mDatas.size() - 1);
@@ -774,9 +845,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 }
 
                 break;
-
             default:
                 break;
         }
     }
+
+
+
+
+
+
 }

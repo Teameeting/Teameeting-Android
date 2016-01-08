@@ -36,13 +36,11 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
     {
-        // 网络问题。  or.服务器挂了。
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
         if (mDebug)
         {
             Log.e("TextHttpResponseHandler", "onFailure: responseString" + responseString);
-            Log.e("TextHttpResponseHandler", "网络问题。  or.服务器挂了。");
         }
     }
 
@@ -54,10 +52,8 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler
         try
         {
             jsonObject = new JSONObject(responseString);
-
             int code = jsonObject.getInt("code");
             message = jsonObject.getString("message");
-
             this.onSuccess(statusCode, code, message, responseString, headers);
 
         } catch (JSONException e)

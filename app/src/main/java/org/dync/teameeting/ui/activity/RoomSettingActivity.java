@@ -1,21 +1,5 @@
 package org.dync.teameeting.ui.activity;
 
-import org.apache.http.Header;
-import org.dync.teameeting.R;
-import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.bean.MeetingList;
-import org.dync.teameeting.http.HttpContent;
-import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.structs.EventType;
-import org.dync.teameeting.structs.Intent_KEY;
-import org.dync.teameeting.ui.helper.Anims;
-import org.dync.teameeting.ui.helper.ShareHelper;
-import org.dync.teameeting.structs.ExtraType;
-import org.dync.teameeting.widgets.BottomMenu;
-import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
-import org.dync.teameeting.widgets.SlideSwitch;
-import org.dync.teameeting.widgets.SlideSwitch.SlideListener;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +12,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.TextHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingList;
+import org.dync.teameeting.http.HttpContent;
+import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.structs.ExtraType;
+import org.dync.teameeting.structs.Intent_KEY;
+import org.dync.teameeting.ui.helper.Anims;
+import org.dync.teameeting.ui.helper.ShareHelper;
+import org.dync.teameeting.widgets.BottomMenu;
+import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
+import org.dync.teameeting.widgets.SlideSwitch;
+import org.dync.teameeting.widgets.SlideSwitch.SlideListener;
 
 public class RoomSettingActivity extends BaseActivity implements View.OnClickListener {
     private Context context;
@@ -255,8 +254,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_invite_weixin:
                 // weixin
                 mShareUrl ="让我们在会议中见!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
-                mShareHelper
-                        .shareWeiXin("分享到... ", "", mShareUrl);
+                mShareHelper.shareWeiXin("分享到... ", "", mShareUrl);
                 finishActivity();
                 break;
             case R.id.tv_copy_link:

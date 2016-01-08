@@ -1,9 +1,5 @@
 package org.dync.teameeting.ui;
 
-import org.dync.teameeting.R;
-import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.http.NetWork;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +7,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.http.NetWork;
 
 public class TestActivity extends Activity
 {
@@ -24,7 +24,7 @@ public class TestActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.test_activity);
 		context = this;
-		sign = TeamMeetingApp.getMyself().getmAuthorization();
+		sign = TeamMeetingApp.getmSelfData().getAuthorization();
 		netWork = new NetWork();
 		Init();
 	}

@@ -1,11 +1,5 @@
 package org.dync.teameeting.ui.adapter;
 
-import java.util.List;
-
-import org.dync.teameeting.R;
-import org.dync.teameeting.utils.ChatMessage;
-import org.dync.teameeting.utils.ChatMessage.Type;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
@@ -13,10 +7,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.dync.teameeting.R;
+import org.dync.teameeting.bean.ChatMessage;
+import org.dync.teameeting.bean.ChatMessage.Type;
+import org.dync.teameeting.utils.StringHelper;
+
+import java.util.List;
+
 /**
  * @author zhulang <br/>
  *         <p>
- *         下午3:18:45
+ *  下午3:18:45
  */
 public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
 {
@@ -24,7 +25,6 @@ public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
     {
         super(context, datas);
     }
-
     /**
      * Receive the message is 1　，send the messagea is 0
      */
@@ -50,6 +50,7 @@ public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
         ViewHolder mHolder = null;
         if (convertView == null)
         {
+
             if (chatMessage.getType() == Type.INPUT)
             {
                 convertView = mInflater.inflate(R.layout.chat_input_msg, null);
@@ -57,6 +58,7 @@ public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
             {
                 convertView = mInflater.inflate(R.layout.chat_output_msg, null);
             }
+
             mHolder = mHolder.fromValues(convertView);
             convertView.setTag(mHolder);
 
@@ -67,7 +69,7 @@ public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
 
         mHolder.tvContent.setText(chatMessage.getContent());
         // mHolder.tvSendName.setText(chatMessage.getContent());
-        // mHolder.tvTime.setText(chatMessage.getDate().toString());
+         mHolder.tvTime.setText(StringHelper.formatDuration(chatMessage.getDateStr()));
 
         return convertView;
     }

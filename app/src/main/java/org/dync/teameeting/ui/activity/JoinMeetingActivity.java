@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 
 public class JoinMeetingActivity extends Activity implements View.OnClickListener{
@@ -19,6 +20,7 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
     private boolean mDebug = TeamMeetingApp.mIsDebug;
     private EditText mEtMeetingId;
     private ImageButton mIbtnJoinMeeting,mIbtnback;
+    private TMMsgSender mMsgSender;
     private final String mPass = TeamMeetingApp.getmSelfData().getAuthorization();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
         mIbtnback.setOnClickListener(this);
         mIbtnJoinMeeting.setOnClickListener(this);
         mEtMeetingId.setOnEditorActionListener(mOnEditorActionListener);
+
+        mMsgSender=TeamMeetingApp.getmMsgSender();
     }
 
 
@@ -72,7 +76,7 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
         String meetingId = mEtMeetingId.getText().toString();
         if(meetingId.length()!=0&&meetingId!=null){
             String userId = TeamMeetingApp.getTeamMeetingApp().getDevId();
-            int code = StartFlashActivity.mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,userId, mPass, meetingId,"");
+            int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER,userId, mPass, meetingId,"");
             if(code==0){
                 if(mDebug){
                     Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");
