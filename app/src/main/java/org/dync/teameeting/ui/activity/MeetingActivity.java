@@ -494,7 +494,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.meeting_hangup:
                     finish();
 
-                    int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE,mUserId,mPass,mMeetingId,"");
+                    int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE,mMeetingId,"");
                     if(code==0){
                         if(mDebug){
                             Log.e(TAG, "TMLeaveRoom Successed");
@@ -609,7 +609,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
         mNetWork.pushMeetingMsg(getSign(), mMeetingId, "推送消息", "推送概要");
 
-        int code = mMsgSender.TMSndMsg(mUserId,mPass,mMeetingId,pushMsg);
+        int code = mMsgSender.TMSndMsg(mMeetingId,pushMsg);
         if(code==0){
             if(mDebug){
                 Log.e(TAG, "sendMessageChat: "+"TMSndMsg Successed");
@@ -785,7 +785,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
         //mAnyM2Mutlier.Subscribe(publishId, true);
         Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
-        mMsgSender.TMNotifyMsg(mUserId,mPass,mMeetingId,publishId);
+        mMsgSender.TMNotifyMsg(mMeetingId,publishId);
     }
 
     @Override
