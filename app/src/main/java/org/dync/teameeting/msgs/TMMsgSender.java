@@ -3,7 +3,6 @@ package org.dync.teameeting.msgs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.ypy.eventbus.EventBus;
@@ -64,6 +63,14 @@ public class TMMsgSender extends MsgClient {
 
     public int TMSndMsgTo(String strUserid, String strPass, String strRoomid, String strMsg, String[] arrUser) {
         return  this.MCSndMsgTo(strUserid, strPass, strRoomid, strMsg, arrUser);
+    }
+
+    protected int MCNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
+        if (null != mMApp) {
+            return mMApp.NotifyMsg(strUserid, strPass, strRoomid, strMsg);
+        } else {
+            return -1;
+        }
     }
 
 

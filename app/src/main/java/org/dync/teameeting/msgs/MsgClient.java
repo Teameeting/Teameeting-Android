@@ -104,4 +104,12 @@ public abstract class MsgClient implements JMClientHelper{
             return -1;
         }
     }
+
+    protected int MCNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
+        if (null != mMApp) {
+            return mMApp.NotifyMsg(strUserid, strPass, strRoomid, strMsg);
+        } else {
+            return -1;
+        }
+    }
 }
