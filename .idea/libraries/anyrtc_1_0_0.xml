@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="anyrtc">
+  <library name="anyrtc-1.0.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/anyrtc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/app/libs/anyrtc-1.0.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
