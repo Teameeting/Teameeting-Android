@@ -65,12 +65,8 @@ public class TMMsgSender extends MsgClient {
         return  this.MCSndMsgTo(strUserid, strPass, strRoomid, strMsg, arrUser);
     }
 
-    protected int MCNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
-        if (null != mMApp) {
-            return mMApp.NotifyMsg(strUserid, strPass, strRoomid, strMsg);
-        } else {
-            return -1;
-        }
+    public int TMNotifyMsg(String strUserid, String strPass, String strRoomid, String strMsg) {
+        return this.MCNotifyMsg(strUserid, strPass, strRoomid, strMsg);
     }
 
 
