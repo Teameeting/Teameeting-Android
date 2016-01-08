@@ -12,8 +12,9 @@
         android:id="@+id/tv_room_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
         android:text="@string/str_invite_people"
         android:textColor="@color/white"
         android:textSize="@dimen/largest_most_txt_size" />
