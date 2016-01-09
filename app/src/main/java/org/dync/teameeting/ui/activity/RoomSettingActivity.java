@@ -17,6 +17,7 @@ import org.apache.http.Header;
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingList;
+import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.http.HttpContent;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.ExtraType;
@@ -44,7 +45,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
     private TextView mTvClose;
     private SlideSwitch mSlideSwitch;
     private SlideSwitch mSlideSwitchPrivate;
-    MeetingList.MeetingListEntity mMeetingEntity;
+    MeetingListEntity mMeetingEntity;
     private String mMeetingName;
     private String mMeetingId;
 
@@ -52,7 +53,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
     private ShareHelper mShareHelper;
 
-    private String mShareUrl = "没有设置连接";
+    private String mShareUrl = "Empty url";
     private ImageView ivNotifation;
 
     private boolean mMeetingPrivateFlag=false;
@@ -74,7 +75,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         Intent intent = getIntent();
         mPosition = intent.getIntExtra(Intent_KEY.POSITION, 0);
         Bundle extras = intent.getExtras();
-        mMeetingEntity = (MeetingList.MeetingListEntity) extras.getSerializable(Intent_KEY.MEETING_ENTY);
+        mMeetingEntity = (MeetingListEntity) extras.getSerializable(Intent_KEY.MEETING_ENTY);
         mMeetingId = mMeetingEntity.getMeetingid();
         mMeetingName = mMeetingEntity.getMeetname();
         if (mDebug) {
@@ -247,14 +248,14 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tv_invite_message:
                 // SMS
-                mShareUrl ="让我们在会议中见!"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
+                mShareUrl ="Let us see in a meeting!"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
                 mShareHelper.shareSMS(this, "", mShareUrl);
 
                 break;
             case R.id.tv_invite_weixin:
                 // weixin
-                mShareUrl ="让我们在会议中见!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
-                mShareHelper.shareWeiXin("分享到... ", "", mShareUrl);
+                mShareUrl ="Let us see in a meeting!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
+                mShareHelper.shareWeiXin("Share into ... ", "", mShareUrl);
                 finishActivity();
                 break;
             case R.id.tv_copy_link:

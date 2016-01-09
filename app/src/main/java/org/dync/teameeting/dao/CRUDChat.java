@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 小白龙 on 2016/1/7 0007.
+ * Created by zhulang on 2016/1/7 0007.
  */
 public class CRUDChat
 {
@@ -30,7 +30,7 @@ public class CRUDChat
     }
 
     /**
-     * 插入
+     * insert
      * @param context
      * @param chatEnity
      */
@@ -47,7 +47,6 @@ public class CRUDChat
         SQLiteDatabase db = new DaoMaster.DevOpenHelper(context,
                 "CHAT.db", null).getWritableDatabase();
         DaoMaster dm = new DaoMaster(db);
-        // 获取Dao的集合DaoSession PersonDao
         DaoSession sesion = dm.newSession();
         return sesion;
     }

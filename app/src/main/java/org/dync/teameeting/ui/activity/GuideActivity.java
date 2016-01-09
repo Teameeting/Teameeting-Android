@@ -47,9 +47,7 @@ public class GuideActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide_view_page);
-        final String meetingList = getIntent().getExtras().getString(NetWork.MEETING_LIST);
-        if (mDebug)
-            Log.e("xbl", "onClick: " + meetingList);
+
         imageResId = new int[]{R.drawable.view_page_1, R.drawable.view_page_2,
                 R.drawable.view_page_3};
 
@@ -77,7 +75,6 @@ public class GuideActivity extends Activity
             {
 
                 Intent intent = new Intent(GuideActivity.this, MainActivity.class);
-                intent.putExtra(NetWork.MEETING_LIST, meetingList);
                 startActivity(intent);
                 finish();
             }

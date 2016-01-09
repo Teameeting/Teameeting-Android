@@ -134,7 +134,6 @@ public class MeetingBaseActivity extends Activity
     public void stopShowMessage()
     {
         isShowMessage = false;
-        // 移除所有的消息
        // handler.removeCallbacksAndMessages(null);
     }
 

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="8dp"
-        android:text="干嘛呢！ 吃饭了吗？ "
+        android:text="Hello! Good morning! "
         android:textColor="@color/ivory"
         android:textSize="17sp" />
 
@@ -27,7 +27,7 @@
             android:id="@+id/tv_send_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-卡卡西-   "
+            android:text="-Lang-   "
             android:textColor="@color/gainsboro"
             android:textSize="12dp" />
 
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="27秒前"
+            android:text="now"
             android:textColor="@color/gainsboro"
             android:textSize="12dp" />
     </LinearLayout>

@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by 小白龙 on 2015/12/28 0028.
+ * Created by zhulang on 2015/12/28 0028.
  */
 public class TmTextHttpResponseHandler extends TextHttpResponseHandler
 {
@@ -36,6 +36,7 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
     {
+        // 网络问题。  or.服务器挂了。
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
         if (mDebug)

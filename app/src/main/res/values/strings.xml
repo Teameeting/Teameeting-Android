@@ -45,4 +45,8 @@
     
     <string name="str_join_meeting">加入会议</string>
     <string name="str_edittext_meeting_id_hint">请输入会议 ID</string>
+    <string name="chat_time_string_now">现在</string>
+    <string name="chat_time_string_minutes_age">分钟以前</string>
+    <string name="chat_time_string_hour_age">小时以前</string>
+    <string name="chat_time_string_day_age">天以前</string>
 </resources>

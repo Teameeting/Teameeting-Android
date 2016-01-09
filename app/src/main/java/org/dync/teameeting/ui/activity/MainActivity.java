@@ -24,14 +24,12 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingList;
-import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.ExtraType;
 import org.dync.teameeting.structs.Intent_KEY;
@@ -67,7 +65,7 @@ public class MainActivity extends BaseActivity
     private ImageButton mJoinMeeting;
 
     private Context mContext;
-    private List<MeetingList.MeetingListEntity> mRoomMeetingList = new ArrayList<MeetingList.MeetingListEntity>();
+    private List<MeetingListEntity> mRoomMeetingList = new ArrayList<MeetingListEntity>();
     private InputMethodManager mIMM;
     private long mExitTime = 0;
     private Boolean mCreateRoomFlag = false;
@@ -76,7 +74,7 @@ public class MainActivity extends BaseActivity
     private boolean mSoftInputFlag = false;
     private int mDy;
     private int mPosition;
-    private String mShareUrl = "没有设置连接";
+    private String mShareUrl = "empty Url";
     private final String mPass = getSign();
     private String mUserId = TeamMeetingApp.getTeamMeetingApp().getDevId();
     private TMMsgSender mMsgSender;
@@ -137,16 +135,13 @@ public class MainActivity extends BaseActivity
         inintLayout();
         if (mDebug)
         {
-            Log.e(TAG, "onCreate: MainActivity");
+            Log.e(TAG, "onCreate: "+TeamMeetingApp.getmSelfData().getMeetingLists().toString());
         }
     }
 
     private void initdata()
     {
-        Intent intent = getIntent();
-        String meetingListStr = intent.getExtras().getString(NetWork.MEETING_LIST);
-        upDataMeetingList(meetingListStr);
-
+        upDataMeetingList();
         mMsgSender = TeamMeetingApp.getmMsgSender();
     }
 
@@ -507,19 +502,20 @@ public class MainActivity extends BaseActivity
         mCreateRoom.setVisibility(View.GONE);
         mRoomCancel.setVisibility(View.GONE);
         String pushable = "1";
-        String meetdesc = "";//会议描述
-        String meetenablde = "1";//是否可用或者私密
+        String meetdesc = "";
+        String meetenablde = "1";
 
-        MeetingList.MeetingListEntity meetingList = new MeetingList.MeetingListEntity();
+       MeetingListEntity meetingList = new MeetingListEntity();
         meetingList.setMeetname(meetingName);
         meetingList.setPushable(1);
         meetingList.setApplyTyep(false);
+        meetingList.setJointime(System.currentTimeMillis());
 
         mRoomMeetingList.add(0,meetingList);
         mAdapter.notifyDataSetChanged();
         mListView.setSelection(0);
         mNetWork.applyRoom(mSign, meetingName, "0", "", meetenablde, pushable);
-        //创建房间问题。
+
         mCreateRoomFlag = true;
     }
     /**
@@ -530,7 +526,7 @@ public class MainActivity extends BaseActivity
     {
         Intent intent;
         intent = new Intent(mContext, RoomSettingActivity.class);
-        MeetingList.MeetingListEntity meetingEntity = mRoomMeetingList.get(position);
+        MeetingListEntity meetingEntity = mRoomMeetingList.get(position);
         Bundle mBundle = new Bundle();
         mBundle.putSerializable(Intent_KEY.MEETING_ENTY, meetingEntity);
         intent.putExtras(mBundle);
@@ -650,16 +646,15 @@ public class MainActivity extends BaseActivity
 
     private void getListNetWork()
     {
-        mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
+        mNetWork.getRoomLists(getSign(), 1 + "", 20 + "");
     }
 
     private void getRoomListSuccess(Message msg)
     {
         Bundle bundle = msg.getData();
-        String meetingListStr = bundle.getString(NetWork.MEETING_LIST);
-        upDataMeetingList(meetingListStr);
-
+        upDataMeetingList();
         mAdapter.notifyDataSetChanged();
+
         startInvitePeopleActivity();
     }
 
@@ -676,16 +671,13 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    private void upDataMeetingList(String meetingListStr)
+    private void upDataMeetingList()
     {
+        List<MeetingListEntity> list = TeamMeetingApp.getmSelfData().getMeetingLists();
         if (mDebug)
-            Log.e(TAG, "upDataMeetingList: " + meetingListStr);
-        if (meetingListStr != null)
+            Log.e(TAG, "upDataMeetingList: "+list.toString() );
+        if (list != null)
         {
-            mSign = getSign();
-            Gson gson = new Gson();
-            MeetingList meetingList = gson.fromJson(meetingListStr, MeetingList.class);
-            List<MeetingList.MeetingListEntity> list = meetingList.getMeetingList();
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
         }

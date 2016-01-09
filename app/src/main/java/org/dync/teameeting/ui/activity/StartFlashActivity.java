@@ -59,21 +59,21 @@ public class StartFlashActivity extends BaseActivity
         context = this;
         initData();
 
-        // 设置推送的样式
         //setPushNotificationBuilderIcon();
     }
 
 
+    /**
+     * set Push Style
+     */
     public void setPushNotificationBuilderIcon()
     {
         CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
                 this, R.layout.customer_notitfication_layout, R.id.icon,
                 R.id.title, R.id.text);
-        // 指定定制的 Notification Layout
+
         builder.statusBarDrawable = R.drawable.ic_richpush_actionbar_back;
-        // 指定层状态栏小图标
         builder.layoutIconDrawable = R.drawable.ic_richpush_actionbar_back;
-        // 指定下拉状态栏时显示的通知图标
         JPushInterface.setPushNotificationBuilder(2, builder);
 
     }
@@ -132,8 +132,6 @@ public class StartFlashActivity extends BaseActivity
         @Override
         public void onAnimationEnd(Animation arg0)
         {
-
-
             mNetWork.init(mUserid, "2", "2", "2", "TeamMeeting");
         }
     };
@@ -145,23 +143,19 @@ public class StartFlashActivity extends BaseActivity
     private void interfacejump(Message msg )
     {
 
-        Bundle bundle = msg.getData();
-        String meetingListStr = bundle.getString(NetWork.MEETING_LIST);
-
         boolean firstLogin = LocalUserInfo.getInstance(StartFlashActivity.this)
                 .getUserInfoBoolean(LocalUserInfo.FIRST_LOGIN);
          Intent intent ;
         if (true)
         {
             intent = new Intent(StartFlashActivity.this, GuideActivity.class);
-            intent.putExtra(NetWork.MEETING_LIST,meetingListStr);
+
             LocalUserInfo.getInstance(StartFlashActivity.this).setUserInfoBoolean("firstLogin", true);
 
         } else
         {
 
             intent = new Intent(StartFlashActivity.this, MainActivity.class);
-            intent.putExtra(NetWork.MEETING_LIST,meetingListStr);
         }
 
         startActivity(intent);

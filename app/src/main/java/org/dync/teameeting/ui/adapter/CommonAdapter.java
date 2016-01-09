@@ -6,6 +6,7 @@
 package org.dync.teameeting.ui.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter
 	protected final List<T> mDatas;
 	protected LayoutInflater mInflater;
 	protected int itemLayoutId;
+	protected Resources mResources;
 
 	public CommonAdapter(Context context, List<T> mDatas)
 	{
@@ -50,7 +52,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter
 		this.mContext = context;
 		this.mDatas = mDatas;
 		this.itemLayoutId = itemLayoutId;
-
+		mResources = context.getResources();
 	}
 
 	@Override
