@@ -39,7 +39,6 @@ public class TeamMeetingApp extends Application
     {
         // TODO Auto-generated method stub
         super.onCreate();
-
         mSelfData = new SelfData();
         registerReceiver();
 
@@ -115,10 +114,10 @@ public class TeamMeetingApp extends Application
         {
             ApplicationInfo info = getPackageManager().getApplicationInfo(getPackageName(),
                     PackageManager.GET_META_DATA);
-            bundle = info.metaData;// 获取metaData标签内容
+            bundle = info.metaData;
             if (bundle != null)
             {
-                tokenKey = bundle.getString("TOKEN");// 这里获取的就是value值
+                tokenKey = bundle.getString("TOKEN");
             }
         } catch (PackageManager.NameNotFoundException localNameNotFoundException1)
         {

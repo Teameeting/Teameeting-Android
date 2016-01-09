@@ -69,14 +69,14 @@ public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
 
         mHolder.tvContent.setText(chatMessage.getContent());
         // mHolder.tvSendName.setText(chatMessage.getContent());
-         mHolder.tvTime.setText(StringHelper.formatDuration(chatMessage.getDateStr()));
+         mHolder.tvTime.setText(StringHelper.formatDuration(chatMessage.getDateStr(),mResources));
 
         return convertView;
     }
 
     private static class ViewHolder
     {
-        public LinearLayout llChatLayout; // 设置聊天背景颜色
+        public LinearLayout llChatLayout;
         public TextView tvContent;
         public TextView tvSendName;
         public TextView tvTime;

@@ -1,34 +1,5 @@
 package org.dync.teameeting.ui.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.RunnableFuture;
-
-import org.anyrtc.AnyrtcM2Mutlier;
-import org.anyrtc.m2multier.M2MPublisher;
-import org.anyrtc.m2multier.M2MultierEvents;
-import org.dync.teameeting.R;
-import org.dync.teameeting.dao.CRUDChat;
-import org.dync.teameeting.dao.ChatEnity;
-import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
-import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
-import org.dync.teameeting.structs.EventType;
-import org.dync.teameeting.ui.adapter.ChatMessageAdapter;
-import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.ui.helper.Anims;
-import org.dync.teameeting.ui.helper.DialogHelper;
-import org.dync.teameeting.ui.helper.MeetingAnim;
-import org.dync.teameeting.ui.helper.MeetingAnim.AnimationEndListener;
-import org.dync.teameeting.widgets.PopupWindowCustom;
-import org.dync.teameeting.widgets.PopupWindowCustom.OnPopupWindowClickListener;
-import org.dync.teameeting.widgets.RoomControls;
-import org.dync.teameeting.bean.ChatMessage;
-import org.dync.teameeting.bean.ChatMessage.Type;
-import org.webrtc.StatsReport;
-
 import android.animation.Animator;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -58,13 +29,40 @@ import android.widget.Toast;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.ypy.eventbus.EventBus;
 
+import org.anyrtc.AnyrtcM2Mutlier;
+import org.anyrtc.m2multier.M2MPublisher;
+import org.anyrtc.m2multier.M2MultierEvents;
+import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.ChatMessage;
+import org.dync.teameeting.bean.ChatMessage.Type;
+import org.dync.teameeting.dao.CRUDChat;
+import org.dync.teameeting.dao.ChatEnity;
+import org.dync.teameeting.http.NetWork;
+import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.ui.adapter.ChatMessageAdapter;
+import org.dync.teameeting.ui.helper.Anims;
+import org.dync.teameeting.ui.helper.DialogHelper;
+import org.dync.teameeting.ui.helper.MeetingAnim;
+import org.dync.teameeting.ui.helper.MeetingAnim.AnimationEndListener;
+import org.dync.teameeting.widgets.PopupWindowCustom;
+import org.dync.teameeting.widgets.PopupWindowCustom.OnPopupWindowClickListener;
+import org.dync.teameeting.widgets.RoomControls;
+import org.webrtc.StatsReport;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author zhangqilu org.dync.teammeeting.activity MeetingActivity create at
  *         2015-12-11 5:02:32
  */
 
-public class MeetingActivity extends MeetingBaseActivity implements M2MultierEvents
-{
+public class MeetingActivity extends MeetingBaseActivity implements M2MultierEvents {
     // Local preview screen position before call is connected.
     private static final boolean mDebug = TeamMeetingApp.mIsDebug;
     private static final String TAG = "MeetingActivity";
@@ -107,8 +105,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -122,12 +119,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private String mMeetingId;
     private NetWork mNetWork;
 
-    private Handler mUiHandler = new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            switch (msg.what)
-            {
+    private Handler mUiHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
                 case ANIMATOR_TANSLATION:
 
                     mVoiceButton.setVisibility(View.VISIBLE);
@@ -146,15 +140,13 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         mMeetingId = intent.getStringExtra("meetingId");
         mUserId = intent.getStringExtra("userId");
         EventBus.getDefault().register(this);
-        if (mDebug)
-        {
+        if (mDebug) {
             Log.i(TAG, "meetingId" + mMeetingId);
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -232,11 +224,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     float downY = 0;
 
     @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
+    public boolean onTouchEvent(MotionEvent event) {
 
-        switch (event.getAction())
-        {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
                 downY = event.getY();
@@ -244,11 +234,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             case MotionEvent.ACTION_UP:
                 float moveX = event.getX() - downX;
                 float moveY = event.getY() - downY;
-                if (Math.abs(moveX) > Math.abs(moveY) && TeamMeetingApp.isPad)
-                {
+                if (Math.abs(moveX) > Math.abs(moveY) && TeamMeetingApp.isPad) {
                     chatLayoutControl(moveX);
-                } else
-                {
+                } else {
                     contralAnim();
                 }
 
@@ -259,27 +247,21 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         return super.onTouchEvent(event);
     }
 
-    private void initSwipeRefreshLayout()
-    {
+    private void initSwipeRefreshLayout() {
         //修改刷新控件
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeRefreshLayout.setColorScheme(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh()
-            {
+            public void onRefresh() {
                 mSign = getSign();
-                if (mDebug)
-                {
+                if (mDebug) {
                     Log.e(TAG, "onRefresh:mSign" + mSign);
                 }
                 mNetWork.getMeetingMsgList(mSign, "400000000396", 1 + "", 20 + "");
-                new Handler().postDelayed(new Runnable()
-                {
+                new Handler().postDelayed(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         //这里主要用来更新时间
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -293,12 +275,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
      *
      * @param moveX
      */
-    public void chatLayoutControl(float moveX)
-    {
+    public void chatLayoutControl(float moveX) {
         int controllMove = controllerMoveDistance(mChatLayout);
         int showTime = 500;
-        if (moveX > 0 && !mChatLayoutShow)
-        {
+        if (moveX > 0 && !mChatLayoutShow) {
             mChatLayoutShow = true;
             Anims.animateRightMarginTo(mChatLayout, 0, mChatLayout.getWidth() - 10, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mControlLayout, 0, controllMove, showTime, Anims.ACCELERATE);
@@ -306,8 +286,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             Anims.animateRightMarginTo(mTvRoomName, 0, controllMove, showTime, Anims.ACCELERATE);
 
         }
-        if (moveX < 0 && mChatLayoutShow)
-        {
+        if (moveX < 0 && mChatLayoutShow) {
             mChatLayoutShow = false;
             Anims.animateRightMarginTo(mChatLayout, mChatLayout.getWidth() - 10, 0, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mControlLayout, controllMove, 0, showTime, Anims.ACCELERATE);
@@ -316,18 +295,15 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         }
     }
 
-    private void contralAnim()
-    {
-        if (mControlLayout.mAvailable)
-        {
+    private void contralAnim() {
+        if (mControlLayout.mAvailable) {
             mControlLayout.hide();
 
             ViewPropertyAnimator.animate(mTopbarLayout).translationY(
                     -mTopbarLayout.getHeight());
             ViewPropertyAnimator.animate(mCloseVoice).translationY(
                     -mTopbarLayout.getHeight());
-        } else
-        {
+        } else {
             mControlLayout.show();
             ViewPropertyAnimator.animate(mTopbarLayout).translationY(0f);
             ViewPropertyAnimator.animate(mCloseVoice).translationY(0f);
@@ -335,11 +311,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
 
-        if (mPopupWindowCustom != null)
-        {
+        if (mPopupWindowCustom != null) {
             mPopupWindowCustom.dismiss();
             mPopupWindowCustom = null;
         }
@@ -348,13 +322,11 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN
-                && mChatLayout.getVisibility() == View.VISIBLE)
-        {
+                && mChatLayout.getVisibility() == View.VISIBLE) {
             mChatLayout.setVisibility(View.GONE);
             mTopbarLayout.setVisibility(View.VISIBLE);
             mControlLayout.setVisibility(View.VISIBLE);
@@ -364,8 +336,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus)
-    {
+    public void onWindowFocusChanged(boolean hasFocus) {
         measureLeftDistance();
         super.onWindowFocusChanged(hasFocus);
     }
@@ -373,8 +344,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     /**
      * Measuring the distance button
      */
-    private void measureLeftDistance()
-    {
+    private void measureLeftDistance() {
         mLeftDistanceCameraBtn = mCameraButton.getLeft()
                 + mCameraButton.getWidth() / 2;
         mLeftDistanceHangUpBtn = mHangUpButton.getLeft()
@@ -383,11 +353,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 + mVoiceButton.getWidth() / 2;
     }
 
-    private AnimationEndListener mAnimationEndListener = new AnimationEndListener()
-    {
+    private AnimationEndListener mAnimationEndListener = new AnimationEndListener() {
         @Override
-        public void onAnimationEnd(Animator arg0)
-        {
+        public void onAnimationEnd(Animator arg0) {
             mVoiceButton.setVisibility(View.VISIBLE);
             mHangUpButton.setVisibility(View.VISIBLE);
             mSwitchCameraButton.setVisibility(View.GONE);
@@ -397,14 +365,11 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         }
     };
 
-    private OnPopupWindowClickListener mPopupWindowListener = new OnPopupWindowClickListener()
-    {
+    private OnPopupWindowClickListener mPopupWindowListener = new OnPopupWindowClickListener() {
         @Override
-        public void onPopupClickListener(View view)
-        {
+        public void onPopupClickListener(View view) {
             mPopupWindowCustom.dismiss();
-            switch (view.getId())
-            {
+            switch (view.getId()) {
                 case R.id.ibtn_close:
                     // mPopupWindowCustom.dismiss();
                     break;
@@ -431,22 +396,19 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     };
 
     /* set button clickListener */
-    OnClickListener onClickListener = new OnClickListener()
-    {
+    OnClickListener onClickListener = new OnClickListener() {
         @Override
-        public void onClick(View mView)
-        {
+        public void onClick(View mView) {
 
-            switch (mView.getId())
-            {
+            switch (mView.getId()) {
                 case R.id.imgbtn_invite:
-
                     mPopupWindowCustom = new PopupWindowCustom(
                             MeetingActivity.this, mInviteButton, mTopbarLayout,
                             mPopupWindowListener);
                     break;
 
                 case R.id.meeting_camera:
+                    //mRtkClient.setLocalVideoDisabled();
 
                     if (!mMeetingCameraOffFlag)
                     {
@@ -456,8 +418,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                         return;
                     }
 
-                    if (mMeetingCameraFlag)
-                    {
+                    if (mMeetingCameraFlag) {
                         mCameraButton.setImageResource(R.drawable.btn_camera_back);
                         mVoiceButton.setVisibility(View.GONE);
                         mHangUpButton.setVisibility(View.GONE);
@@ -474,8 +435,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                                 (mLeftDistanceCameraBtn - mLeftDistanceVoiceBtn),
                                 0, 400, true);
 
-                    } else
-                    {
+                    } else {
                         mCameraButton.setImageResource(R.drawable.btn_camera_on);
                         mMettingAnim.rotationOrApaha(mCameraButton,
                                 mMeetingCameraFlag);
@@ -499,15 +459,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                         if(mDebug){
                             Log.e(TAG, "TMLeaveRoom Successed");
                         }
-                    }else if(mDebug){
+                    } else if (mDebug) {
                         Log.e(TAG, "TMLeaveRoom Failed");
                     }
 
                     break;
                 case R.id.meeting_voice:
 
-                    if (mMeetingVoiceFlag)
-                    {
+                    if (mMeetingVoiceFlag) {
                         mVoiceButton.setImageResource(R.drawable.btn_voice_off);
                         mCloseVoice.setVisibility(View.VISIBLE);
                         mAnyM2Mutlier.SetLocalAudioEnabled(false);
@@ -542,11 +501,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.imgbtn_chat:
 
                     stopShowMessage();
-                    if (TeamMeetingApp.isPad)
-                    {
+                    if (TeamMeetingApp.isPad) {
                         chatLayoutControl(100);
-                    } else
-                    {
+                    } else {
                         mMessageShowFlag = false;
                         mChatLayout.setVisibility(View.VISIBLE);
                     }
@@ -572,15 +529,13 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
     };
 
-    private void outChatMessage()
-    {
+    private void outChatMessage() {
         Log.e(TAG, "outChatMessage: ");
         //从数据库读取消息
 
         List<ChatEnity> chatEnities = CRUDChat.selectChatLsit(this, mMeetingId);
         mDatas.clear();
-        for (int i = 0; i < chatEnities.size(); i++)
-        {
+        for (int i = 0; i < chatEnities.size(); i++) {
             ChatEnity chat = chatEnities.get(i);
             ChatMessage to = new ChatMessage(Type.INPUT, chat.getContent(), "name", chat.getSendtime());
             mDatas.add(to);
@@ -591,11 +546,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
     }
 
-    private void sendMessageChat()
-    {
+    private void sendMessageChat() {
         final String pushMsg = mMsg.getText().toString();
-        if (TextUtils.isEmpty(pushMsg))
-        {
+        if (TextUtils.isEmpty(pushMsg)) {
             Toast.makeText(this, R.string.str_content_empty, Toast.LENGTH_SHORT)
                     .show();
             return;
@@ -614,8 +567,8 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             if(mDebug){
                 Log.e(TAG, "sendMessageChat: "+"TMSndMsg Successed");
             }
-        }else if(mDebug){
-            Log.e(TAG, "sendMessageChat: "+"TMSndMsg Failed");
+        } else if (mDebug) {
+            Log.e(TAG, "sendMessageChat: " + "TMSndMsg Failed");
         }
 
     }
@@ -623,67 +576,54 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     /**
      * OnTouchListener
      */
-    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener()
-    {
+    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
-        public boolean onTouch(View v, MotionEvent event)
-        {
+        public boolean onTouch(View v, MotionEvent event) {
             // TODO Auto-generated method stub
-            if (v.getId() == R.id.meet_parent)
-            {
-                if (event.getAction() == MotionEvent.ACTION_UP)
-                {
+            if (v.getId() == R.id.meet_parent) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     // View VISIBLE INVISIBLE
                     {
-                        if (mDebug)
-                        {
+                        if (mDebug) {
                             Log.e(TAG, " ");
                         }
-                        if (mControlLayout.getVisibility() == View.VISIBLE)
-                        {
+                        if (mControlLayout.getVisibility() == View.VISIBLE) {
                             mControlLayout.setVisibility(View.GONE);
 
                             return true;
-                        } else if (mControlLayout.getVisibility() == View.GONE)
-                        {
+                        } else if (mControlLayout.getVisibility() == View.GONE) {
                             mControlLayout.setVisibility(View.VISIBLE);
                             return true;
-                        } else
-                        {
+                        } else {
                             return false;
                         }
                     }
                 }
                 return true;
-            } else
-            {
+            } else {
                 return false;
             }
         }
     };
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         mAnyM2Mutlier.OnPause();
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         mAnyM2Mutlier.OnResume();
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
         {// Close all
-            if (mAnyM2Mutlier != null)
-            {
+            if (mAnyM2Mutlier != null) {
                 mAnyM2Mutlier.Destroy();
                 mAnyM2Mutlier = null;
             }
@@ -696,8 +636,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
      *
      * @param reports the video report
      */
-    private void updateEncoderStatistics(StatsReport[] reports)
-    {
+    private void updateEncoderStatistics(StatsReport[] reports) {
         String fps = null;
         String targetBitrate = null;
         String actualBitrate = null;
@@ -706,48 +645,39 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         String bytesReceived;
         String reveivedHeight;
         Double reveivedTime;
-        for (StatsReport report : reports)
-        {
+        for (StatsReport report : reports) {
 
             bytesReceived = null;
             reveivedHeight = null;
-            if (report.type.equals("ssrc"))
-            {
+            if (report.type.equals("ssrc")) {
                 reveivedTime = report.timestamp;
                 Map<String, String> reportMap = new HashMap<String, String>();
 
-                for (StatsReport.Value value : report.values)
-                {
+                for (StatsReport.Value value : report.values) {
                     reportMap.put(value.name, value.value);
 
-                    if (value.name.equals("googFrameHeightReceived"))
-                    {
+                    if (value.name.equals("googFrameHeightReceived")) {
                         reveivedHeight = value.value;
-                        if (bytesReceived != null)
-                        {
+                        if (bytesReceived != null) {
                             break;
                         }
                     }
 
-                    if (value.name.equals("bytesReceived"))
-                    {
+                    if (value.name.equals("bytesReceived")) {
                         bytesReceived = value.value;
 
                     }
                 }
 
-                if (bytesReceived != null && reveivedHeight != null)
-                {
+                if (bytesReceived != null && reveivedHeight != null) {
                     mBsNow = bytesReceived;
                     mTsNow = reveivedTime;
 
-                    if (mBsBefore == null || mTsBefore == 0.0)
-                    {
+                    if (mBsBefore == null || mTsBefore == 0.0) {
                         // Skip this round
                         mBsBefore = mBsNow;
                         mTsBefore = mTsNow;
-                    } else
-                    {
+                    } else {
                         // Calculate bitrate
 
                         long tempBit = (Integer.parseInt(mBsNow) - Integer
@@ -773,10 +703,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
     }
+
     /**
      * For M2MultierEvents callback.
      * All callback is running run handle thread, so could update ui directly.
@@ -830,18 +760,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     return;
                 }
                 if (mDebug)
-                    Log.e(TAG, "MSG_MESSAGE_RECEIVE  "+message);
-
-                ChatMessage to = new ChatMessage(Type.INPUT, message,name,System.currentTimeMillis()+"");
-
+                    Log.e(TAG, "MSG_MESSAGE_RECEIVE  " + message);
+                ChatMessage to = new ChatMessage(Type.INPUT, message, name, System.currentTimeMillis() + "");
                 mDatas.add(to);
                 mAdapter.notifyDataSetChanged();
                 mChatView.setSelection(mDatas.size() - 1);
                 mMsg.setText("");
-
-
-                if(mMessageShowFlag){
-                    addAutoView(message,name);
+                if (mMessageShowFlag) {
+                    addAutoView(message, name);
                 }
 
                 break;
@@ -849,10 +775,6 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
         }
     }
-
-
-
-
 
 
 }

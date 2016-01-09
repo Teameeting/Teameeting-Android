@@ -13,7 +13,7 @@ public class ChatEnity implements Serializable
     private Long id;
     private String meetingId;
     /**
-     * 用户名字 ： 目前使用的的设备ID：
+     * send name ;
      */
     private String name;
     private String content;
