@@ -87,8 +87,6 @@ public class StartFlashActivity extends BaseActivity
 
         mUserid = TeamMeetingApp.getTeamMeetingApp().getDevId();
 
-
-
         Animation loadAnimation = AnimationUtils.loadAnimation(this,
                 R.anim.splash);
         loadAnimation.setAnimationListener(mAnimationListener);
@@ -101,13 +99,12 @@ public class StartFlashActivity extends BaseActivity
      */
     private void chatMessageInint(){
 
-        mMsgSender = new TMMsgSender(this, new ChatMessageClient());
+        mMsgSender = new TMMsgSender(this,ChatMessageClient.getInstance());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
         int msg = mMsgSender.TMInit(mUserid,mSign,mServer, mPort);
         if(msg ==0){
             if(mDebug)
                 Log.e(TAG, "Chat Message Inint successed");
-
         }
         else if(mDebug){
             Log.e(TAG, "Chat Message Inint failed");
