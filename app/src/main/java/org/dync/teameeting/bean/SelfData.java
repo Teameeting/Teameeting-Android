@@ -17,6 +17,7 @@ public class SelfData
 
     private String authorization;
     private int code;
+	  private int code123;
     /**
      * uactype : 2
      * ulogindev : 2
