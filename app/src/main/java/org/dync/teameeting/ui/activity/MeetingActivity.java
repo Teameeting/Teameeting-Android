@@ -36,8 +36,9 @@ import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.ChatMessage;
 import org.dync.teameeting.bean.ChatMessage.Type;
-import org.dync.teameeting.dao.CRUDChat;
-import org.dync.teameeting.dao.ChatEnity;
+
+import org.dync.teameeting.bean.ReqSndMsgEntity;
+import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.http.NetWork;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
@@ -146,6 +147,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mMeetingId = intent.getStringExtra("meetingId");
         mUserId = intent.getStringExtra("userId");
         EventBus.getDefault().register(this);
+
         if (mDebug) {
             Log.i(TAG, "meetingId" + mMeetingId);
         }
@@ -530,19 +532,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     };
 
     private void outChatMessage() {
+
         Log.e(TAG, "outChatMessage: ");
         //从数据库读取消息
-
-        List<ChatEnity> chatEnities = CRUDChat.selectChatLsit(this, mMeetingId);
-        mDatas.clear();
-        for (int i = 0; i < chatEnities.size(); i++) {
-            ChatEnity chat = chatEnities.get(i);
-            ChatMessage to = new ChatMessage(Type.INPUT, chat.getContent(), "name", chat.getSendtime());
-            mDatas.add(to);
-            mAdapter.notifyDataSetChanged();
-            mChatView.setSelection(mDatas.size() - 1);
-            mMsg.setText("");
-        }
 
     }
 
@@ -744,6 +736,29 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     }
 
 
+    @Override
+    public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
+        super.onRequesageMsg(requestMsg);
+
+        int tags = requestMsg.getTags();
+        final String message= requestMsg.getCont();
+        final String name = requestMsg.getFrom();
+        if(tags == 4) {
+            mAnyM2Mutlier.Subscribe(message, true);
+            return;
+        }
+        if (mDebug)
+            Log.e(TAG, "MSG_MESSAGE_RECEIVE  " + message);
+        ChatMessage to = new ChatMessage(Type.INPUT, message, name, System.currentTimeMillis() + "");
+        mDatas.add(to);
+        mAdapter.notifyDataSetChanged();
+        mChatView.setSelection(mDatas.size() - 1);
+        mMsg.setText("");
+        if (mMessageShowFlag) {
+            addAutoView(message, name);
+        }
+    }
+
     /**
      * For EventBus callback.
      */
@@ -752,23 +767,6 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         switch (EventType.values()[msg.what])
         {
             case MSG_MESSAGE_RECEIVE:
-                int tags = msg.getData().getInt("tags");
-                String message= msg.getData().getString("message");
-                String name = msg.getData().getString("name");
-                if(tags == 4) {
-                    mAnyM2Mutlier.Subscribe(message, true);
-                    return;
-                }
-                if (mDebug)
-                    Log.e(TAG, "MSG_MESSAGE_RECEIVE  " + message);
-                ChatMessage to = new ChatMessage(Type.INPUT, message, name, System.currentTimeMillis() + "");
-                mDatas.add(to);
-                mAdapter.notifyDataSetChanged();
-                mChatView.setSelection(mDatas.size() - 1);
-                mMsg.setText("");
-                if (mMessageShowFlag) {
-                    addAutoView(message, name);
-                }
 
                 break;
             default:

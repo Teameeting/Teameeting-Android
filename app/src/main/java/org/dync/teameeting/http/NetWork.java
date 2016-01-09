@@ -617,8 +617,6 @@ public class NetWork {
                 EventBus.getDefault().post(msg);
             }
         });
-
-
     }
 
     /**
