@@ -103,7 +103,6 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
 
     }
 
-
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
 

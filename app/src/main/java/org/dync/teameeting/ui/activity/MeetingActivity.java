@@ -178,7 +178,15 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             mAnyM2Mutlier.Publish(params);
         }
 
-        mMsgSender=TeamMeetingApp.getmMsgSender();
+
+
+
+    }
+
+    /* Init UI */
+    private void initView() {
+        mMsgSender = TeamMeetingApp.getmMsgSender();
+
         mNetWork = new NetWork();
         mShareHelper = new ShareHelper(MeetingActivity.this);
         mMettingAnim = new MeetingAnim();
@@ -437,8 +445,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.meeting_camera:
                     //mRtkClient.setLocalVideoDisabled();
 
-                    if (!mMeetingCameraOffFlag)
-                    {
+                    if (!mMeetingCameraOffFlag) {
                         mAnyM2Mutlier.SetLocalVideoEnabled(true);
                         mCameraButton.setImageResource(R.drawable.btn_camera_on);
                         mMeetingCameraOffFlag = true;
@@ -481,9 +488,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.meeting_hangup:
                     finish();
 
-                    int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE,mMeetingId,"");
-                    if(code==0){
-                        if(mDebug){
+                    int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE, mMeetingId, "");
+                    if (code == 0) {
+                        if (mDebug) {
                             Log.e(TAG, "TMLeaveRoom Successed");
                         }
                     } else if (mDebug) {
@@ -497,8 +504,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                         mVoiceButton.setImageResource(R.drawable.btn_voice_off);
                         mCloseVoice.setVisibility(View.VISIBLE);
                         mAnyM2Mutlier.SetLocalAudioEnabled(false);
-                    } else
-                    {
+                    } else {
                         mVoiceButton.setImageResource(R.drawable.btn_voice_on);
                         mCloseVoice.setVisibility(View.INVISIBLE);
                         mAnyM2Mutlier.SetLocalAudioEnabled(true);
@@ -551,7 +557,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                         public void run() {
                             mChatLayout.setVisibility(View.GONE);
                         }
-                    },400);
+                    }, 400);
                     break;
             }
         }
@@ -559,12 +565,6 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
     };
 
-    private void outChatMessage() {
-
-        Log.e(TAG, "outChatMessage: ");
-        //从数据库读取消息
-
-    }
 
     /**
      * sendMessageChat
@@ -578,18 +578,19 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             return;
         }
 
+
         ChatMessage to = new ChatMessage(Type.OUTPUT, pushMsg, "name", System.currentTimeMillis() + "");
         mDatas.add(to);
         mAdapter.notifyDataSetChanged();
         mChatView.setSelection(mDatas.size() - 1);
         mMsg.setText("");
 
-        mNetWork.pushMeetingMsg(getSign(), mMeetingId, "推送消息", "推送概要");
+        mNetWork.pushMeetingMsg(getSign(), mMeetingId, "push message", "");
 
-        int code = mMsgSender.TMSndMsg(mMeetingId,pushMsg);
-        if(code==0){
-            if(mDebug){
-                Log.e(TAG, "sendMessageChat: "+"TMSndMsg Successed");
+        int code = mMsgSender.TMSndMsg(mMeetingId, pushMsg);
+        if (code == 0) {
+            if (mDebug) {
+                Log.e(TAG, "sendMessageChat: " + "TMSndMsg Successed");
             }
         } else if (mDebug) {
             Log.e(TAG, "sendMessageChat: " + "TMSndMsg Failed");
@@ -759,7 +760,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
         //mAnyM2Mutlier.Subscribe(publishId, true);
         Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
-        mMsgSender.TMNotifyMsg(mMeetingId,publishId);
+        mMsgSender.TMNotifyMsg(mMeetingId, publishId);
     }
 
     @Override
@@ -793,14 +794,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         super.onRequesageMsg(requestMsg);
 
         int tags = requestMsg.getTags();
-        final String message= requestMsg.getCont();
+        final String message = requestMsg.getCont();
         final String name = requestMsg.getFrom();
-        if(tags == 4) {
+        if (tags == 4) {
             mAnyM2Mutlier.Subscribe(message, true);
             return;
         }
         if (mDebug)
-            Log.e(TAG, "MSG_MESSAGE_RECEIVE  " + message);
+            Log.e(TAG, "onRequesageMsg  " + message);
         ChatMessage to = new ChatMessage(Type.INPUT, message, name, System.currentTimeMillis() + "");
         mDatas.add(to);
         mAdapter.notifyDataSetChanged();
@@ -811,16 +812,16 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             CRUDChat.queryInsert(MeetingActivity.this,requestMsg);
             leaveMessageDealWith();
             addAutoView(message, name);
+        } else {
+            CRUDChat.deleteByMeetingId(MeetingActivity.this, requestMsg.getRoom());
         }
     }
 
     /**
      * For EventBus callback.
      */
-    public void onEventMainThread(Message msg)
-    {
-        switch (EventType.values()[msg.what])
-        {
+    public void onEventMainThread(Message msg) {
+        switch (EventType.values()[msg.what]) {
             case MSG_MESSAGE_RECEIVE:
 
                 break;

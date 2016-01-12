@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity {
 
         mIMM = (InputMethodManager) MainActivity.this
                 .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
-        createNetErroDilaog();
+        mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this);
         mRlMain = (RelativeLayout) findViewById(R.id.rl_main);
         mCreateRoom = (EditText) findViewById(R.id.et_create_room);
         mRoomCancel = (TextView) findViewById(R.id.tv_cancel_create_room);
@@ -205,7 +205,6 @@ public class MainActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //这里主要用来更新时间
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 3000);
@@ -636,7 +635,9 @@ public class MainActivity extends BaseActivity {
         if (list != null) {
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
+
         }
+
         if (mListView != null) {
             mListView.setSelection(0);
         }
@@ -653,12 +654,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    void createNetErroDilaog() {
-        mNetErrorSweetAlertDialog = new SweetAlertDialog(this,
-                SweetAlertDialog.ERROR_TYPE).setTitleText("网络已断开...")
-                .setConfirmText("ok").setContentText("请连接网络!")
-                .setConfirmClickListener(sweetClickListener);
-    }
 
     OnSweetClickListener sweetClickListener = new OnSweetClickListener() {
         @Override

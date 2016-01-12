@@ -73,7 +73,7 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
                             onRequesageMsg(reqSndMsg);
                         }
                     });
-                }else {
+                } else {
                     onRequesageMsg(reqSndMsg);
                 }
             }
