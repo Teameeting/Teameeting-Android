@@ -73,6 +73,7 @@
                 android:textColor="@color/darkGray"
                 android:textSize="@dimen/middle_txt_size" />
 
+
             <ImageButton
                 android:id="@+id/imgbtn_more_setting"
                 android:layout_width="wrap_content"

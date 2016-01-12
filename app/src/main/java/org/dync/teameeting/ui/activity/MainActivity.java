@@ -24,10 +24,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
+import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
@@ -143,7 +146,7 @@ public class MainActivity extends BaseActivity {
 
         mIMM = (InputMethodManager) MainActivity.this
                 .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
-        createNetErroDilaog();
+        mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this);
         mRlMain = (RelativeLayout) findViewById(R.id.rl_main);
         mCreateRoom = (EditText) findViewById(R.id.et_create_room);
         mRoomCancel = (TextView) findViewById(R.id.tv_cancel_create_room);
@@ -202,7 +205,6 @@ public class MainActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //这里主要用来更新时间
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 3000);
@@ -618,12 +620,18 @@ public class MainActivity extends BaseActivity {
 
     private void upDataMeetingList() {
         List<MeetingListEntity> list = TeamMeetingApp.getmSelfData().getMeetingLists();
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).initUnReadMessage(mContext);
+        }
+        
         if (mDebug)
             Log.e(TAG, "upDataMeetingList: " + list.toString());
         if (list != null) {
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
+
         }
+
         if (mListView != null) {
             mListView.setSelection(0);
         }
@@ -640,35 +648,24 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    void createNetErroDilaog() {
-        mNetErrorSweetAlertDialog = new SweetAlertDialog(this,
-                SweetAlertDialog.ERROR_TYPE).setTitleText("网络已断开...")
-                .setConfirmText("ok").setContentText("请连接网络!")
-                .setConfirmClickListener(sweetClickListener);
-    }
 
     OnSweetClickListener sweetClickListener = new OnSweetClickListener() {
         @Override
         public void onClick(SweetAlertDialog sweetAlertDialog) {
             sweetAlertDialog.dismiss();
-            // 设置是否一只提示 没有网络状态
-            // mNetWork.getRoomList(mSign, 1 + "", 20 + "");
         }
     };
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
-        super.onRequesageMsg(requestMsg);
         /**
          *          1.save sql
          *          2.update list isReadMessage
          *          2016-01-09 20:15:24
          *            Monday over
          */
-
-        if (mDebug)
-            Log.e(TAG, "OnReqSndMsg: " + requestMsg.toString());
-
+        Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
+        mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
     }
 
     /**
@@ -740,8 +737,12 @@ public class MainActivity extends BaseActivity {
             case MSG_RESPONS_ESTR_NULl:
                 if (mDebug)
                     Log.e(TAG, "MSG_RESPONS_ESTR_NULl");
-                mNetErrorSweetAlertDialog.show();
+                // mNetErrorSweetAlertDialog.show();
                 break;
+            case MSG_MESSAGE_RECEIVE:
+                if (mDebug)
+
+                    break;
             default:
                 break;
         }
