@@ -178,15 +178,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             mAnyM2Mutlier.Publish(params);
         }
 
-
-
-
-    }
-
-    /* Init UI */
-    private void initView() {
-        mMsgSender = TeamMeetingApp.getmMsgSender();
-
+        mMsgSender=TeamMeetingApp.getmMsgSender();
         mNetWork = new NetWork();
         mShareHelper = new ShareHelper(MeetingActivity.this);
         mMettingAnim = new MeetingAnim();
@@ -604,7 +596,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
      */
     private  void leaveMessageDealWith(){
 
-        String leaveMessageCount = CRUDChat.selectChatLsit(MeetingActivity.this,mMeetingId).size()+"";
+        String leaveMessageCount = CRUDChat.selectChatList(MeetingActivity.this,mMeetingId).size()+"";
         if(mDebug){
             Log.e(TAG, "leaveMessageDealWith: leaveMessageCount "+leaveMessageCount);
         }
@@ -809,13 +801,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mMsg.setText("");
         if (mMessageShowFlag) {
 
-            CRUDChat.queryInsert(MeetingActivity.this,requestMsg);
+           // CRUDChat.queryInsert(MeetingActivity.this,requestMsg);
             leaveMessageDealWith();
             addAutoView(message, name);
         } else {
             CRUDChat.deleteByMeetingId(MeetingActivity.this, requestMsg.getRoom());
         }
     }
+
 
     /**
      * For EventBus callback.
@@ -829,6 +822,5 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
         }
     }
-
 
 }
