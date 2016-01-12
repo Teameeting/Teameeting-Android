@@ -32,6 +32,14 @@ public class ChatCacheEntity implements Serializable {
         this.isread = isread;
     }
 
+    public ChatCacheEntity(String meetingid, String userid, String content, String sendtime, Boolean isread) {
+        this.meetingid = meetingid;
+        this.userid = userid;
+        this.content = content;
+        this.sendtime = sendtime;
+        this.isread = isread;
+    }
+
     public Long getId() {
         return id;
     }
@@ -68,8 +76,24 @@ public class ChatCacheEntity implements Serializable {
         return sendtime;
     }
 
+    public long getSendtimeOrlong() {
+        return Long.parseLong(sendtime);
+    }
+
     public void setSendtime(String sendtime) {
         this.sendtime = sendtime;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ChatCacheEntity{" +
+                "meetingid='" + meetingid + '\'' +
+                ", userid='" + userid + '\'' +
+                ", content='" + content + '\'' +
+                ", sendtime='" + sendtime + '\'' +
+                ", isread=" + isread +
+                '}';
     }
 
     public Boolean getIsread() {

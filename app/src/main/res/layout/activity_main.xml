@@ -67,7 +67,7 @@
             android:background="@color/black_alpha_half"
             >
 
-            <android.support.v4.widget.SwipeRefreshLayout
+            <org.dync.teameeting.widgets.MySwipeRefreshLayout
                 android:id="@+id/swipe_container"
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                     android:layout_height="match_parent"
                     android:headerDividersEnabled="true"
                     android:scrollbars="none"/>
-            </android.support.v4.widget.SwipeRefreshLayout>
+            </org.dync.teameeting.widgets.MySwipeRefreshLayout>
             <include
                 android:id="@+id/empty_layout"
                 layout="@layout/list_empty_layout" />

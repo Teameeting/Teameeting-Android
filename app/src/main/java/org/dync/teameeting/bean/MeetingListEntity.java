@@ -1,6 +1,13 @@
 package org.dync.teameeting.bean;
 
+import android.content.Context;
+
+import org.dync.teameeting.db.CRUDChat;
+import org.dync.teameeting.db.chatdao.ChatCacheEntity;
+import org.dync.teameeting.utils.StringHelper;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by zhulang on 2016/1/8 0008.
@@ -17,6 +24,29 @@ public class MeetingListEntity implements Serializable {
     private int owner;
     private int pushable;
     private int mMeetType2 = 0;
+    private boolean isRead = true;
+    private String unReadMessage;
+
+    public boolean isRead(Context context) {
+        if (meetingid != null) {
+            long l = CRUDChat.selectLoadListSize(context, meetingid);
+            isRead = l > 0 ? false : true;
+        }
+        return isRead;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
+    public String getUnReadMessage() {
+        return unReadMessage;
+    }
+
+    public void setUnReadMessage(String unReadMessage) {
+        this.unReadMessage = unReadMessage;
+    }
+
 
     private boolean applyTyep = true; //true:success  false : wait
 
@@ -115,6 +145,14 @@ public class MeetingListEntity implements Serializable {
 
     public void setmMeetType2(int mMeetType2) {
         this.mMeetType2 = mMeetType2;
+    }
+
+    public void initUnReadMessage(Context context) {
+        if (!isRead(context)) {
+            ChatCacheEntity chatCacheEntity = CRUDChat.selectTopChatMessage(context, meetingid);
+            long l = CRUDChat.selectLoadListSize(context, meetingid);
+            setUnReadMessage(StringHelper.unReadMessageStr(l, chatCacheEntity.getSendtimeOrlong(), context.getResources()));
+        }
     }
 
     @Override

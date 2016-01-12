@@ -41,11 +41,11 @@
     <string name="room_empty_content_str">创建一个带视屏的房间，把房间分享给您的同事或者好友，无论你在哪里，他们都能看到你</string>
 
 
-  <!-- 进入会议界面   -->
-    
+    <!-- 进入会议界面   -->
+
     <string name="str_join_meeting">加入会议</string>
     <string name="str_edittext_meeting_id_hint">请输入会议 ID</string>
-    <string name="chat_time_string_now">现在</string>
+    <string name="chat_time_string_now">刚刚</string>
     <string name="chat_time_string_minutes_age">分钟以前</string>
     <string name="chat_time_string_hour_age">小时以前</string>
     <string name="chat_time_string_day_age">天以前</string>

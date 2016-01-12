@@ -32,10 +32,11 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
         if (!TeamMeetingApp.isPad) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        registerObserverClinet();
     }
 
     private void registerObserverClinet() {
-        mChatMessageClinet = ChatMessageClient.getInstance();
+        mChatMessageClinet = TeamMeetingApp.getmChatMessageClient();
         mChatMessageClinet.registerObserver(new ChatMessageClient.ChatMessageObserver() {
             @Override
             public void OnReqSndMsg(final ReqSndMsgEntity reqSndMsg) {
@@ -101,7 +102,6 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
     public void onEventMainThread(Message msg) {
 
     }
-
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {

@@ -6,6 +6,7 @@
 package org.dync.teameeting.ui.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,10 +19,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.VideoView;
+
+import com.orhanobut.logger.Logger;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.bean.MeetingListEntity;
+import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.utils.StringHelper;
 import org.dync.teameeting.widgets.swipe.FrontLayout;
 import org.dync.teameeting.widgets.swipe.SwipeLayout;
@@ -51,6 +54,25 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         public void onItemClickListener(View v, int position);
     }
 
+    public void notifyInitDataSetChanged() {
+        for (int i = 0; i < mDatas.size(); i++) {
+            mDatas.get(i).initUnReadMessage(mContext);
+        }
+        notifyDataSetChanged();
+    }
+
+
+    public void notifyNoReadMessageChanged(String meetingId, long sendTime) {
+
+        int meetingIdPosition = getMeetingIdPosition(meetingId);
+        Logger.e(meetingIdPosition + "");
+        if (meetingIdPosition != -1) {
+            long l = CRUDChat.selectIsReadSize(mContext, meetingId);
+            mDatas.get(meetingIdPosition).setUnReadMessage(StringHelper.unReadMessageStr(l, sendTime, mResources));
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -77,9 +99,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
     }
 
     private void setData(MeetingListEntity meetingListEntity, ViewHolder mHolder) {
-
         mHolder.mRoomName.setText("" + meetingListEntity.getMeetname());
-        mHolder.mRoomTime.setText("创建: " + StringHelper.formatDuration(meetingListEntity.getJointime(), mResources));
         mHolder.mRoomPeopleCount.setText("" + meetingListEntity.getMemnumber());
 
         if (meetingListEntity.getMemnumber() > 0) {
@@ -113,7 +133,17 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.white));
             mHolder.mIvPrivate.setVisibility(View.INVISIBLE);
         }
+
+        String unReadMessage;
+        if (!meetingListEntity.isRead(mContext)) {
+            unReadMessage = meetingListEntity.getUnReadMessage();
+        } else {
+            unReadMessage = "创建: " + StringHelper.formatDuration(meetingListEntity.getJointime(), mResources);
+        }
+        mHolder.mRoomTime.setText(unReadMessage);
+
     }
+
 
     private void showEidt(int position, ViewHolder mHolder) {
         if (mDatas.get(position).getmMeetType2() == 2) {
