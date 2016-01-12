@@ -18,6 +18,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingInfo;
+import org.dync.teameeting.bean.MeetingList;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
 import org.json.JSONException;
@@ -32,12 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class NetWork
-{
+public class NetWork {
 
     private static final String TAG = "NetWork";
     private static final boolean mDebug = TeamMeetingApp.mIsDebug;
-    public static final String MEETING_LIST = "meetingList";
 
     // public static final String VIDEO_URL = "123.59.68.21";//公网
     // public static final String VIDEO_URL = "192.168.7.45";//内网
@@ -54,8 +54,6 @@ public class NetWork
      */
     private DefaultHttpClient mHttpClient;
 
-    private SelfData mSelfData;
-
 	/*
      * request
 	 * =========================Service========================================
@@ -65,12 +63,10 @@ public class NetWork
      * @param params
      * @return
      */
-    private List<NameValuePair> getNameValuePairList(Map<String, String> params)
-    {
+    private List<NameValuePair> getNameValuePairList(Map<String, String> params) {
         List<NameValuePair> listParams = new ArrayList<NameValuePair>();
         Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             Entry<String, String> enter = iterator.next();
             listParams.add(new BasicNameValuePair(enter.getKey(), enter
                     .getValue()));
@@ -85,15 +81,13 @@ public class NetWork
      * @param url
      * @return String
      */
-    private String getResponseStr(Map<String, String> params, String url)
-    {
+    private String getResponseStr(Map<String, String> params, String url) {
         String enityStr = null;
         HttpPost httpPost = new HttpPost(NODE_URL + url);
         httpPost.addHeader("Accept", RETURN_TYPE_JSON);
         Message msg = new Message();
         List<NameValuePair> listParams = getNameValuePairList(params);
-        try
-        {
+        try {
             HttpEntity requestHttpEntity = new UrlEncodedFormEntity(listParams);
             httpPost.setEntity(requestHttpEntity);
             HttpResponse httpResponse = mHttpClient.execute(httpPost);
@@ -101,20 +95,16 @@ public class NetWork
             int responseCode = httpResponse.getStatusLine().getStatusCode();
             if (mDebug)
                 Log.e(TAG, "responseCode" + responseCode);
-            if (responseCode == 200)
-            {
+            if (responseCode == 200) {
                 enityStr = EntityUtils.toString(httpResponse.getEntity());
                 return enityStr;
             }
 
-        } catch (UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        } catch (ClientProtocolException e)
-        {
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
@@ -124,6 +114,7 @@ public class NetWork
 
     /**
      * init
+     *
      * @param userid
      * @param uactype
      * @param uregtype
@@ -133,8 +124,7 @@ public class NetWork
 
     public void init(final String userid, final String uactype,
                      final String uregtype, final String ulogindev,
-                     final String upushtoken)
-    {
+                     final String upushtoken) {
         String url = "users/init";
         RequestParams params = new RequestParams();
         params.put("userid", userid);
@@ -145,26 +135,19 @@ public class NetWork
 
         final Bundle bundle = new Bundle();
         final Message msg = new Message();
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
-                if (code == 200)
-                {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                if (code == 200) {
                     SelfData selfData = gson.fromJson(responseString, SelfData.class);
                     TeamMeetingApp.setSelfData(selfData);
                     msg.what = EventType.MSG_ININT_SUCCESS.ordinal();
-                    if (mDebug)
-                    {
+                    if (mDebug) {
                         Log.i(TAG, "getInformation" + selfData.getInformation().toString());
                     }
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_ININT_FAILED.ordinal();
                 }
-
-                bundle.putString(MEETING_LIST, message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
             }
@@ -173,30 +156,30 @@ public class NetWork
 
 
     public void getRoomLists(final String sign, final String pageNum,
-                             final String pageSize)
-    {
+                             final String pageSize) {
         String url = "meeting/getRoomList";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("pageNum", pageNum);
         params.put("pageSize", pageSize);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
-                if (mDebug)
-                    Log.i(TAG, "getList" + responseString);
-                if (statusCode == 200)
-                {
-                    bundle.putString("meetingList", responseString);
-                    msg.what = EventType.MSG_GET_ROOM_LIST_SUCCESS
-                            .ordinal();
-                } else
-                {
-                    msg.what = EventType.MSG_GET_ROOM_LIST_FAILED
-                            .ordinal();
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                if (statusCode == 200) {
+                    if(mDebug){
+                        Log.e(TAG, "onSuccess:getRoomLists " +responseString);
+                    }
+                    msg.what = EventType.MSG_GET_ROOM_LIST_SUCCESS.ordinal();
+                    MeetingList meetingList = gson.fromJson(responseString, MeetingList.class);
+                    if (meetingList != null) {
+                        TeamMeetingApp.getmSelfData().getMeetingLists().clear();
+                        TeamMeetingApp.getmSelfData().setMeetingLists(meetingList.getMeetingList());
+                    }
+                    if (mDebug)
+                        Log.e(TAG, "getList + mSelfData" + TeamMeetingApp.getmSelfData().getMeetingLists().toString());
+                } else {
+                    msg.what = EventType.MSG_GET_ROOM_LIST_FAILED.ordinal();
                 }
                 bundle.putString("message", message);
                 msg.setData(bundle);
@@ -208,35 +191,30 @@ public class NetWork
 
 
     /**
-     * 更新网络参数
-     *
-     * @param userid
+     * updatePushtoken
+     * @param sign
      * @param upushtoken
      */
-    public void updatePushtoken(final String sign, final String upushtoken)
-    {
+
+
+    public void updatePushtoken(final String sign, final String upushtoken) {
         String url = "users/updatePushtoken";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("upushtoken", upushtoken);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
 
-                if (mDebug)
-                {
+                if (mDebug) {
                     Log.e(TAG, "onSuccess:updatePushtoken " + responseString);
                 }
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_UPDAT_EPUSH_TOKEN_SUCCESS
                             .ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_UPDAT_EPUSH_TOKEN_FAILED
                             .ordinal();
                 }
@@ -254,30 +232,26 @@ public class NetWork
      *
      * @param sign
      */
-    public void signOut(final String sign)
-    {
+    public void signOut(final String sign) {
         String url = "users/signout";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: signOut" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_SIGNOUT_SUCCESS.ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_SIGNOUT_FAILED.ordinal();
                 }
 
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -288,14 +262,15 @@ public class NetWork
      *
      * @param sign
      * @param meetingname
-     * @param meettype
+     * @param meetingtype
      * @param meetdesc
-     * @param meetingid
+     * @param meetenable
+     * @param pushable
      */
+
     public void applyRoom(final String sign, final String meetingname,
                           final String meetingtype, final String meetdesc, final String meetenable,
-                          final String pushable)
-    {
+                          final String pushable) {
         String url = "meeting/applyRoom";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -306,25 +281,22 @@ public class NetWork
         params.put("pushable", pushable);
 
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: applyRoom" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     //Bundle bundle = new Bundle();
 
                     try {
                         JSONObject json = new JSONObject(responseString);
-                        String meetingInfo =  json.getString("meetingInfo");
+                        String meetingInfo = json.getString("meetingInfo");
                         JSONObject jsonMeetingInfo = new JSONObject(meetingInfo);
                         String meetingId = jsonMeetingInfo.getString("meetingid");
-                        bundle.putString("meetingId",meetingId);
-                        if(mDebug){
-                            Log.e(TAG,"meetingId "+meetingId);
+                        bundle.putString("meetingId", meetingId);
+                        if (mDebug) {
+                            Log.e(TAG, "meetingId " + meetingId);
                         }
 
                     } catch (JSONException e) {
@@ -333,8 +305,7 @@ public class NetWork
                     msg.setData(bundle);
                     msg.what = EventType.MSG_APPLY_ROOM_SUCCESS
                             .ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_APPLY_ROOMT_FAILED
                             .ordinal();
                 }
@@ -354,27 +325,22 @@ public class NetWork
      * @param meetingid
      */
 
-    public void deleteRoom(final String sign, final String meetingid)
-    {
+    public void deleteRoom(final String sign, final String meetingid) {
 
         String url = "meeting/deleteRoom";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("meetingid", meetingid);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: deleteRoom" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_DELETE_ROOM_SUCCESS
                             .ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_DELETE_ROOM_FAILED
                             .ordinal();
                 }
@@ -395,28 +361,23 @@ public class NetWork
      * @param meetingid
      */
     public void updateRoomMinuxMemNumber(final String sign,
-                                         final String meetingid)
-    {
+                                         final String meetingid) {
         String url = "meeting/updateRoomMinuxMemNumber";
 
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("meetingid", meetingid);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: updateRoomMinuxMemNumber" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_UPDATE_ROOM_Minux_MEM_NUMBER_SUCCESS
                             .ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_UPDATE_ROOM_Minux_MEM_NUMBER_FAILED
                             .ordinal();
                 }
@@ -436,27 +397,22 @@ public class NetWork
      * @param sign
      * @param meetingid
      */
-    public void updateRoomAddMemNumber(final String sign, final String meetingid)
-    {
+    public void updateRoomAddMemNumber(final String sign, final String meetingid) {
         String url = "meeting/updateRoomAddMemNumber";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("meetingid", meetingid);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: updateRoomAddMemNumber" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_UPDATE_ROOM_ADD_MEM_NUMBER_SUCCESS
                             .ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_UPDATE_ROOM_ADD_MEM_NUMBER_FAILED
                             .ordinal();
                 }
@@ -477,27 +433,22 @@ public class NetWork
      * @param pushable
      */
     public void updateRoomPushable(final String sign, final String meetingid,
-                                   final String pushable)
-    {
+                                   final String pushable) {
         String url = "meeting/updateRoomPushable";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("meetingid", meetingid);
         params.put("pushable", pushable);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: updateRoomPushable" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_UPDATE_ROOM_PUSHABLE_SUCCESS.ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_UPDATE_ROOM_PUSHABLE_FAILED.ordinal();
                 }
                 bundle.putString("message", message);
@@ -515,32 +466,28 @@ public class NetWork
      * @param enable
      */
     public void updateRoomEnable(final String sign, final String meetingid,
-                                 final String enable)
-    {
+                                 final String enable) {
         String url = "meeting/updateRoomEnable";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("meetingid", meetingid);
         params.put("enable", enable);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: updateRoomEnable" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_SUCCESS.ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_FAILED.ordinal();
                 }
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -548,20 +495,18 @@ public class NetWork
     }
 
     /**
-     * updateRoomMemNumber 07
+     * updateRoomMemNumber
      *
      * @param sign
      * @param meetingid
-     * @param enable
+     * @param meetingMemNumber
      */
+
     public void updateRoomMemNumber(final String sign, final String meetingid,
-                                    final String meetingMemNumber)
-    {
-        new Thread()
-        {
+                                    final String meetingMemNumber) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
                 // TODO Auto-generated method stub
                 super.run();
 
@@ -570,25 +515,21 @@ public class NetWork
                 params.put("meetingid", meetingid);
                 params.put("meetingMemNumber", meetingMemNumber);
 
-                try
-                {
+                try {
                     String ss = getResponseStr(params,
                             "meeting/updateRoomMemNumber");
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
                             msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_SUCCESS
                                     .ordinal();
-                        } else
-                        {
+                        } else {
                             msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_FAILED
                                     .ordinal();
                         }
@@ -598,8 +539,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -617,28 +557,23 @@ public class NetWork
      * @param roomName
      */
     public void updateMeetRoomName(final String sign, final String meetingid,
-                                   final String roomName)
-    {
+                                   final String roomName) {
         String url = "meeting/updateMeetRoomName";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
         params.put("meetingid", meetingid);
         params.put("meetingname", roomName);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
 
-                    if (code == 200)
-                    {
+                    if (code == 200) {
                         msg.what = EventType.MSG_UPDATE_MEET_ROOM_NAME_SUCCESS
                                 .ordinal();
-                    } else
-                    {
+                    } else {
                         msg.what = EventType.MSG_UPDATE_MEET_ROOM_NAME_FAILED
                                 .ordinal();
                     }
@@ -662,8 +597,7 @@ public class NetWork
      */
 
     public void getMeetingMsgList(final String sign, final String meetingid,
-                                  final String pageNum, final String pageSize)
-    {
+                                  final String pageNum, final String pageSize) {
 
         String url = "meeting/getMeetingMsgList";
         RequestParams params = new RequestParams();
@@ -672,20 +606,16 @@ public class NetWork
         params.put("pageNum", pageNum);
         params.put("pageSize", pageSize);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
-                    Log.e(TAG, "onSuccess: getMeetingMsgList"+responseString);
+                    Log.e(TAG, "onSuccess: getMeetingMsgList" + responseString);
                 if (mDebug)
-                    if (code == 200)
-                    {
+                    if (code == 200) {
                         msg.what = EventType.MSG_GET_MEETING_MSG_LIST_SUCCESS.ordinal();
-                    } else
-                    {
+                    } else {
                         msg.what = EventType.MSG_GET_MEETING_MSG_LIST_FAILED.ordinal();
                     }
 
@@ -694,8 +624,6 @@ public class NetWork
                 EventBus.getDefault().post(msg);
             }
         });
-
-
     }
 
     /**
@@ -710,13 +638,10 @@ public class NetWork
      */
     public void insertMeetingMsg(final String meetingid,
                                  final String messageid, final String messagetype,
-                                 final String sessionid, final String strMsg, final String userid)
-    {
-        new Thread()
-        {
+                                 final String sessionid, final String strMsg, final String userid) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("meetingid", meetingid);
@@ -726,28 +651,24 @@ public class NetWork
                 params.put("strMsg", strMsg);
                 params.put("userid", userid);
 
-                try
-                {
+                try {
 
                     String ss = getResponseStr(params,
                             "meeting/insertMeetingMsg");
 
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
                             msg.what = EventType.MSG_INSERT_MEETING_MSG_SUCCESS
                                     .ordinal();
 
-                        } else
-                        {
+                        } else {
                             msg.what = EventType.MSG_INSERT_MEETING_MSG_FAILED
                                     .ordinal();
                         }
@@ -757,8 +678,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -779,13 +699,10 @@ public class NetWork
 
     public void insertSessionMeetingInfo(final String meetingid,
                                          final String sessionid, final String sessionstatus,
-                                         final String sessiontype, final String sessionnumber)
-    {
-        new Thread()
-        {
+                                         final String sessiontype, final String sessionnumber) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("meetingid", meetingid);
                 params.put("sessionid", sessionid);
@@ -793,29 +710,25 @@ public class NetWork
                 params.put("sessiontype", sessiontype);
                 params.put("sessionnumber", sessionnumber);
 
-                try
-                {
+                try {
 
                     String ss = getResponseStr(params,
                             "meeting/insertSessionMeetingInfo");
 
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
 
                             msg.what = EventType.MSG_INSERT_SESSION_MEETING_INFO_SUCCESS
                                     .ordinal();
 
-                        } else
-                        {
+                        } else {
 
                             msg.what = EventType.MSG_INSERT_SESSION_MEETING_INFO_FAILED
                                     .ordinal();
@@ -826,8 +739,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -844,37 +756,30 @@ public class NetWork
      */
 
     public void updateSessionMeetingStatus(final String sessionid,
-                                           final String sessionstatus)
-    {
-        new Thread()
-        {
+                                           final String sessionstatus) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("sessionid", sessionid);
                 params.put("sessionstatus", sessionstatus);
-                try
-                {
+                try {
                     String ss = getResponseStr(params,
                             "meeting/updateSessionMeetingStatus");
 
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
                             msg.what = EventType.MSG_UPDATE_SESSION_MEETING_STATUS_SUCCESS
                                     .ordinal();
-                        } else
-                        {
+                        } else {
 
                             msg.what = EventType.MSG_UPDATE_SESSION_MEETING_STATUS_FAILED
                                     .ordinal();
@@ -885,8 +790,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -901,40 +805,33 @@ public class NetWork
      * @param sessionid
      */
 
-    public void updateSessionMeetingEndtime(final String sessionid)
-    {
-        new Thread()
-        {
+    public void updateSessionMeetingEndtime(final String sessionid) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
                 super.run();
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("sessionid", sessionid);
 
-                try
-                {
+                try {
                     String ss = getResponseStr(params,
                             "meeting/updateSessionMeetingEndtime");
 
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
 
                             msg.what = EventType.MSG_UPDATE_SESSION_MEETING_ENDTIME_SUCCESS
                                     .ordinal();
 
-                        } else
-                        {
+                        } else {
 
                             msg.what = EventType.MSG_UPDATE_SESSION_MEETING_ENDTIME_FAILED
                                     .ordinal();
@@ -945,8 +842,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -963,39 +859,32 @@ public class NetWork
      */
 
     public void updateSessionMeetingNumber(final String sessionid,
-                                           final String sessionnumber)
-    {
-        new Thread()
-        {
+                                           final String sessionnumber) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("sessionid", sessionid);
                 params.put("sessionnumber", sessionnumber);
 
-                try
-                {
+                try {
 
                     String ss = getResponseStr(params,
                             "meeting/updateSessionMeetingNumber");
 
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
                             msg.what = EventType.MSG_UPDATE_SESSION_MEETING_NUMBER_SUCCESS
                                     .ordinal();
 
-                        } else
-                        {
+                        } else {
 
                             msg.what = EventType.MSG_UPDATE_SESSION_MEETING_NUMBER_FAILED
                                     .ordinal();
@@ -1007,8 +896,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -1022,51 +910,81 @@ public class NetWork
     /**
      * .获取会议室的信息 单独封装 提交响应的设置 16
      *
-     * @param mettinString
+     * @param meetingid
      */
-    public String getMeetingInfo(String mettinString)
-    {
-        return null;
+    public void getMeetingInfo(String meetingid) {
+
+
+        String url = "meeting/getMeetingInfo/"+meetingid;
+        HttpContent.get(url,new TmTextHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                super.onSuccess(statusCode, code, message, responseString, headers);
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: getMeetingInfo" + responseString);
+                if (code == 200) {
+                    msg.what = EventType.MSG_GET_MEETING_INFO_SUCCESS
+                            .ordinal();
+
+                    try {
+                        JSONObject json = new JSONObject(responseString);
+                        String info = json.getString("meetingInfo");
+                        MeetingInfo meetingInfo = gson.fromJson(info, MeetingInfo.class);
+                        bundle.putInt("usable", meetingInfo.getMeetusable());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                } else {
+                    msg.what = EventType.MSG_GET_MEETING_INFO_FAILED
+                            .ordinal();
+                }
+
+                bundle.putString("message", message);
+                msg.setData(bundle);
+
+                EventBus.getDefault().post(msg);
+
+            }
+        });
+
     }
 
     /**
-     * /meeting/updateUserMeetingJointime 17
+     * updateUserMeetingJointime
      *
-     * @param sessionid
-     * @param sessionnumber
+     * @param sign
+     * @param meetingid
      */
+
     public void updateUserMeetingJointime(final String sign,
-                                          final String meetingid)
-    {
-        new Thread()
-        {
+                                          final String meetingid) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
                 super.run();
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("sign", sign);
                 params.put("meetingid", meetingid);
 
-                try
-                {
+                try {
 
                     String ss = getResponseStr(params,
                             "meeting/updateUserMeetingJointime");
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
                             msg.what = EventType.MSG_UP_DATE_USER_MEETING_JOIN_TIME_SUCCESS
                                     .ordinal();
-                        } else
-                        {
+                        } else {
                             msg.what = EventType.MSG_UP_DATE_USER_MEETING_JOIN_TIME_FAILED
                                     .ordinal();
                         }
@@ -1077,8 +995,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -1088,69 +1005,54 @@ public class NetWork
     }
 
     /**
-     * updateUserMeetingJointime 18
+     * insertUserMeetingRoom
      *
-     * @param sessionid
-     * @param sessionnumber
+     * @param sign
+     * @param meetingid
      */
-    public void insertUserMeetingRoom(final String sign, final String meetingid)
-    {
-        new Thread()
-        {
+
+    public void insertUserMeetingRoom(final String sign, final String meetingid) {
+
+        String url = "meeting/insertUserMeetingRoom";
+        RequestParams params = new RequestParams();
+        params.put("sign", sign);
+        params.put("meetingid", meetingid);
+
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public synchronized void run()
-            {
-                super.run();
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("sign", sign);
-                params.put("meetingid", meetingid);
-                try
-                {
-                    String ss = getResponseStr(params,
-                            "meeting/insertUserMeetingRoom");
-                    if (ss != null)
-                    {
-                        JSONObject jsonObject = new JSONObject(ss);
-                        Bundle bundle = new Bundle();
-                        Message msg = new Message();
-                        int code = jsonObject.getInt("code");
-                        String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
-                            msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
-                                    .ordinal();
-                        } else
-                        {
-                            msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
-                                    .ordinal();
-                        }
-
-                        bundle.putString("message", message);
-                        msg.setData(bundle);
-                        // 测试
-                        EventBus.getDefault().post(msg);
-                    }
-
-                } catch (JSONException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                super.onSuccess(statusCode, code, message, responseString, headers);
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: pushMeetingMsg" + responseString);
+                if (code == 200) {
+                    msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
+                            .ordinal();
+                } else {
+                    msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
+                            .ordinal();
                 }
+
+                bundle.putString("message", message);
+                msg.setData(bundle);
+
+                EventBus.getDefault().post(msg);
+
             }
-        }.start();
+        });
 
     }
 
     /**
-     * pushMeetingMsg 19
+     * pushMeetingMsg
      *
-     * @param sessionid
-     * @param sessionnumber
+     * @param sign
+     * @param meetingid
+     * @param pushMsg
+     * @param notification
      */
+
     public void pushMeetingMsg(final String sign, final String meetingid,
-                               final String pushMsg, final String notification)
-    {
+                               final String pushMsg, final String notification) {
         String url = "jpush/pushMeetingMsg";
 
         RequestParams params = new RequestParams();
@@ -1159,20 +1061,16 @@ public class NetWork
         params.put("pushMsg", pushMsg);
         params.put("notification", notification);
 
-        HttpContent.post(url, params, new TmTextHttpResponseHandler()
-        {
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-            {
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: pushMeetingMsg" + responseString);
-                if (code == 200)
-                {
+                if (code == 200) {
                     msg.what = EventType.MSG_PUSH_MEETING_MSG_SUCCESS
                             .ordinal();
-                } else
-                {
+                } else {
                     msg.what = EventType.MSG_PUSH_MEETING_MSG_FAILED
                             .ordinal();
                 }
@@ -1188,44 +1086,38 @@ public class NetWork
     }
 
     /**
-     * pushCommonMsg 20
+     * pushCommonMsg
      *
      * @param sign
-     * @param meetingid
+     * @param targetid
      * @param pushMsg
      * @param notification
      */
+
     public void pushCommonMsg(final String sign, final List<String> targetid,
-                              final String pushMsg, final String notification)
-    {
-        new Thread()
-        {
+                              final String pushMsg, final String notification) {
+        new Thread() {
             @Override
-            public synchronized void run()
-            {
+            public synchronized void run() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("sign", sign);
                 params.put("pushMsg", pushMsg);
                 params.put("targetid", targetid.toString());
                 params.put("notification", notification);
-                try
-                {
+                try {
                     String ss = getResponseStr(params, "jpush/pushCommonMsg");
                     if (mDebug)
                         Log.e(TAG, "ss " + ss);
-                    if (ss != null)
-                    {
+                    if (ss != null) {
                         JSONObject jsonObject = new JSONObject(ss);
                         Bundle bundle = new Bundle();
                         Message msg = new Message();
                         int code = jsonObject.getInt("code");
                         String message = jsonObject.getString("message");
-                        if (code == 200)
-                        {
+                        if (code == 200) {
                             msg.what = EventType.MSG_PUSH_COMMO_NSG_SUCCESS
                                     .ordinal();
-                        } else
-                        {
+                        } else {
                             msg.what = EventType.MSG_PUSH_OMMO_NMSG_FAILED
                                     .ordinal();
                         }
@@ -1234,8 +1126,7 @@ public class NetWork
                         EventBus.getDefault().post(msg);
                     }
 
-                } catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }

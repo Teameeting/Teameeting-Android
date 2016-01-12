@@ -1,69 +1,106 @@
 package org.dync.teameeting.chatmessage;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.ypy.eventbus.EventBus;
 
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.dao.ChatEnity;
+
+import org.dync.teameeting.bean.ChatMessage;
+import org.dync.teameeting.bean.ReqSndMsgEntity;
+import org.dync.teameeting.db.CRUDChat;
+import org.dync.teameeting.db.chatdao.ChatCacheEntity;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientHelper;
 import org.dync.teameeting.structs.EventType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Queue;
+
 /**
- * Created by admin on 2016/1/8.
+ * Created by zhangqilu on 2016/1/8.
  */
-public class ChatMessageClient  implements JMClientHelper{
+public class ChatMessageClient implements JMClientHelper {
 
     private Message mMessage;
     private String TAG = "ChatMessageClient";
     private boolean mDebug = TeamMeetingApp.mIsDebug;
+    private ArrayList<ChatMessageObserver> mObServers = new ArrayList<ChatMessageObserver>();
+    private Context context;
+
+
+    public ChatMessageClient(Context context) {
+        this.context = context;
+    }
+
+    /**
+     * regiseter
+     *
+     * @param observer
+     */
+    public synchronized void registerObserver(ChatMessageObserver observer) {
+        if (observer != null && !mObServers.contains(observer)) {
+            mObServers.add(observer);
+        }
+    }
+
+    public synchronized void unregisterObserver(ChatMessageObserver observer) {
+        if (observer != null && mObServers.contains(observer)) {
+
+            mObServers.remove(observer);
+        }
+    }
+
+    /**
+     * notify
+     *
+     * @param reqSndMsg
+     */
+    public synchronized void notifyRequestMessage(ReqSndMsgEntity reqSndMsg) {
+        for (ChatMessageObserver observer : mObServers) {
+            observer.OnReqSndMsg(reqSndMsg);
+        }
+    }
+
+    public interface ChatMessageObserver {
+        public void OnReqSndMsg(ReqSndMsgEntity reqSndMsg);
+    }
+
+
+    //
 
     /**
      * implement for JMClientHelper
-     * */
+     */
 
     @Override
-    public void OnReqSndMsg(String msg)
-    {
-        String s = "OnReqSndMsg msg:" + msg;
+    public void OnReqSndMsg(String msg) {
+        String s = "ChatMessageClient" + msg;
+        if (mDebug)
+        Log.e(TAG, "OnReqSndMsg " + s);
+        /**
+         *        DyncLang   TODO: 2016/1/9 0009
+         *        Monday , passing messages using the Observer pattern
+         *        Replace Event Bus
+         *
+         *
+         */
+        if (msg != null) {
+            Gson gson = new Gson();
+            ReqSndMsgEntity reqSndMsgEntity = gson.fromJson(msg, ReqSndMsgEntity.class);
+            notifyRequestMessage(reqSndMsgEntity);
 
-        ChatEnity chatEnity = new ChatEnity();
-        try
-        {
-            JSONObject json = new JSONObject(msg);
-            String content = json.getString("cont");
-            String pass = json.getString("pass");
-            String ntime = json.getString("ntime");
 
-            chatEnity.setContent(content);
-            chatEnity.setSendtime(ntime);
-            chatEnity.setName(pass);
-
-
-
+            CRUDChat.queryInsert(context, reqSndMsgEntity);
             mMessage = new Message();
-            Bundle bundle = new Bundle();
-            bundle.putString("message", content);
-            bundle.putSerializable("ChatEnity", chatEnity);
-
-            // bundle.putString("name",from);
-
-            mMessage.setData(bundle);
             mMessage.what = EventType.MSG_MESSAGE_RECEIVE.ordinal();
             EventBus.getDefault().post(mMessage);
-
-        } catch (JSONException e)
-        {
-            e.printStackTrace();
         }
-
-        if (mDebug){
-            Log.e(TAG, "OnReqSndMsg: "+s);
-        }
-
 
 
     }
@@ -72,27 +109,27 @@ public class ChatMessageClient  implements JMClientHelper{
     public void OnRespSndMsg(String msg) {
         String s = "OnRespSndMsg msg:" + msg;
 
-        if (mDebug){
-            Log.e(TAG, "OnRespSndMsg: "+s);
+        if (mDebug) {
+            Log.e(TAG, "OnRespSndMsg: " + s);
         }
 
     }
 
     @Override
     public void OnReqGetMsg(String msg) {
-        String s = "OnReqGetMsg msg:"+ msg;
-        if (mDebug){
-            Log.e(TAG, "OnReqGetMsg: "+s);
+        String s = "OnReqGetMsg msg:" + msg;
+        if (mDebug) {
+            Log.e(TAG, "OnReqGetMsg: " + s);
         }
 
     }
 
     @Override
     public void OnRespGetMsg(String msg) {
-        String s = "OnRespGetMsg msg:"+ msg;
+        String s = "OnRespGetMsg msg:" + msg;
 
-        if (mDebug){
-            Log.e(TAG, "OnRespGetMsg: "+s);
+        if (mDebug) {
+            Log.e(TAG, "OnRespGetMsg: " + s);
         }
 
     }
@@ -104,7 +141,7 @@ public class ChatMessageClient  implements JMClientHelper{
         mMessage.what = EventType.MSG_MESSAGE_SERVER_CONNECTED.ordinal();
         EventBus.getDefault().post(mMessage);
 
-        if (mDebug){
+        if (mDebug) {
             Log.e(TAG, "OnMsgServerConnected: ");
         }
 
@@ -113,7 +150,7 @@ public class ChatMessageClient  implements JMClientHelper{
     @Override
     public void OnMsgServerDisconnect() {
 
-        if (mDebug){
+        if (mDebug) {
             Log.e(TAG, "OnMsgServerDisconnect: ");
         }
 
@@ -123,7 +160,7 @@ public class ChatMessageClient  implements JMClientHelper{
     public void OnMsgServerConnectionFailure() {
 
 
-        if (mDebug){
+        if (mDebug) {
             Log.e(TAG, "OnMsgServerConnectionFailure: ");
         }
 

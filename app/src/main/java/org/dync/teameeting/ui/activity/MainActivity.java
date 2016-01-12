@@ -24,14 +24,15 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.orhanobut.logger.Logger;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.bean.MeetingList;
-import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.bean.MeetingListEntity;
+import org.dync.teameeting.bean.ReqSndMsgEntity;
+import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.ExtraType;
 import org.dync.teameeting.structs.Intent_KEY;
@@ -47,8 +48,7 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
 
-public class MainActivity extends BaseActivity
-{
+public class MainActivity extends BaseActivity {
     public final static int UPDATE_COPY_LINK = 0X01;
     public final static int UPDATE_RENAME_SHOW = 0X02;
     public final static int UPDATE_LISTVIEW_SCROLL = 0X03;
@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity
     private ImageButton mJoinMeeting;
 
     private Context mContext;
-    private List<MeetingList.MeetingListEntity> mRoomMeetingList = new ArrayList<MeetingList.MeetingListEntity>();
+    private List<MeetingListEntity> mRoomMeetingList = new ArrayList<MeetingListEntity>();
     private InputMethodManager mIMM;
     private long mExitTime = 0;
     private Boolean mCreateRoomFlag = false;
@@ -76,24 +76,20 @@ public class MainActivity extends BaseActivity
     private boolean mSoftInputFlag = false;
     private int mDy;
     private int mPosition;
-    private String mShareUrl = "没有设置连接";
+    private String mShareUrl = "empty Url";
     private final String mPass = getSign();
     private String mUserId = TeamMeetingApp.getTeamMeetingApp().getDevId();
     private TMMsgSender mMsgSender;
 
-    private Handler mUIHandler = new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            switch (msg.what)
-            {
+    private Handler mUIHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
                 case UPDATE_COPY_LINK:
                     break;
                 case UPDATE_RENAME_SHOW:
                     int position = msg.getData().getInt("position");
                     mRoomMeetingList.get(position).setmMeetType2(2);
-                    if (mDebug)
-                    {
+                    if (mDebug) {
                         Log.e(TAG, "handleMessage:position " + position);
                     }
                     mAdapter.notifyDataSetChanged();
@@ -109,8 +105,7 @@ public class MainActivity extends BaseActivity
                     mAdapter.notifyDataSetChanged();
                     if (mDy == 0)
                         mListView.smoothScrollToPositionFromTop(0, 0, 1000);
-                    else
-                    {
+                    else {
                         mListView.animate().translationYBy(mDy).setDuration(10);
                         mListView.smoothScrollToPositionFromTop(0, 0, 500);
                     }
@@ -124,10 +119,8 @@ public class MainActivity extends BaseActivity
         ;
     };
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         mContext = this;
@@ -135,37 +128,32 @@ public class MainActivity extends BaseActivity
 
         initdata();
         inintLayout();
-        if (mDebug)
-        {
-            Log.e(TAG, "onCreate: MainActivity");
+        if (mDebug) {
+            Log.e(TAG, "onCreate: " + TeamMeetingApp.getmSelfData().getMeetingLists().toString());
         }
     }
 
-    private void initdata()
-    {
-        Intent intent = getIntent();
-        String meetingListStr = intent.getExtras().getString(NetWork.MEETING_LIST);
-        upDataMeetingList(meetingListStr);
-
+    private void initdata() {
+        upDataMeetingList();
         mMsgSender = TeamMeetingApp.getmMsgSender();
+
     }
 
     /**
      * inintLayout
      */
-    private void inintLayout()
-    {
+    private void inintLayout() {
 
         mIMM = (InputMethodManager) MainActivity.this
                 .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
-        createNetErroDilaog();
+        mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this);
         mRlMain = (RelativeLayout) findViewById(R.id.rl_main);
         mCreateRoom = (EditText) findViewById(R.id.et_create_room);
         mRoomCancel = (TextView) findViewById(R.id.tv_cancel_create_room);
         mListView = (ListView) findViewById(R.id.lv_listView);
         mListView.setEmptyView(findViewById(R.id.empty_layout));
         mGetRoom = (Button) findViewById(R.id.btn_get_room);
-        mJoinMeeting =(ImageButton) findViewById(R.id.ibtn_join_meeting);
+        mJoinMeeting = (ImageButton) findViewById(R.id.ibtn_join_meeting);
         mGetRoom.setOnClickListener(mOnClickListener);
         mRoomCancel.setOnClickListener(mOnClickListener);
         mJoinMeeting.setOnClickListener(mOnClickListener);
@@ -176,31 +164,25 @@ public class MainActivity extends BaseActivity
         mListView.setAdapter(mAdapter);
 
         mRlMain.getViewTreeObserver().addOnGlobalLayoutListener(
-                new OnGlobalLayoutListener()
-                {
+                new OnGlobalLayoutListener() {
                     @Override
-                    public void onGlobalLayout()
-                    {
+                    public void onGlobalLayout() {
 
-                        if (isKeyboardShown(mRlMain.getRootView()))
-                        {
+                        if (isKeyboardShown(mRlMain.getRootView())) {
                             if (mDebug)
                                 Log.e(TAG, "isKeyboardShown open keyboard");
                             mSoftInputFlag = true;
-                        } else
-                        {
+                        } else {
                             if (mDebug)
                                 Log.e(TAG, "isKeyboardShown close keyboard");
-                            if (mReNameFlag && mSoftInputFlag)
-                            {
+                            if (mReNameFlag && mSoftInputFlag) {
                                 mUIHandler.sendEmptyMessageDelayed(
                                         UPDATE_RENAME_END, 500);
                                 mReNameFlag = false;
                                 mRoomMeetingList.get(mPosition).setmMeetType2(1);
                             }
 
-                            if (mSoftInputFlag)
-                            {
+                            if (mSoftInputFlag) {
                                 mCreateRoom.setVisibility(View.GONE);
                                 mRoomCancel.setVisibility(View.GONE);
                                 mSoftInputFlag = false;
@@ -212,8 +194,7 @@ public class MainActivity extends BaseActivity
                 });
     }
 
-    private void initSwipeRefreshLayout()
-    {
+    private void initSwipeRefreshLayout() {
         //修改刷新控件
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeRefreshLayout.setColorScheme(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -224,7 +205,6 @@ public class MainActivity extends BaseActivity
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //这里主要用来更新时间
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 3000);
@@ -239,8 +219,7 @@ public class MainActivity extends BaseActivity
      * @return true soft keyboard is open false soft keyboard is open
      */
 
-    private boolean isKeyboardShown(View rootView)
-    {
+    private boolean isKeyboardShown(View rootView) {
         final int softKeyboardHeight = 100;
         Rect r = new Rect();
         rootView.getWindowVisibleDisplayFrame(r);
@@ -255,8 +234,7 @@ public class MainActivity extends BaseActivity
      * @param position
      */
 
-    private void listViewSetScroll(int position)
-    {
+    private void listViewSetScroll(int position) {
 
         int itemHeight = getItemHeight(mListView);
         float temp = mListView.getHeight() / (float) getItemHeight(mListView);
@@ -264,21 +242,17 @@ public class MainActivity extends BaseActivity
 
         int visibleItem = (int) Math.ceil(temp);
 
-        if (mAdapter.getCount() < visibleItem)
-        {
+        if (mAdapter.getCount() < visibleItem) {
             mDy = itemHeight * position;
             mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, 100);
             return;
-        } else
-        {
+        } else {
             maxItemTop = mAdapter.getCount() - visibleItem;
         }
-        if (position <= maxItemTop)
-        {
+        if (position <= maxItemTop) {
             mDy = 0;
             mListView.smoothScrollToPositionFromTop(position, 0, 2000);
-        } else
-        {
+        } else {
             int incompleteItemheight = mListView.getHeight() - (visibleItem - 1) * itemHeight;
             mDy = itemHeight * (position - maxItemTop - 1) + incompleteItemheight;
             mListView.setSelection(mListView.getBottom());
@@ -300,8 +274,7 @@ public class MainActivity extends BaseActivity
      * @param listView
      * @return
      */
-    private int getItemHeight(final ListView listView)
-    {
+    private int getItemHeight(final ListView listView) {
         View view = mAdapter.getView(0, null, listView);
 
         view.measure(0, 0);
@@ -315,10 +288,8 @@ public class MainActivity extends BaseActivity
      *
      * @return
      */
-    private boolean hideKeyboard()
-    {
-        if (mIMM.isActive(mCreateRoom))
-        {
+    private boolean hideKeyboard() {
+        if (mIMM.isActive(mCreateRoom)) {
             mIMM.hideSoftInputFromWindow(this.getCurrentFocus()
                     .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mIMM.restartInput(mCreateRoom);
@@ -337,15 +308,12 @@ public class MainActivity extends BaseActivity
     /**
      * OnClickListener
      */
-    private OnClickListener mOnClickListener = new OnClickListener()
-    {
+    private OnClickListener mOnClickListener = new OnClickListener() {
 
         @Override
-        public void onClick(View view)
-        {
+        public void onClick(View view) {
             // TODO Auto-generated method stub
-            switch (view.getId())
-            {
+            switch (view.getId()) {
                 case R.id.tv_cancel_create_room:
                     mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
 
@@ -368,7 +336,7 @@ public class MainActivity extends BaseActivity
 
                     break;
                 case R.id.ibtn_join_meeting:
-                    Intent intent = new Intent(mContext,JoinMeetingActivity.class);
+                    Intent intent = new Intent(mContext, JoinMeetingActivity.class);
                     startActivity(intent);
                     break;
 
@@ -381,39 +349,34 @@ public class MainActivity extends BaseActivity
     /**
      * SwipeListOnClick
      */
-    private SwipeListOnClick mSwipeListOnClick = new SwipeListOnClick()
-    {
+    private SwipeListOnClick mSwipeListOnClick = new SwipeListOnClick() {
 
         @Override
-        public void onItemClickListener(View v, int position)
-        {
+        public void onItemClickListener(View v, int position) {
             int code;
             String meetingId;
             String meetingName;
 
-            if (hideKeyboard())
-            {
+            if (hideKeyboard()) {
                 return;
             }
 
             Intent intent;
-            switch (v.getId())
-            {
+            switch (v.getId()) {
                 case R.id.fl_front:
                     meetingName = mRoomMeetingList.get(position).getMeetname();
                     meetingId = mRoomMeetingList.get(position).getMeetingid();
-                   // mUserId = mRoomMeetingList.get(position).getMeetinguserid();
-                    if (mDebug)
-                    {
+                    // mUserId = mRoomMeetingList.get(position).getMeetinguserid();
+                    if (mDebug) {
                         Log.i(TAG, "meetingId-fl_front" + meetingId);
                     }
-                     code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, meetingId,"");
-                    if(code==0){
-                        if(mDebug){
-                            Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Successed");
+                    code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, meetingId, "");
+                    if (code == 0) {
+                        if (mDebug) {
+                            Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Successed");
                         }
-                    }else if(mDebug){
-                        Log.e(TAG, "onItemClickListener: "+"TMEnterRoom Failed");
+                    } else if (mDebug) {
+                        Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Failed");
                     }
 
                     // 推送接口
@@ -433,13 +396,13 @@ public class MainActivity extends BaseActivity
                     mNetWork.deleteRoom(mSign, meetingId);
                     mRoomMeetingList.remove(position);
                     mAdapter.notifyDataSetChanged();
-                    code =mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId,"");
-                    if(code==0){
-                        if(mDebug){
-                            Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Successed");
+                    code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
+                    if (code == 0) {
+                        if (mDebug) {
+                            Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Successed");
                         }
-                    }else if(mDebug){
-                        Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Failed");
+                    } else if (mDebug) {
+                        Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Failed");
                     }
                     break;
 
@@ -452,8 +415,7 @@ public class MainActivity extends BaseActivity
                     String newName = reName.getText().toString();
                     String oldName = mRoomMeetingList.get(position).getMeetname();
 
-                    if (!newName.equals(oldName))
-                    {
+                    if (!newName.equals(oldName)) {
 
                         mSign = getSign();
                         meetingId = mRoomMeetingList.get(position).getMeetingid();
@@ -478,16 +440,13 @@ public class MainActivity extends BaseActivity
     /**
      * soft keyboard Listener
      */
-    OnEditorActionListener editorActionListener = new OnEditorActionListener()
-    {
+    OnEditorActionListener editorActionListener = new OnEditorActionListener() {
         @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-        {
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
             String meetingName = mCreateRoom.getText().toString();
 
-            if (meetingName.length() == 0 || meetingName == null)
-            {
+            if (meetingName.length() == 0 || meetingName == null) {
                 meetingName = "Untitled room";
             }
             mSign = getSign();
@@ -501,36 +460,37 @@ public class MainActivity extends BaseActivity
         }
     };
 
-    private void applyRoom(String meetingName)
-    {
+    private void applyRoom(String meetingName) {
         mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
         mCreateRoom.setVisibility(View.GONE);
         mRoomCancel.setVisibility(View.GONE);
         String pushable = "1";
-        String meetdesc = "";//会议描述
-        String meetenablde = "1";//是否可用或者私密
+        String meetdesc = "";
+        String meetenablde = "1";
 
-        MeetingList.MeetingListEntity meetingList = new MeetingList.MeetingListEntity();
+        MeetingListEntity meetingList = new MeetingListEntity();
         meetingList.setMeetname(meetingName);
         meetingList.setPushable(1);
         meetingList.setApplyTyep(false);
+        meetingList.setJointime(System.currentTimeMillis());
 
-        mRoomMeetingList.add(0,meetingList);
+        mRoomMeetingList.add(0, meetingList);
         mAdapter.notifyDataSetChanged();
         mListView.setSelection(0);
         mNetWork.applyRoom(mSign, meetingName, "0", "", meetenablde, pushable);
-        //创建房间问题。
+
         mCreateRoomFlag = true;
     }
+
     /**
      * moreSetting
+     *
      * @param position
      */
-    private void moreSetting(int position)
-    {
+    private void moreSetting(int position) {
         Intent intent;
         intent = new Intent(mContext, RoomSettingActivity.class);
-        MeetingList.MeetingListEntity meetingEntity = mRoomMeetingList.get(position);
+        MeetingListEntity meetingEntity = mRoomMeetingList.get(position);
         Bundle mBundle = new Bundle();
         mBundle.putSerializable(Intent_KEY.MEETING_ENTY, meetingEntity);
         intent.putExtras(mBundle);
@@ -540,23 +500,17 @@ public class MainActivity extends BaseActivity
     }
 
 
-
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN)
-        {
-            if (hideKeyboard())
-            {
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (hideKeyboard()) {
                 return false;
             }
-            if ((System.currentTimeMillis() - mExitTime) > 2000)
-            {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
                 Toast.makeText(this, R.string.exit_once_more, Toast.LENGTH_SHORT).show();
                 mExitTime = System.currentTimeMillis();
-            } else
-            {
+            } else {
                 mSign = getSign();
                 mNetWork.signOut(mSign);
 
@@ -564,8 +518,7 @@ public class MainActivity extends BaseActivity
             }
             return true;
         }
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0)
-        {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -574,18 +527,21 @@ public class MainActivity extends BaseActivity
     /**
      * onActivityResult
      */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (resultCode)
-        {
+        switch (resultCode) {
             case ExtraType.RESULT_CODE_ROOM_SETTING_MESSAGE_INVITE:
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_WEIXIN_INVITE:
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK:
-                DialogHelper.onClickCopy(MainActivity.this, mShareUrl);
+                String shareurl = data.getStringExtra("shareUrl");
+                if(mDebug){
+                    Log.e(TAG, "onActivityResult: shareurl "+shareurl );
+                }
+
+                DialogHelper.onClickCopy(MainActivity.this, shareurl);
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_NOTIFICATION:
                 break;
@@ -606,8 +562,7 @@ public class MainActivity extends BaseActivity
     }
 
 
-    private void settingReName(Intent data)
-    {
+    private void settingReName(Intent data) {
         String meetingId;
         mReNameFlag = true;
         mSign = TeamMeetingApp.getmSelfData().getAuthorization();
@@ -624,8 +579,7 @@ public class MainActivity extends BaseActivity
         mUIHandler.sendMessageDelayed(msg, SHOW_EDIT_TEXT_TIME);
     }
 
-    private void seetingDeleteRoom(Intent data)
-    {
+    private void seetingDeleteRoom(Intent data) {
         mSign = getSign();
         int position = data.getIntExtra("position", 0);
         String meetingId = data.getStringExtra("meetingId");
@@ -634,111 +588,97 @@ public class MainActivity extends BaseActivity
         mAdapter.notifyDataSetChanged();
 
         String userId = mRoomMeetingList.get(position).getMeetinguserid();
-        int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId,"");
-        if(code==0){
-            if(mDebug){
-                Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Successed");
+        int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
+        if (code == 0) {
+            if (mDebug) {
+                Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Successed");
             }
-        }else if(mDebug){
-            Log.e(TAG, "onItemClickListener: "+"TMDestroyRoom Failed");
+        } else if (mDebug) {
+            Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Failed");
         }
 
     }
 
 
-
-
-    private void getListNetWork()
-    {
-        mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
+    private void getListNetWork() {
+        mNetWork.getRoomLists(getSign(), 1 + "", 20 + "");
     }
 
-    private void getRoomListSuccess(Message msg)
-    {
+    private void getRoomListSuccess(Message msg) {
         Bundle bundle = msg.getData();
-        String meetingListStr = bundle.getString(NetWork.MEETING_LIST);
-        upDataMeetingList(meetingListStr);
-
+        upDataMeetingList();
         mAdapter.notifyDataSetChanged();
+
         startInvitePeopleActivity();
     }
 
-    private void startInvitePeopleActivity()
-    {
-        if (mCreateRoomFlag)
-        {
+    private void startInvitePeopleActivity() {
+        if (mCreateRoomFlag) {
             Intent intent = new Intent(MainActivity.this,
                     InvitePeopleActivity.class);
-            intent.putExtra("roomUrl", "www.baidu.com");
+            String meetingId = mRoomMeetingList.get(0).getMeetingid();
+            intent.putExtra("meetingId", meetingId);
             startActivityForResult(intent, ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK);
             overridePendingTransition(R.anim.activity_open_enter, R.anim.activity_open_exit);
             mCreateRoomFlag = false;
         }
     }
 
-    private void upDataMeetingList(String meetingListStr)
-    {
+    private void upDataMeetingList() {
+        List<MeetingListEntity> list = TeamMeetingApp.getmSelfData().getMeetingLists();
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).initUnReadMessage(mContext);
+        }
+        
         if (mDebug)
-            Log.e(TAG, "upDataMeetingList: " + meetingListStr);
-        if (meetingListStr != null)
-        {
-            mSign = getSign();
-            Gson gson = new Gson();
-            MeetingList meetingList = gson.fromJson(meetingListStr, MeetingList.class);
-            List<MeetingList.MeetingListEntity> list = meetingList.getMeetingList();
+            Log.e(TAG, "upDataMeetingList: " + list.toString());
+        if (list != null) {
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
+
         }
-        if (mListView != null)
-        {
+
+        if (mListView != null) {
             mListView.setSelection(0);
         }
     }
 
 
-
-    public void netWorkTypeStart(int type)
-    {
-        if (type == NetType.TYPE_NULL.ordinal())
-        {
+    public void netWorkTypeStart(int type) {
+        if (type == NetType.TYPE_NULL.ordinal()) {
             mNetErrorSweetAlertDialog.show();
-        } else
-        {
+        } else {
             mSign = getSign();
             Log.e(TAG, "netWorkTypeStart: mSign" + mSign);
             getListNetWork();
         }
     }
 
-    void createNetErroDilaog()
-    {
-        mNetErrorSweetAlertDialog = new SweetAlertDialog(this,
-                SweetAlertDialog.ERROR_TYPE).setTitleText("网络已断开...")
-                .setConfirmText("ok").setContentText("请连接网络!")
-                .setConfirmClickListener(sweetClickListener);
-    }
 
-    OnSweetClickListener sweetClickListener = new OnSweetClickListener()
-    {
+    OnSweetClickListener sweetClickListener = new OnSweetClickListener() {
         @Override
-        public void onClick(SweetAlertDialog sweetAlertDialog)
-        {
+        public void onClick(SweetAlertDialog sweetAlertDialog) {
             sweetAlertDialog.dismiss();
-            // 设置是否一只提示 没有网络状态
-            // mNetWork.getRoomList(mSign, 1 + "", 20 + "");
         }
     };
 
-
-
+    @Override
+    public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
+        /**
+         *          1.save sql
+         *          2.update list isReadMessage
+         *          2016-01-09 20:15:24
+         *            Monday over
+         */
+        Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
+        mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
+    }
 
     /**
      * For EventBus callback.
      */
-    public void onEventMainThread(Message msg)
-    {
-        switch (EventType.values()[msg.what])
-        {
+    public void onEventMainThread(Message msg) {
+        switch (EventType.values()[msg.what]) {
             case MSG_SIGNOUT_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_SIGNOUT_SUCCESS");
@@ -770,16 +710,14 @@ public class MainActivity extends BaseActivity
             case MSG_APPLY_ROOM_SUCCESS:
                 String meetingId = msg.getData().getString("meetingId");
                 if (mDebug)
-                    Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS "+meetingId);
-                String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-                int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE,meetingId,"");
-                if(code==0){
+                    Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS " + meetingId);
+                int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE, meetingId, "");
+                if (code == 0) {
                     if (mDebug)
-                        Log.e(TAG, "TMCreateRoom "+"Successed");
-                }
-                else {
+                        Log.e(TAG, "TMCreateRoom " + "Successed");
+                } else {
                     if (mDebug)
-                        Log.e(TAG, "TMCreateRoom "+"Failed");
+                        Log.e(TAG, "TMCreateRoom " + "Failed");
                 }
                 getListNetWork();
                 break;
@@ -804,11 +742,16 @@ public class MainActivity extends BaseActivity
             case MSG_RESPONS_ESTR_NULl:
                 if (mDebug)
                     Log.e(TAG, "MSG_RESPONS_ESTR_NULl");
-                mNetErrorSweetAlertDialog.show();
+                // mNetErrorSweetAlertDialog.show();
                 break;
+            case MSG_MESSAGE_RECEIVE:
+                if (mDebug)
+
+                    break;
             default:
                 break;
         }
     }
+
 
 }

@@ -1,11 +1,12 @@
 package org.dync.teameeting.bean;
 
-/**
- * Created by 小白龙 on 2015/12/28 0028.
- */
-public class SelfData
-{
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Created by zhulang on 2015/12/28 0028.
+ */
+public class SelfData {
 
     /**
      * authorization : 6d10ffe96955d5f5a9afdd9934c2d969f59705625dfb98d002807c43015d6b8d
@@ -33,63 +34,62 @@ public class SelfData
     private long requestid;
     private boolean mIsNetConnected;
 
-    public void setAuthorization(String authorization)
-    {
+    private List<MeetingListEntity> meetingLists = new ArrayList<MeetingListEntity>();
+
+    public List<MeetingListEntity> getMeetingLists() {
+        return meetingLists;
+    }
+
+    public void setMeetingLists(List<MeetingListEntity> meetingLists) {
+        this.meetingLists = meetingLists;
+    }
+
+
+    public void setAuthorization(String authorization) {
         this.authorization = authorization;
     }
 
-    public void setCode(int code)
-    {
+    public void setCode(int code) {
         this.code = code;
     }
 
-    public void setInformation(InformationEntity information)
-    {
+    public void setInformation(InformationEntity information) {
         this.information = information;
     }
 
-    public void setMessage(String message)
-    {
+    public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setRequestid(long requestid)
-    {
+    public void setRequestid(long requestid) {
         this.requestid = requestid;
     }
 
-    public String getAuthorization()
-    {
+    public String getAuthorization() {
         return authorization;
     }
 
-    public int getCode()
-    {
+    public int getCode() {
         return code;
     }
 
-    public InformationEntity getInformation()
-    {
+    public InformationEntity getInformation() {
         return information;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
-    public long getRequestid()
-    {
+    public long getRequestid() {
         return requestid;
     }
 
-    public void setmIsNetConnected(boolean mIsNetConnected)
-    {
+    public void setmIsNetConnected(boolean mIsNetConnected) {
         this.mIsNetConnected = mIsNetConnected;
     }
 
-    public class InformationEntity
-    {
+    public class InformationEntity {
         private int uactype;
         private int ulogindev;
         private String uname;
@@ -99,89 +99,72 @@ public class SelfData
         private String userid;
         private int ustatus;
 
-        public void setUactype(int uactype)
-        {
+        public void setUactype(int uactype) {
             this.uactype = uactype;
         }
 
-        public void setUlogindev(int ulogindev)
-        {
+        public void setUlogindev(int ulogindev) {
             this.ulogindev = ulogindev;
         }
 
-        public void setUname(String uname)
-        {
+        public void setUname(String uname) {
             this.uname = uname;
         }
 
-        public void setUpushtoken(String upushtoken)
-        {
+        public void setUpushtoken(String upushtoken) {
             this.upushtoken = upushtoken;
         }
 
-        public void setUregtime(long uregtime)
-        {
+        public void setUregtime(long uregtime) {
             this.uregtime = uregtime;
         }
 
-        public void setUregtype(int uregtype)
-        {
+        public void setUregtype(int uregtype) {
             this.uregtype = uregtype;
         }
 
-        public void setUserid(String userid)
-        {
+        public void setUserid(String userid) {
             this.userid = userid;
         }
 
-        public void setUstatus(int ustatus)
-        {
+        public void setUstatus(int ustatus) {
             this.ustatus = ustatus;
         }
 
-        public int getUactype()
-        {
+        public int getUactype() {
             return uactype;
         }
 
-        public int getUlogindev()
-        {
+        public int getUlogindev() {
             return ulogindev;
         }
 
-        public String getUname()
-        {
+        public String getUname() {
             return uname;
         }
 
-        public String getUpushtoken()
-        {
+        public String getUpushtoken() {
             return upushtoken;
         }
 
-        public long getUregtime()
-        {
+        public long getUregtime() {
             return uregtime;
         }
 
-        public int getUregtype()
-        {
+        public int getUregtype() {
             return uregtype;
         }
 
-        public String getUserid()
-        {
+        public String getUserid() {
             return userid;
         }
 
-        public int getUstatus()
-        {
+        public int getUstatus() {
             return ustatus;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "InformationEntity{" +
                     "uactype=" + uactype +
                     ", ulogindev=" + ulogindev +

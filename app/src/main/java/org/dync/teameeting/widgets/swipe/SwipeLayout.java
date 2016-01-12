@@ -16,7 +16,7 @@ import android.widget.FrameLayout;
 /**
  * 
  * 
- * @author PoplarTang H_lang 修改 2015年12月1日14:08:13
+ * @author PoplarTang H_lang
  * 
  */
 public class SwipeLayout extends FrameLayout implements SwipeLayoutInterface

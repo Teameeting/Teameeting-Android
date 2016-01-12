@@ -3,30 +3,35 @@ package org.dync.teameeting.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingInfo;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
+import org.dync.teameeting.structs.EventType;
 
-public class JoinMeetingActivity extends Activity implements View.OnClickListener{
+public class JoinMeetingActivity extends BaseActivity implements View.OnClickListener{
     private final static String TAG = "JoinMeetingActivity";
     private boolean mDebug = TeamMeetingApp.mIsDebug;
     private EditText mEtMeetingId;
     private ImageButton mIbtnJoinMeeting,mIbtnback;
     private TMMsgSender mMsgSender;
-    private final String mPass = TeamMeetingApp.getmSelfData().getAuthorization();
+    private String mMeetingId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_meeting);
         inintView();
+        inintdata();
     }
 
     private  void inintView(){
@@ -37,7 +42,12 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
         mIbtnJoinMeeting.setOnClickListener(this);
         mEtMeetingId.setOnEditorActionListener(mOnEditorActionListener);
 
+    }
+
+
+    private void inintdata(){
         mMsgSender=TeamMeetingApp.getmMsgSender();
+
     }
 
 
@@ -49,7 +59,9 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.ibtn_join_meeting:
-                joinMeeting();
+
+                meetingDealWith();
+
                 break;
 
 
@@ -63,20 +75,33 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
-            joinMeeting();
+            meetingDealWith();
             return false;
         }
     };
+
+    /**
+     *
+     */
+    private void meetingDealWith(){
+        mMeetingId = mEtMeetingId.getText().toString();
+        if(mMeetingId.length()==12){
+            Log.e(TAG, "meetingDealWith: "+getSign()+" mMeetingId "+mMeetingId );
+            mNetWork.getMeetingInfo(mMeetingId);
+        }
+        else{
+            Toast.makeText(JoinMeetingActivity.this,R.string.str_meeting_id_error,Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     /**
      * joinMeeting
      */
     private void joinMeeting(){
 
-        String meetingId = mEtMeetingId.getText().toString();
-        if(meetingId.length()!=0&&meetingId!=null){
             String userId = TeamMeetingApp.getTeamMeetingApp().getDevId();
-            int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, meetingId,"");
+            int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, mMeetingId,"");
             if(code==0){
                 if(mDebug){
                     Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");
@@ -85,15 +110,69 @@ public class JoinMeetingActivity extends Activity implements View.OnClickListene
                 Log.e(TAG, "joinMeeting: "+"TMEnterRoom Failed");
             }
             Intent intent = new Intent(JoinMeetingActivity.this,MeetingActivity.class);
-            intent.putExtra("meetingId", meetingId);
+            intent.putExtra("meetingId", mMeetingId);
             intent.putExtra("userId", userId);
             startActivity(intent);
-        }
-        else{
-
-        }
 
     }
 
 
+    @Override
+    public void onEventMainThread(Message msg) {
+        {
+            switch (EventType.values()[msg.what]) {
+
+                case MSG_GET_MEETING_INFO_SUCCESS:
+                    if (mDebug)
+                        Log.e(TAG, "MSG_GET_MEETING_INFO_SUCCESS");
+                    int usable = msg.getData().getInt("usable");
+                    switch (usable){
+                        case 0://no
+                            Toast.makeText(JoinMeetingActivity.this,R.string.str_meeting_deleted,Toast.LENGTH_SHORT).show();
+                            break;
+
+                        case 1://yes
+                            mNetWork.insertUserMeetingRoom(getSign(),mMeetingId);
+                            break;
+
+                        case 2://private
+                            Toast.makeText(JoinMeetingActivity.this,R.string.str_meeting_privated,Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+
+                    break;
+                case MSG_GET_MEETING_INFO_FAILED:
+                    if (mDebug)
+                        Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
+                    Toast.makeText(JoinMeetingActivity.this,msg.getData().getString("message"),Toast.LENGTH_SHORT).show();
+                    break;
+                case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
+                    if (mDebug)
+                        Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
+                    joinMeeting();
+                    break;
+                case MSG_INSERT_USER_MEETING_ROOM_FAILED:
+                    if (mDebug)
+                        Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_FAILED");
+                    Toast.makeText(JoinMeetingActivity.this,msg.getData().getString("message"),Toast.LENGTH_SHORT).show();
+                    break;
+
+                case MSG_NET_WORK_TYPE:
+                    if (mDebug)
+                        Log.e(TAG, "MSG_NET_WORK_TYPE");
+                    int type = msg.getData().getInt("net_type");
+
+                    break;
+                case MSG_RESPONS_ESTR_NULl:
+                    if (mDebug)
+                        Log.e(TAG, "MSG_RESPONS_ESTR_NULl");
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+    }
 }

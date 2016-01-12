@@ -1,6 +1,7 @@
 package org.dync.teameeting;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -11,41 +12,47 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import org.anyrtc.Anyrtc;
 import org.dync.teameeting.bean.SelfData;
+import org.dync.teameeting.chatmessage.ChatMessageClient;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.receiver.NetWorkReceiver;
 import org.dync.teameeting.utils.ScreenUtils;
 
 import cn.jpush.android.api.JPushInterface;
 
-public class TeamMeetingApp extends Application
-{
+public class TeamMeetingApp extends Application {
 
+    private Context context;
     public static boolean mIsDebug = true;// debug deal with
     private static final String TAG = "Application";
     private static final boolean mDebug = true;
     private static TeamMeetingApp mTeamMeetingApp;
+    private static ChatMessageClient mChatMessageClient;
 
     private static SelfData mSelfData;
     private NetWorkReceiver mNetReceiver;
     public static boolean isPad = false;
     private static TMMsgSender mMsgSender;
 
+    public static ChatMessageClient getmChatMessageClient() {
+        return mChatMessageClient;
+    }
+
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
-
+        context = this;
         mSelfData = new SelfData();
+        mChatMessageClient = new ChatMessageClient(context);
         registerReceiver();
 
         isPad = ScreenUtils.isPad(this);
-        if (mDebug)
-        {
+        if (mDebug) {
             Log.e(TAG, "onCreate: isPad" + isPad);
         }
         JPushInterface.setDebugMode(true);
@@ -57,17 +64,14 @@ public class TeamMeetingApp extends Application
     /**
      * registerReceiver
      */
-    private void registerReceiver()
-    {
+    private void registerReceiver() {
         mNetReceiver = new NetWorkReceiver();
         IntentFilter netFilter = new IntentFilter();
         netFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mNetReceiver, netFilter);
-
     }
 
-    public TeamMeetingApp()
-    {
+    public TeamMeetingApp() {
         super();
         mTeamMeetingApp = this;
     }
@@ -79,26 +83,21 @@ public class TeamMeetingApp extends Application
     }
 
 
-
-
     /*chat message deal with*/
-    public static TMMsgSender getmMsgSender(){
-        return  mMsgSender;
+    public static TMMsgSender getmMsgSender() {
+        return mMsgSender;
     }
 
-    public  void setmMsgSender(TMMsgSender msgSender){
+    public void setmMsgSender(TMMsgSender msgSender) {
         mMsgSender = msgSender;
     }
 
 
-
-    public static void setSelfData(SelfData selfData)
-    {
+    public static void setSelfData(SelfData selfData) {
         mSelfData = selfData;
     }
 
-    public static SelfData getmSelfData()
-    {
+    public static SelfData getmSelfData() {
         return mSelfData;
     }
 
@@ -107,78 +106,62 @@ public class TeamMeetingApp extends Application
      *
      * @return the value of Token
      */
-    public String getToken()
-    {
+    public String getToken() {
         Bundle bundle = null;
         String tokenKey = "";
-        try
-        {
+        try {
             ApplicationInfo info = getPackageManager().getApplicationInfo(getPackageName(),
                     PackageManager.GET_META_DATA);
-            bundle = info.metaData;// 获取metaData标签内容
-            if (bundle != null)
-            {
-                tokenKey = bundle.getString("TOKEN");// 这里获取的就是value值
+            bundle = info.metaData;
+            if (bundle != null) {
+                tokenKey = bundle.getString("TOKEN");
             }
-        } catch (PackageManager.NameNotFoundException localNameNotFoundException1)
-        {
+        } catch (PackageManager.NameNotFoundException localNameNotFoundException1) {
 
         }
         return tokenKey;
     }
 
-    public void Destroy()
-    {
+    public void Destroy() {
         unregisterReceiver(mNetReceiver);
     }
 
     /**
      * Judge if device has SD card
      */
-    public boolean hasSdcard()
-    {
+    public boolean hasSdcard() {
         String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED))
-        {
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
             return true;
-        } else
-        {
+        } else {
             return false;
         }
     }
 
-    public void showToast(String msg)
-    {
+    public void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public void showToast(int string)
-    {
+    public void showToast(int string) {
         Toast.makeText(this, getString(string), Toast.LENGTH_SHORT).show();
     }
 
-    public String getVersionName()
-    {
+    public String getVersionName() {
         PackageInfo pkgInfo = null;
-        try
-        {
+        try {
             pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (NameNotFoundException e)
-        {
+        } catch (NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return pkgInfo.versionName;
     }
 
-    public int getVersionCode()
-    {
+    public int getVersionCode() {
         PackageInfo pkgInfo = null;
-        try
-        {
+        try {
             pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (NameNotFoundException e)
-        {
+        } catch (NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -190,8 +173,7 @@ public class TeamMeetingApp extends Application
      *
      * @return the device id
      */
-    public String getDevId()
-    {
+    public String getDevId() {
         return Secure.getString(getContentResolver(), Secure.ANDROID_ID);
     }
 

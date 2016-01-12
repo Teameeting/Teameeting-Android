@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
@@ -46,7 +48,7 @@ public class StartFlashActivity extends BaseActivity
     private final int mPort = 9210;
     private String mUserid ;
     private String mSign;
-
+    private ProgressBar mLoadingProgress;
 
 
     @Override
@@ -55,27 +57,35 @@ public class StartFlashActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_flash);
-        mView = (ImageView) findViewById(R.id.splash_image);
-        context = this;
+
+        inintView();
         initData();
 
-        // 设置推送的样式
         //setPushNotificationBuilderIcon();
     }
 
 
+    /**
+     * set Push Style
+     */
     public void setPushNotificationBuilderIcon()
     {
         CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
                 this, R.layout.customer_notitfication_layout, R.id.icon,
                 R.id.title, R.id.text);
-        // 指定定制的 Notification Layout
+
         builder.statusBarDrawable = R.drawable.ic_richpush_actionbar_back;
-        // 指定层状态栏小图标
         builder.layoutIconDrawable = R.drawable.ic_richpush_actionbar_back;
-        // 指定下拉状态栏时显示的通知图标
         JPushInterface.setPushNotificationBuilder(2, builder);
 
+    }
+
+    /**
+     * inint View
+     */
+    private void inintView(){
+        mView = (ImageView) findViewById(R.id.splash_image);
+        mLoadingProgress = (ProgressBar)findViewById(R.id.pb_loading);
     }
 
     /**
@@ -83,11 +93,10 @@ public class StartFlashActivity extends BaseActivity
      */
     private void initData()
     {
+        context = this;
         mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this, sweetClickListener);
 
         mUserid = TeamMeetingApp.getTeamMeetingApp().getDevId();
-
-
 
         Animation loadAnimation = AnimationUtils.loadAnimation(this,
                 R.anim.splash);
@@ -101,13 +110,12 @@ public class StartFlashActivity extends BaseActivity
      */
     private void chatMessageInint(){
 
-        mMsgSender = new TMMsgSender(this, new ChatMessageClient());
+        mMsgSender = new TMMsgSender(this,TeamMeetingApp.getmChatMessageClient());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
         int msg = mMsgSender.TMInit(mUserid,mSign,mServer, mPort);
         if(msg ==0){
             if(mDebug)
                 Log.e(TAG, "Chat Message Inint successed");
-
         }
         else if(mDebug){
             Log.e(TAG, "Chat Message Inint failed");
@@ -132,8 +140,6 @@ public class StartFlashActivity extends BaseActivity
         @Override
         public void onAnimationEnd(Animation arg0)
         {
-
-
             mNetWork.init(mUserid, "2", "2", "2", "TeamMeeting");
         }
     };
@@ -145,23 +151,20 @@ public class StartFlashActivity extends BaseActivity
     private void interfacejump(Message msg )
     {
 
-        Bundle bundle = msg.getData();
-        String meetingListStr = bundle.getString(NetWork.MEETING_LIST);
-
+        mLoadingProgress.setVisibility(View.GONE);
         boolean firstLogin = LocalUserInfo.getInstance(StartFlashActivity.this)
                 .getUserInfoBoolean(LocalUserInfo.FIRST_LOGIN);
          Intent intent ;
-        if (true)
+        if (firstLogin)
         {
             intent = new Intent(StartFlashActivity.this, GuideActivity.class);
-            intent.putExtra(NetWork.MEETING_LIST,meetingListStr);
-            LocalUserInfo.getInstance(StartFlashActivity.this).setUserInfoBoolean("firstLogin", true);
+
+            LocalUserInfo.getInstance(StartFlashActivity.this).setUserInfoBoolean("firstLogin", false);
 
         } else
         {
 
             intent = new Intent(StartFlashActivity.this, MainActivity.class);
-            intent.putExtra(NetWork.MEETING_LIST,meetingListStr);
         }
 
         startActivity(intent);

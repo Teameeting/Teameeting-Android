@@ -17,7 +17,7 @@ import org.dync.teameeting.utils.ScreenUtils;
  * org.dync.teammeeting.ui.BottomMenu
  *
  * @author ZLang <br/>
- *         后期努力完善 有部分bug 不影响使用 create at 2015-11-30 下午7:01:22
+ *
  */
 public class BottomMenu extends ViewGroup
 {
@@ -94,10 +94,6 @@ public class BottomMenu extends ViewGroup
         if (TeamMeetingApp.isPad)
         {
             mTop = mTop / 2;
-            if (mDebug)
-            {
-                Log.e(TAG, "平板: mTop" + mTop);
-            }
 
         }
         mMaxTop = 0;
@@ -107,16 +103,6 @@ public class BottomMenu extends ViewGroup
             Log.e(TAG, "mMaxTop--" + mMaxTop);
         }
 
-
-	    /*	if (tagHeight < 400)
-        {
-			mTop = mScreenHeight - mMenuHeight;
-			mMaxTop = 0;
-		} else
-		{
-			mTop = mScreenHeight - mMenuHeight / 2;
-			mMaxTop = mMenuHeight / 2;
-		}*/
 
         if (mDebug)
             Log.e(TAG, "---menuHeight --" + mMenuHeight);

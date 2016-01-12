@@ -10,6 +10,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,6 +20,9 @@ import android.widget.TextView;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.ReqSndMsgEntity;
+import org.dync.teameeting.chatmessage.ChatMessageClient;
+import org.dync.teameeting.chatmessage.IChatMessageInteface;
 import org.dync.teameeting.http.NetWork;
 
 import java.util.ArrayList;
@@ -28,10 +33,11 @@ import java.util.Random;
  * @author ZLang <br/>
  *         create at 2015-11-30 下午2:48:42
  */
-public class MeetingBaseActivity extends Activity
-{
-
+public class MeetingBaseActivity extends Activity implements IChatMessageInteface {
+    public String TAG = "MeetingBaseActivity";
+    public boolean mDebug = TeamMeetingApp.mIsDebug;
     private RelativeLayout mainView;
+    private ChatMessageClient mChatMessageClinet;
     Random random = new Random();
     public int mTopMargin = 0;
     public String mSign;
@@ -43,51 +49,60 @@ public class MeetingBaseActivity extends Activity
             R.color.vifrification, R.color.grayBlue, R.color.mediumslateblue,};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         mNetWork = new NetWork();
-
-        mainView = (RelativeLayout) View.inflate(this,
-                R.layout.activity_meeting, null);
-
+        mainView = (RelativeLayout) View.inflate(this, R.layout.activity_meeting, null);
         setContentView(mainView);
         viewList = new ArrayList<LinearLayout>();
 
+        registerObserverClinet();
         //startShowMessage();
     }
 
-    public String getSign()
-    {
+    private void registerObserverClinet() {
+        mChatMessageClinet = TeamMeetingApp.getmChatMessageClient();
+        mChatMessageClinet.registerObserver(new ChatMessageClient.ChatMessageObserver() {
+            @Override
+            public void OnReqSndMsg(final ReqSndMsgEntity reqSndMsg) {
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onRequesageMsg(reqSndMsg);
+                        }
+                    });
+                } else {
+                    onRequesageMsg(reqSndMsg);
+                }
+            }
+        });
+    }
+
+    public String getSign() {
         return TeamMeetingApp.getmSelfData().getAuthorization();
     }
-    public void addAutoView(String msg ,String name)
-    {
 
+    public void addAutoView(String msg, String name) {
         MoveDownView();
-        final LinearLayout showView = (LinearLayout) View.inflate(this,
-                R.layout.text_view, null);
+
+        final LinearLayout showView = (LinearLayout) View.inflate(this, R.layout.text_view, null);
         TextView tvChatContent = (TextView) showView.findViewById(R.id.tv_chat_content);
         TextView tvSendName = (TextView) showView.findViewById(R.id.tv_send_name);
         showView.setBackgroundColor(colors[random.nextInt(10)]);
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         params.topMargin = (int) getResources().getDimension(R.dimen.height_top_bar);
-
         showView.setLayoutParams(params);
-        showView.postDelayed(new Runnable()
-        {
+        showView.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 alphaAnimation(showView, viewList);
             }
         }, 1000);
         viewList.add(showView);
         mainView.addView(showView);
-
 
         tvChatContent.setText(msg);
         tvSendName.setText(name);
@@ -95,15 +110,12 @@ public class MeetingBaseActivity extends Activity
     }
 
     private void alphaAnimation(final View view,
-                                final List<LinearLayout> viewList)
-    {
+                                final List<LinearLayout> viewList) {
         view.clearAnimation();
         ObjectAnimator anim = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
-        anim.addListener(new AnimatorListenerAdapter()
-        {
+        anim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation)
-            {
+            public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 viewList.remove(view);
             }
@@ -111,11 +123,9 @@ public class MeetingBaseActivity extends Activity
         anim.setDuration(3000).start();
     }
 
-    private void MoveDownView()
-    {
+    private void MoveDownView() {
         int topMargin = 0;
-        for (int i = 0; i < viewList.size(); i++)
-        {
+        for (int i = 0; i < viewList.size(); i++) {
             LinearLayout linearLayout = viewList.get(i);
             topMargin = linearLayout.getHeight() + 20;
             LayoutParams layoutParams = (LayoutParams) linearLayout
@@ -125,32 +135,31 @@ public class MeetingBaseActivity extends Activity
         }
     }
 
-    public void startShowMessage()
-    {
+    public void startShowMessage() {
         isShowMessage = true;
-       // handler.sendEmptyMessage(0);
+        // handler.sendEmptyMessage(0);
     }
 
-    public void stopShowMessage()
-    {
+    public void stopShowMessage() {
         isShowMessage = false;
-        // 移除所有的消息
-       // handler.removeCallbacksAndMessages(null);
+        // handler.removeCallbacksAndMessages(null);
     }
-
 
 
     /**
      * @param chactView
      * @return
      */
-    public int controllerMoveDistance(View chactView)
-    {
+    public int controllerMoveDistance(View chactView) {
       /*  int betweenWidth = ScreenUtils.getScreenWidth(this)-chactView.getWidth() - ScreenUtils.getScreenWidth(this)/2;
         Log.i("xbl", "onTouchEvent: ScreenUtils.getScreenWidth(this)"+ ScreenUtils.getScreenWidth(this) +"chactView"+chactView.getWidt*/
-        return  chactView.getWidth()/2;
+        return chactView.getWidth() / 2;
     }
 
 
-
+    @Override
+    public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
+        if (mDebug)
+            Log.e(TAG, "OnReqSndMsg:" + requestMsg.toString());
+    }
 }

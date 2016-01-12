@@ -1,4 +1,4 @@
-package org.dync.teameeting.dao;
+package org.dync.teameeting.db.chatdao;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -18,28 +18,28 @@ import de.greenrobot.dao.internal.DaoConfig;
  */
 public class DaoSession extends AbstractDaoSession {
 
-    private final DaoConfig chatEnityDaoConfig;
+    private final DaoConfig chatCacheEntityDaoConfig;
 
-    private final ChatEnityDao chatEnityDao;
+    private final ChatCacheEntityDao chatCacheEntityDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
 
-        chatEnityDaoConfig = daoConfigMap.get(ChatEnityDao.class).clone();
-        chatEnityDaoConfig.initIdentityScope(type);
+        chatCacheEntityDaoConfig = daoConfigMap.get(ChatCacheEntityDao.class).clone();
+        chatCacheEntityDaoConfig.initIdentityScope(type);
 
-        chatEnityDao = new ChatEnityDao(chatEnityDaoConfig, this);
+        chatCacheEntityDao = new ChatCacheEntityDao(chatCacheEntityDaoConfig, this);
 
-        registerDao(ChatEnity.class, chatEnityDao);
+        registerDao(ChatCacheEntity.class, chatCacheEntityDao);
     }
     
     public void clear() {
-        chatEnityDaoConfig.getIdentityScope().clear();
+        chatCacheEntityDaoConfig.getIdentityScope().clear();
     }
 
-    public ChatEnityDao getChatEnityDao() {
-        return chatEnityDao;
+    public ChatCacheEntityDao getChatCacheEntityDao() {
+        return chatCacheEntityDao;
     }
 
 }
