@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
@@ -46,7 +48,7 @@ public class StartFlashActivity extends BaseActivity
     private final int mPort = 9210;
     private String mUserid ;
     private String mSign;
-
+    private ProgressBar mLoadingProgress;
 
 
     @Override
@@ -55,8 +57,8 @@ public class StartFlashActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_flash);
-        mView = (ImageView) findViewById(R.id.splash_image);
-        context = this;
+
+        inintView();
         initData();
 
         //setPushNotificationBuilderIcon();
@@ -79,10 +81,19 @@ public class StartFlashActivity extends BaseActivity
     }
 
     /**
+     * inint View
+     */
+    private void inintView(){
+        mView = (ImageView) findViewById(R.id.splash_image);
+        mLoadingProgress = (ProgressBar)findViewById(R.id.pb_loading);
+    }
+
+    /**
      * inintData
      */
     private void initData()
     {
+        context = this;
         mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this, sweetClickListener);
 
         mUserid = TeamMeetingApp.getTeamMeetingApp().getDevId();
@@ -99,7 +110,7 @@ public class StartFlashActivity extends BaseActivity
      */
     private void chatMessageInint(){
 
-        mMsgSender = new TMMsgSender(this,ChatMessageClient.getInstance());
+        mMsgSender = new TMMsgSender(this,TeamMeetingApp.getmChatMessageClient());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
         int msg = mMsgSender.TMInit(mUserid,mSign,mServer, mPort);
         if(msg ==0){
@@ -140,14 +151,15 @@ public class StartFlashActivity extends BaseActivity
     private void interfacejump(Message msg )
     {
 
+        mLoadingProgress.setVisibility(View.GONE);
         boolean firstLogin = LocalUserInfo.getInstance(StartFlashActivity.this)
                 .getUserInfoBoolean(LocalUserInfo.FIRST_LOGIN);
          Intent intent ;
-        if (true)
+        if (firstLogin)
         {
             intent = new Intent(StartFlashActivity.this, GuideActivity.class);
 
-            LocalUserInfo.getInstance(StartFlashActivity.this).setUserInfoBoolean("firstLogin", true);
+            LocalUserInfo.getInstance(StartFlashActivity.this).setUserInfoBoolean("firstLogin", false);
 
         } else
         {

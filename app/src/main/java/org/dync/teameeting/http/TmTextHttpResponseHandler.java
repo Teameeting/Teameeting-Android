@@ -36,7 +36,7 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
     {
-        // 网络问题。  or.服务器挂了。
+        // network or server  problem 
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
         if (mDebug)

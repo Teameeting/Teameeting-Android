@@ -29,7 +29,7 @@
     <dimen name="largest_most_txt_size">21sp</dimen>
     <dimen name="largest_txt_size">19sp</dimen>
     <dimen name="larger_txt_size">17sp</dimen>
-    <dimen name="middle_txt_size">13sp</dimen>
+    <dimen name="middle_txt_size">15sp</dimen>
     <dimen name="normal_txt_size">14sp</dimen>
     <dimen name="small_txt_size">12sp</dimen>
 

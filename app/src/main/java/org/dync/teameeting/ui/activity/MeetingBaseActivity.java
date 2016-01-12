@@ -62,7 +62,7 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
     }
 
     private void registerObserverClinet() {
-        mChatMessageClinet = ChatMessageClient.getInstance();
+        mChatMessageClinet = TeamMeetingApp.getmChatMessageClient();
         mChatMessageClinet.registerObserver(new ChatMessageClient.ChatMessageObserver() {
             @Override
             public void OnReqSndMsg(final ReqSndMsgEntity reqSndMsg) {
@@ -160,6 +160,6 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
         if (mDebug)
-            Log.e(TAG, "OnReqSndMsg:123 " + requestMsg.toString());
+            Log.e(TAG, "OnReqSndMsg:" + requestMsg.toString());
     }
 }

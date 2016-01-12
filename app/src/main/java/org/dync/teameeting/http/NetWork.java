@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingInfo;
 import org.dync.teameeting.bean.MeetingList;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
@@ -191,10 +192,11 @@ public class NetWork {
 
     /**
      * updatePushtoken
-     *
-     * @param userid
+     * @param sign
      * @param upushtoken
      */
+
+
     public void updatePushtoken(final String sign, final String upushtoken) {
         String url = "users/updatePushtoken";
         RequestParams params = new RequestParams();
@@ -249,6 +251,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -259,10 +262,12 @@ public class NetWork {
      *
      * @param sign
      * @param meetingname
-     * @param meettype
+     * @param meetingtype
      * @param meetdesc
-     * @param meetingid
+     * @param meetenable
+     * @param pushable
      */
+
     public void applyRoom(final String sign, final String meetingname,
                           final String meetingtype, final String meetdesc, final String meetenable,
                           final String pushable) {
@@ -482,6 +487,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -489,12 +495,13 @@ public class NetWork {
     }
 
     /**
-     * updateRoomMemNumber 07
+     * updateRoomMemNumber
      *
      * @param sign
      * @param meetingid
-     * @param enable
+     * @param meetingMemNumber
      */
+
     public void updateRoomMemNumber(final String sign, final String meetingid,
                                     final String meetingMemNumber) {
         new Thread() {
@@ -903,18 +910,56 @@ public class NetWork {
     /**
      * .获取会议室的信息 单独封装 提交响应的设置 16
      *
-     * @param mettinString
+     * @param meetingid
      */
-    public String getMeetingInfo(String mettinString) {
-        return null;
+    public void getMeetingInfo(String meetingid) {
+
+
+        String url = "meeting/getMeetingInfo/"+meetingid;
+        HttpContent.get(url,new TmTextHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                super.onSuccess(statusCode, code, message, responseString, headers);
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: getMeetingInfo" + responseString);
+                if (code == 200) {
+                    msg.what = EventType.MSG_GET_MEETING_INFO_SUCCESS
+                            .ordinal();
+
+                    try {
+                        JSONObject json = new JSONObject(responseString);
+                        String info = json.getString("meetingInfo");
+                        MeetingInfo meetingInfo = gson.fromJson(info, MeetingInfo.class);
+                        bundle.putInt("usable", meetingInfo.getMeetusable());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                } else {
+                    msg.what = EventType.MSG_GET_MEETING_INFO_FAILED
+                            .ordinal();
+                }
+
+                bundle.putString("message", message);
+                msg.setData(bundle);
+
+                EventBus.getDefault().post(msg);
+
+            }
+        });
+
     }
 
     /**
-     * /meeting/updateUserMeetingJointime 17
+     * updateUserMeetingJointime
      *
-     * @param sessionid
-     * @param sessionnumber
+     * @param sign
+     * @param meetingid
      */
+
     public void updateUserMeetingJointime(final String sign,
                                           final String meetingid) {
         new Thread() {
@@ -960,58 +1005,52 @@ public class NetWork {
     }
 
     /**
-     * updateUserMeetingJointime 18
+     * insertUserMeetingRoom
      *
-     * @param sessionid
-     * @param sessionnumber
+     * @param sign
+     * @param meetingid
      */
+
     public void insertUserMeetingRoom(final String sign, final String meetingid) {
-        new Thread() {
+
+        String url = "meeting/insertUserMeetingRoom";
+        RequestParams params = new RequestParams();
+        params.put("sign", sign);
+        params.put("meetingid", meetingid);
+
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
             @Override
-            public synchronized void run() {
-                super.run();
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("sign", sign);
-                params.put("meetingid", meetingid);
-                try {
-                    String ss = getResponseStr(params,
-                            "meeting/insertUserMeetingRoom");
-                    if (ss != null) {
-                        JSONObject jsonObject = new JSONObject(ss);
-                        Bundle bundle = new Bundle();
-                        Message msg = new Message();
-                        int code = jsonObject.getInt("code");
-                        String message = jsonObject.getString("message");
-                        if (code == 200) {
-                            msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
-                                    .ordinal();
-                        } else {
-                            msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
-                                    .ordinal();
-                        }
-
-                        bundle.putString("message", message);
-                        msg.setData(bundle);
-                        // 测试
-                        EventBus.getDefault().post(msg);
-                    }
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                super.onSuccess(statusCode, code, message, responseString, headers);
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: pushMeetingMsg" + responseString);
+                if (code == 200) {
+                    msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
+                            .ordinal();
+                } else {
+                    msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
+                            .ordinal();
                 }
+
+                bundle.putString("message", message);
+                msg.setData(bundle);
+
+                EventBus.getDefault().post(msg);
+
             }
-        }.start();
+        });
 
     }
 
     /**
-     * pushMeetingMsg 19
+     * pushMeetingMsg
      *
-     * @param sessionid
-     * @param sessionnumber
+     * @param sign
+     * @param meetingid
+     * @param pushMsg
+     * @param notification
      */
+
     public void pushMeetingMsg(final String sign, final String meetingid,
                                final String pushMsg, final String notification) {
         String url = "jpush/pushMeetingMsg";
@@ -1047,13 +1086,14 @@ public class NetWork {
     }
 
     /**
-     * pushCommonMsg 20
+     * pushCommonMsg
      *
      * @param sign
-     * @param meetingid
+     * @param targetid
      * @param pushMsg
      * @param notification
      */
+
     public void pushCommonMsg(final String sign, final List<String> targetid,
                               final String pushMsg, final String notification) {
         new Thread() {

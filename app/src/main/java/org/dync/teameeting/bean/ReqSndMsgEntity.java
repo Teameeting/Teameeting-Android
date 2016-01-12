@@ -168,4 +168,15 @@ public class ReqSndMsgEntity {
     public String getStatus() {
         return status;
     }
+
+    @Override
+    public String toString() {
+        return "ReqSndMsgEntity{" +
+                "ntime=" + ntime +
+                ", from='" + from + '\'' +
+                ", room='" + room + '\'' +
+                ", to='" + to + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

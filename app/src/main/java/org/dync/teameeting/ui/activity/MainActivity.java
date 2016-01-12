@@ -24,10 +24,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
+import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
@@ -534,7 +537,12 @@ public class MainActivity extends BaseActivity {
             case ExtraType.RESULT_CODE_ROOM_SETTING_WEIXIN_INVITE:
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK:
-                DialogHelper.onClickCopy(MainActivity.this, mShareUrl);
+                String shareurl = data.getStringExtra("shareUrl");
+                if(mDebug){
+                    Log.e(TAG, "onActivityResult: shareurl "+shareurl );
+                }
+
+                DialogHelper.onClickCopy(MainActivity.this, shareurl);
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_NOTIFICATION:
                 break;
@@ -609,7 +617,8 @@ public class MainActivity extends BaseActivity {
         if (mCreateRoomFlag) {
             Intent intent = new Intent(MainActivity.this,
                     InvitePeopleActivity.class);
-            intent.putExtra("roomUrl", "www.baidu.com");
+            String meetingId = mRoomMeetingList.get(0).getMeetingid();
+            intent.putExtra("meetingId", meetingId);
             startActivityForResult(intent, ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK);
             overridePendingTransition(R.anim.activity_open_enter, R.anim.activity_open_exit);
             mCreateRoomFlag = false;
@@ -618,6 +627,10 @@ public class MainActivity extends BaseActivity {
 
     private void upDataMeetingList() {
         List<MeetingListEntity> list = TeamMeetingApp.getmSelfData().getMeetingLists();
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).initUnReadMessage(mContext);
+        }
+        
         if (mDebug)
             Log.e(TAG, "upDataMeetingList: " + list.toString());
         if (list != null) {
@@ -651,24 +664,19 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(SweetAlertDialog sweetAlertDialog) {
             sweetAlertDialog.dismiss();
-            // 设置是否一只提示 没有网络状态
-            // mNetWork.getRoomList(mSign, 1 + "", 20 + "");
         }
     };
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
-        super.onRequesageMsg(requestMsg);
         /**
          *          1.save sql
          *          2.update list isReadMessage
          *          2016-01-09 20:15:24
          *            Monday over
          */
-
-        if (mDebug)
-            Log.e(TAG, "OnReqSndMsg: " + requestMsg.toString());
-
+        Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
+        mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
     }
 
     /**
@@ -708,7 +716,6 @@ public class MainActivity extends BaseActivity {
                 String meetingId = msg.getData().getString("meetingId");
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS " + meetingId);
-                String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
                 int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE, meetingId, "");
                 if (code == 0) {
                     if (mDebug)
@@ -740,8 +747,12 @@ public class MainActivity extends BaseActivity {
             case MSG_RESPONS_ESTR_NULl:
                 if (mDebug)
                     Log.e(TAG, "MSG_RESPONS_ESTR_NULl");
-                mNetErrorSweetAlertDialog.show();
+                // mNetErrorSweetAlertDialog.show();
                 break;
+            case MSG_MESSAGE_RECEIVE:
+                if (mDebug)
+
+                    break;
             default:
                 break;
         }
