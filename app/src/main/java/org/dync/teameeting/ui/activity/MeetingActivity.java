@@ -36,7 +36,6 @@ import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.ChatMessage;
 import org.dync.teameeting.bean.ChatMessage.Type;
-
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.http.NetWork;
@@ -58,9 +57,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-
-import javax.security.auth.login.LoginException;
 
 /**
  * @author zhangqilu org.dync.teammeeting.activity MeetingActivity create at
@@ -480,7 +476,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.meeting_hangup:
                     finish();
 
-                    int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_LEAVE, mMeetingId, "");
+                    int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_LEAVE, mMeetingId, "");
                     if (code == 0) {
                         if (mDebug) {
                             Log.e(TAG, "TMLeaveRoom Successed");
