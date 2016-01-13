@@ -21,14 +21,12 @@ public class JMClientApp {
     public native int Init(String strUid, String strToken, String strServer, int port);
     public native int Unin();
 
-
     public native int SndMsg(String strRoomid, String strMsg);
-    public native int GetMsg();
+    public native int GetMsg(int cmd);
     public native int OptRoom(int cmd, String strRoomid, String strRemain);
     public native int SndMsgTo(String strRoomid, String strMsg, String[] arrUser);
 
     public native int NotifyMsg(String strRoomid, String strMsg);
-
 
     /**
      * 销毁APP

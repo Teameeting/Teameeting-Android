@@ -24,8 +24,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
-
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
@@ -370,7 +368,7 @@ public class MainActivity extends BaseActivity {
                     if (mDebug) {
                         Log.i(TAG, "meetingId-fl_front" + meetingId);
                     }
-                    code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, meetingId, "");
+                    code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, meetingId, "");
                     if (code == 0) {
                         if (mDebug) {
                             Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Successed");
@@ -396,14 +394,15 @@ public class MainActivity extends BaseActivity {
                     mNetWork.deleteRoom(mSign, meetingId);
                     mRoomMeetingList.remove(position);
                     mAdapter.notifyDataSetChanged();
-                    code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
+                    //this code has deprecated
+                    /*code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
                     if (code == 0) {
                         if (mDebug) {
                             Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Successed");
                         }
                     } else if (mDebug) {
                         Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Failed");
-                    }
+                    }*/
                     break;
 
                 case R.id.imgbtn_more_setting:
@@ -588,14 +587,15 @@ public class MainActivity extends BaseActivity {
         mAdapter.notifyDataSetChanged();
 
         String userId = mRoomMeetingList.get(position).getMeetinguserid();
-        int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
+        //this code has deprecated
+        /*int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
         if (code == 0) {
             if (mDebug) {
                 Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Successed");
             }
         } else if (mDebug) {
             Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Failed");
-        }
+        }*/
 
     }
 
@@ -711,14 +711,15 @@ public class MainActivity extends BaseActivity {
                 String meetingId = msg.getData().getString("meetingId");
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS " + meetingId);
-                int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE, meetingId, "");
+                //this code has deprecated
+                /*int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE, meetingId, "");
                 if (code == 0) {
                     if (mDebug)
                         Log.e(TAG, "TMCreateRoom " + "Successed");
                 } else {
                     if (mDebug)
                         Log.e(TAG, "TMCreateRoom " + "Failed");
-                }
+                }*/
                 getListNetWork();
                 break;
             case MSG_APPLY_ROOMT_FAILED:

@@ -10,11 +10,11 @@ import org.dync.teameeting.sdkmsgclientandroid.util.MsgUtils;
 /**
  * Created by hp on 12/24/15.
  */
-public abstract class MsgClient{
+public abstract class MsgClient {
 
     protected NativeContextRegistry mNativeContext;
     protected JMClientApp mMApp;
-    protected Context               mContext;
+    protected Context mContext;
 
     public MsgClient(Context context, JMClientHelper helper) {
         MsgUtils.assertIsTrue(null != context && null != helper);
@@ -66,9 +66,9 @@ public abstract class MsgClient{
         }
     }
 
-    protected int MCGetMsg() {
+    protected int MCGetMsg(int cmd) {
         if (null != mMApp) {
-            return mMApp.GetMsg();
+            return mMApp.GetMsg(cmd);
         } else {
             return -1;
         }

@@ -1,7 +1,6 @@
 package org.dync.teameeting.chatmessage;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
@@ -9,18 +8,12 @@ import com.google.gson.Gson;
 import com.ypy.eventbus.EventBus;
 
 import org.dync.teameeting.TeamMeetingApp;
-
-import org.dync.teameeting.bean.ChatMessage;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.CRUDChat;
-import org.dync.teameeting.db.chatdao.ChatCacheEntity;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientHelper;
 import org.dync.teameeting.structs.EventType;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 /**
  * Created by zhangqilu on 2016/1/8.
@@ -79,7 +72,7 @@ public class ChatMessageClient implements JMClientHelper {
      */
 
     @Override
-    public void OnReqSndMsg(String msg) {
+    public void OnSndMsg(String msg) {
         String s = "ChatMessageClient" + msg;
         if (mDebug)
         Log.e(TAG, "OnReqSndMsg " + s);
@@ -106,30 +99,10 @@ public class ChatMessageClient implements JMClientHelper {
     }
 
     @Override
-    public void OnRespSndMsg(String msg) {
-        String s = "OnRespSndMsg msg:" + msg;
-
-        if (mDebug) {
-            Log.e(TAG, "OnRespSndMsg: " + s);
-        }
-
-    }
-
-    @Override
-    public void OnReqGetMsg(String msg) {
+    public void OnGetMsg(String msg) {
         String s = "OnReqGetMsg msg:" + msg;
         if (mDebug) {
             Log.e(TAG, "OnReqGetMsg: " + s);
-        }
-
-    }
-
-    @Override
-    public void OnRespGetMsg(String msg) {
-        String s = "OnRespGetMsg msg:" + msg;
-
-        if (mDebug) {
-            Log.e(TAG, "OnRespGetMsg: " + s);
         }
 
     }
@@ -159,10 +132,17 @@ public class ChatMessageClient implements JMClientHelper {
     @Override
     public void OnMsgServerConnectionFailure() {
 
-
         if (mDebug) {
             Log.e(TAG, "OnMsgServerConnectionFailure: ");
         }
 
+    }
+
+    @Override
+    public void OnMsgServerState(int connStatus) {
+
+        if (mDebug) {
+            Log.e(TAG, "OnMsgServerState: "+connStatus);
+        }
     }
 }
