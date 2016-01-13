@@ -368,17 +368,7 @@ public class MainActivity extends BaseActivity {
                     if (mDebug) {
                         Log.i(TAG, "meetingId-fl_front" + meetingId);
                     }
-                    code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, meetingId, "");
-                    if (code == 0) {
-                        if (mDebug) {
-                            Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Successed");
-                        }
-                    } else if (mDebug) {
-                        Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Failed");
-                    }
 
-                    // 推送接口
-                    // 跳转
                     intent = new Intent(mContext, MeetingActivity.class);
                     intent.putExtra("meetingName", meetingName);
                     intent.putExtra("meetingId", meetingId);
