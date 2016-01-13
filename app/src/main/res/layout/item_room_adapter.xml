@@ -20,15 +20,14 @@
             android:layout_height="70dp"
             android:background="@drawable/edittext_bg"
             android:hint="@string/str_hintm"
-            android:textColorHint="@color/black"
             android:imeOptions="actionDone"
             android:paddingLeft="20dp"
             android:singleLine="true"
-            android:textCursorDrawable="@null"
             android:textColor="@color/white"
+            android:textColorHint="@color/black"
+            android:textCursorDrawable="@null"
             android:textSize="@dimen/largest_most_txt_size"
-            android:visibility="visible"
-            />
+            android:visibility="visible" />
 
         <RelativeLayout
             android:id="@+id/rl_show_view"
@@ -38,6 +37,11 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp">
 
+            <LinearLayout
+                android:id="@+id/ll_room_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true">
 
                 <TextView
                     android:id="@+id/tv_room_name"
@@ -51,23 +55,23 @@
 
                 <ImageView
                     android:id="@+id/iv_private"
-                    android:layout_width="wrap_content"
+                    android:layout_width="14dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/iv_private"
                     android:layout_marginLeft="10dp"
-                    android:layout_alignTop="@+id/tv_room_name"
-                    android:layout_toRightOf="@+id/tv_room_name"
-                    android:layout_toEndOf="@+id/tv_room_name" />
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/iv_private" />
 
+
+            </LinearLayout>
 
 
             <TextView
-                android:layout_marginTop="5dp"
                 android:id="@+id/tv_room_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/tv_room_name"
+                android:layout_below="@id/ll_room_name"
+                android:layout_marginTop="5dp"
                 android:singleLine="true"
                 android:text="创建:11/18/15 下午 14:14"
                 android:textColor="@color/darkGray"

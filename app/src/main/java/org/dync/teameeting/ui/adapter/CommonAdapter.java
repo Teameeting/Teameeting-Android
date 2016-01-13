@@ -14,8 +14,11 @@ import android.widget.BaseAdapter;
 
 import org.dync.teameeting.bean.MeetingListEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * com.example.menu.adapter.CommonAdapter
@@ -51,6 +54,11 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         this.itemLayoutId = itemLayoutId;
         mResources = context.getResources();
     }
+
+    public void commaMapAdapter(Context context) {
+
+    }
+
 
     public int getMeetingIdPosition(String meetingId) {
 

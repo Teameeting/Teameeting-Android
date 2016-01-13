@@ -61,11 +61,15 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         notifyDataSetChanged();
     }
 
+    public void swipeNotifyDataseetChange() {
+        mDatas.get(mDatas.size() - 1).initUnReadMessage(mContext);
+        notifyDataSetChanged();
+    }
+
 
     public void notifyNoReadMessageChanged(String meetingId, long sendTime) {
 
         int meetingIdPosition = getMeetingIdPosition(meetingId);
-        Logger.e(meetingIdPosition + "");
         if (meetingIdPosition != -1) {
             long l = CRUDChat.selectIsReadSize(mContext, meetingId);
             mDatas.get(meetingIdPosition).setUnReadMessage(StringHelper.unReadMessageStr(l, sendTime, mResources));
@@ -73,9 +77,16 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         }
     }
 
+    public void notifyMemnumberSetChanged(String meetingId, int num) {
+        int meetingIdPosition = getMeetingIdPosition(meetingId);
+        if (meetingIdPosition != -1) {
+            mDatas.get(meetingIdPosition).setMemnumber(num);
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         MeetingListEntity meetingListEntity = mDatas.get(position);
         ViewHolder mHolder;
         if (convertView != null) {
@@ -106,8 +117,9 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             mHolder.mNotificationsClose.setVisibility(View.GONE);
             mHolder.mPeopleico.setVisibility(View.VISIBLE);
             mHolder.mRoomPeopleCount.setVisibility(View.VISIBLE);
-            mHolder.mRoomPeopleCount.setText(meetingListEntity.getMemnumber());
+            mHolder.mRoomPeopleCount.setText(meetingListEntity.getMemnumber() + "");
         }
+
         if (meetingListEntity.getMemnumber() <= 0) {
             mHolder.mPeopleico.setVisibility(View.GONE);
             mHolder.mRoomPeopleCount.setVisibility(View.GONE);
@@ -116,7 +128,6 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             } else {
                 mHolder.mNotificationsClose.setVisibility(View.GONE);
             }
-
         }
         if (!meetingListEntity.isApplyTyep()) {
             mHolder.mPbCreeat.setVisibility(View.VISIBLE);

@@ -7,9 +7,9 @@ public class ReqSndMsgEntity {
 
     /**
      * mtype : 3
-     * cmd : 6
+     * cmd :
      * action : 1
-     * tags : 1
+     * tags : 1  //maoge
      * type : 1
      * nmem : 0
      * ntime : 1452338777912
