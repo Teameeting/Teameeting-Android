@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 /**
- * Created by admin on 2016/1/8.
+ * Created by zhangqilu on 2016/1/8.
  */
 public class ChatMessageClient implements JMClientHelper {
 

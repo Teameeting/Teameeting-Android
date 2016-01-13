@@ -46,18 +46,18 @@
             android:gravity="center"
             />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="50dp"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:gravity="center_vertical"
             >
             <EditText
                 android:id="@+id/et_meeting_id"
-                android:layout_width="0dp"
-                android:layout_weight="4"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/str_edittext_meeting_id_hint"
                 android:gravity="center"
@@ -65,19 +65,20 @@
                 android:singleLine="true"
                 android:imeOptions="actionDone"
                 android:textColor="@color/white"
+                android:layout_centerInParent="true"
                 />
 
             <ImageButton
                 android:id="@+id/ibtn_join_meeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:src="@drawable/btn_join_meeting"
                 android:background="@null"
-                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/et_meeting_id"
                 />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <ImageView
             android:layout_width="match_parent"

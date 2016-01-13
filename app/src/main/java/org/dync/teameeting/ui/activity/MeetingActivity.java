@@ -48,6 +48,7 @@ import org.dync.teameeting.ui.helper.Anims;
 import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.ui.helper.MeetingAnim;
 import org.dync.teameeting.ui.helper.MeetingAnim.AnimationEndListener;
+import org.dync.teameeting.ui.helper.ShareHelper;
 import org.dync.teameeting.widgets.PopupWindowCustom;
 import org.dync.teameeting.widgets.PopupWindowCustom.OnPopupWindowClickListener;
 import org.dync.teameeting.widgets.RoomControls;
@@ -57,6 +58,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+
+import javax.security.auth.login.LoginException;
 
 /**
  * @author zhangqilu org.dync.teammeeting.activity MeetingActivity create at
@@ -88,6 +92,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private String mBitrate;
 
     private PopupWindowCustom mPopupWindowCustom;
+    private ShareHelper mShareHelper;
+    private String mShareUrl;
+
 
     // Left distance of this control button relative to its parent
     int mLeftDistanceCameraBtn;
@@ -99,6 +106,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private ImageButton mChatClose;
     private Button mSendMessage;
     private TextView mTvRemind;
+    private TextView mTvMessageCount;
     private String mUserId;
     private final String mPass = TeamMeetingApp.getmSelfData().getAuthorization();
     private boolean mMessageShowFlag = true;
@@ -143,20 +151,25 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        mMeetingId = intent.getStringExtra("meetingId");
-        mUserId = intent.getStringExtra("userId");
-        EventBus.getDefault().register(this);
 
-        if (mDebug) {
-            Log.i(TAG, "meetingId" + mMeetingId);
-        }
+        initView();
+        inintData();
+
+
+    }
+
+
+    private void inintData(){
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        EventBus.getDefault().register(this);
+
+        mIMM = (InputMethodManager) MeetingActivity.this
+                .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
 
         mAnyM2Mutlier = new AnyrtcM2Mutlier(this, this);
         mAnyM2Mutlier.InitVideoView((GLSurfaceView) findViewById(R.id.glview_call));
-        initView();
 
         {
             M2MPublisher.PublishParams params = new M2MPublisher.PublishParams();
@@ -165,18 +178,28 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             mAnyM2Mutlier.Publish(params);
         }
 
-
-    }
-
-    /* Init UI */
-    private void initView() {
-        mMsgSender = TeamMeetingApp.getmMsgSender();
+        mMsgSender=TeamMeetingApp.getmMsgSender();
         mNetWork = new NetWork();
+        mShareHelper = new ShareHelper(MeetingActivity.this);
         mMettingAnim = new MeetingAnim();
         mMettingAnim.setAnimEndListener(mAnimationEndListener);
 
-        mIMM = (InputMethodManager) MeetingActivity.this
-                .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+        Intent intent = getIntent();
+        mMeetingId = intent.getStringExtra("meetingId");
+        mUserId = intent.getStringExtra("userId");
+        String roomName = getIntent().getStringExtra("meetingName");
+        mTvRoomName.setText(roomName);
+
+        mShareUrl ="Let us see in a meeting!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
+
+        leaveMessageDealWith();
+
+    }
+
+
+    /* Init UI */
+    private void initView()
+    {
 
         // Create UI controls.
 
@@ -187,8 +210,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mInviteButton = (ImageButton) findViewById(R.id.imgbtn_invite);
         mTvRoomName = (TextView) findViewById(R.id.tv_room_name);
         mTvRemind = (TextView) findViewById(R.id.tv_remind);
-        String roomName = getIntent().getStringExtra("meetingName");
-        mTvRoomName.setText(roomName);
+
 
         mCloseVoice = (ImageView) findViewById(R.id.iv_close_voice);
         mVoiceButton = (ImageButton) findViewById(R.id.meeting_voice);
@@ -206,6 +228,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mCameraOffButton.setOnClickListener(onClickListener);
 
         // Chat ui inint
+        mTvMessageCount = (TextView)findViewById(R.id.tv_message_count);
         mChatLayout = (RelativeLayout) findViewById(R.id.rl_chating);
         mSendMessage = (Button) findViewById(R.id.btn_chat_send);
         mChatClose = (ImageButton) findViewById(R.id.imgbtn_back);
@@ -216,9 +239,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
         //下拉刷新
         initSwipeRefreshLayout();
-
         mAdapter = new ChatMessageAdapter(this, mDatas);
         mChatView.setAdapter(mAdapter);
+
 
     }
 
@@ -372,24 +395,24 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private OnPopupWindowClickListener mPopupWindowListener = new OnPopupWindowClickListener() {
         @Override
         public void onPopupClickListener(View view) {
-            mPopupWindowCustom.dismiss();
+
             switch (view.getId()) {
                 case R.id.ibtn_close:
-                    // mPopupWindowCustom.dismiss();
+                     mPopupWindowCustom.dismiss();
                     break;
                 case R.id.ibtn_message:
-                    // mPopupWindowCustom.dismiss();
+                    mPopupWindowCustom.dismiss();
+                    mShareHelper.shareSMS(MeetingActivity.this, "", mShareUrl);
                     break;
                 case R.id.ibtn_weixin:
-                    // mPopupWindowCustom.dismiss();
+                    mPopupWindowCustom.dismiss();
+                    mShareHelper.shareWeiXin("Share into ... ", "", mShareUrl);
                     break;
                 case R.id.tv_copy:
-                    // mPopupWindowCustom.dismiss();
-                    break;
+
                 case R.id.btn_copy:
-                    // mPopupWindowCust kom.dismiss();
-                    DialogHelper.onClickCopy(MeetingActivity.this,
-                            "RoomUrl:www.baidu.com");
+                    mPopupWindowCustom.dismiss();
+                    DialogHelper.onClickCopy(MeetingActivity.this, mShareUrl);
                     break;
 
                 default:
@@ -509,6 +532,9 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                         mMessageShowFlag = false;
                         mChatLayout.setVisibility(View.VISIBLE);
                     }
+                    //delete db  data
+                    CRUDChat.deleteByMeetingId(MeetingActivity.this,mMeetingId);
+                    mTvMessageCount.setVisibility(View.GONE);
                     break;
                 case R.id.btn_chat_send:
                     sendMessageChat();
@@ -531,6 +557,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
     };
 
+
+    /**
+     * sendMessageChat
+     */
 
     private void sendMessageChat() {
         final String pushMsg = mMsg.getText().toString();
@@ -561,9 +591,29 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     }
 
     /**
+     * leaveMessageDealWith
+     *
+     */
+    private  void leaveMessageDealWith(){
+
+        String leaveMessageCount = CRUDChat.selectChatList(MeetingActivity.this,mMeetingId).size()+"";
+        if(mDebug){
+            Log.e(TAG, "leaveMessageDealWith: leaveMessageCount "+leaveMessageCount);
+        }
+        if(mTvMessageCount.getVisibility()==View.GONE&&!leaveMessageCount.equals("0")){
+            mTvMessageCount.setVisibility(View.VISIBLE);
+
+        }
+
+        mTvMessageCount.setText(leaveMessageCount);
+
+
+    }
+
+    /**
      * OnTouchListener
      */
-    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+/*    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             // TODO Auto-generated method stub
@@ -591,7 +641,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 return false;
             }
         }
-    };
+    };*/
 
     @Override
     public void onPause() {
@@ -750,11 +800,15 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mChatView.setSelection(mDatas.size() - 1);
         mMsg.setText("");
         if (mMessageShowFlag) {
+
+           // CRUDChat.queryInsert(MeetingActivity.this,requestMsg);
+            leaveMessageDealWith();
             addAutoView(message, name);
         } else {
             CRUDChat.deleteByMeetingId(MeetingActivity.this, requestMsg.getRoom());
         }
     }
+
 
     /**
      * For EventBus callback.
@@ -768,6 +822,5 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
         }
     }
-
 
 }

@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import org.dync.teameeting.R;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.structs.ExtraType;
+import org.dync.teameeting.structs.Intent_KEY;
 import org.dync.teameeting.ui.helper.ShareHelper;
 import org.dync.teameeting.widgets.BottomMenu;
 import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
@@ -18,27 +22,43 @@ public class InvitePeopleActivity extends Activity
 {
 
 	private final static String TAG = "MainActivity";
+	private boolean mDebug = TeamMeetingApp.mIsDebug;
 	private TextView mCloseTV, mMessageInviteTV, mWeixinInviteTV, mCopyLinkTV;
-	Context context;
+	private Context mContext;
 	private String mShareUrl;
 	private ShareHelper mShareHelper;
+	private MeetingListEntity mMeetingEntity;
+	private String mMeetingId;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		context = InvitePeopleActivity.this;
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_invite_people);
-		Intent intent = getIntent();
-		mShareUrl = intent.getStringExtra("roomUrl");
-
-		inint();
+		inintView();
+		inintDate();
 
 	}
 
-	private void inint()
+
+	private  void inintDate(){
+
+		mContext = InvitePeopleActivity.this;
+		Intent intent = getIntent();
+		mMeetingId = intent.getStringExtra("meetingId");
+
+		if (mDebug) {
+			Log.e(TAG, " mMeetingId "+mMeetingId);
+		}
+
+		mShareUrl ="Let us see in a meeting!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
+		mShareHelper = new ShareHelper(mContext);
+	}
+
+	private void inintView()
 	{
-		mShareHelper = new ShareHelper(InvitePeopleActivity.this);
+
 		mCloseTV = (TextView) findViewById(R.id.tv_close);
 		mMessageInviteTV = (TextView) findViewById(R.id.tv_invite_message);
 		mWeixinInviteTV = (TextView) findViewById(R.id.tv_invite_weixin);
@@ -78,16 +98,19 @@ public class InvitePeopleActivity extends Activity
 				finishActivity();
 				return;
 			case R.id.tv_invite_message:
+
+				mShareHelper.shareSMS(mContext, "", mShareUrl);
 				finishActivity();
-				mShareHelper.shareSMS(InvitePeopleActivity.this, "", mShareUrl);
 				break;
 			case R.id.tv_invite_weixin:
-				mShareHelper.shareWeiXin("Share... ", "Cordially invite you to join our conference it！click the link：",
-						mShareUrl);
+				mShareHelper.shareWeiXin("Share into ... ", "", mShareUrl);
 				finishActivity();
 				break;
 			case R.id.tv_copy_link:
-				setResult(ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK);
+				Intent intent = new Intent();
+				intent.putExtra("shareUrl",mShareUrl);
+				setResult(ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK,intent);
+
 				finish();
 				break;
 

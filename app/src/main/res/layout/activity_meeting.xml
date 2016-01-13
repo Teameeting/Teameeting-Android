@@ -16,10 +16,30 @@
         style="@style/TopBar_Style"
         android:background="@color/black_gray">
 
-        <ImageButton
-            android:id="@+id/imgbtn_chat"
-            style="@style/Btn_left"
-            android:src="@drawable/btn_chat"/>
+
+
+        <RelativeLayout
+            android:layout_width="@dimen/header_height"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/imgbtn_chat"
+                style="@style/Btn_left"
+                android:src="@drawable/btn_chat"/>
+            <TextView
+                android:id="@+id/tv_message_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/unread_count_bg"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                />
+
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_room_name"

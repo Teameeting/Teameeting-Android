@@ -536,7 +536,12 @@ public class MainActivity extends BaseActivity {
             case ExtraType.RESULT_CODE_ROOM_SETTING_WEIXIN_INVITE:
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK:
-                DialogHelper.onClickCopy(MainActivity.this, mShareUrl);
+                String shareurl = data.getStringExtra("shareUrl");
+                if(mDebug){
+                    Log.e(TAG, "onActivityResult: shareurl "+shareurl );
+                }
+
+                DialogHelper.onClickCopy(MainActivity.this, shareurl);
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_NOTIFICATION:
                 break;
@@ -611,7 +616,8 @@ public class MainActivity extends BaseActivity {
         if (mCreateRoomFlag) {
             Intent intent = new Intent(MainActivity.this,
                     InvitePeopleActivity.class);
-            intent.putExtra("roomUrl", "www.baidu.com");
+            String meetingId = mRoomMeetingList.get(0).getMeetingid();
+            intent.putExtra("meetingId", meetingId);
             startActivityForResult(intent, ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK);
             overridePendingTransition(R.anim.activity_open_enter, R.anim.activity_open_exit);
             mCreateRoomFlag = false;
@@ -705,7 +711,6 @@ public class MainActivity extends BaseActivity {
                 String meetingId = msg.getData().getString("meetingId");
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS " + meetingId);
-                String userid = TeamMeetingApp.getTeamMeetingApp().getDevId();
                 int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE, meetingId, "");
                 if (code == 0) {
                     if (mDebug)
