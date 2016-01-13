@@ -116,7 +116,7 @@ public class TeamMeetingApp extends Application {
             if (bundle != null) {
                 tokenKey = bundle.getString("TOKEN");
             }
-        } catch (PackageManager.NameNotFoundException localNameNotFoundException1) {
+        } catch (NameNotFoundException localNameNotFoundException1) {
 
         }
         return tokenKey;

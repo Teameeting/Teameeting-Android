@@ -51,6 +51,16 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
                     onRequesageMsg(reqSndMsg);
                 }
             }
+
+            @Override
+            public void onMeetingNumChange(final ReqSndMsgEntity reqSndMsg) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onMeetingNumSetChange(reqSndMsg);
+                    }
+                });
+            }
         });
     }
 
@@ -107,4 +117,8 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
 
     }
+
+    public void onMeetingNumSetChange(ReqSndMsgEntity requestMsg) {
+    }
+
 }
