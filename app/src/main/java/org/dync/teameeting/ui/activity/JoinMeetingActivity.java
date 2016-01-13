@@ -1,6 +1,5 @@
 package org.dync.teameeting.ui.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -14,9 +13,8 @@ import android.widget.Toast;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.bean.MeetingInfo;
-import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
+import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
 
 public class JoinMeetingActivity extends BaseActivity implements View.OnClickListener{
@@ -101,7 +99,7 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     private void joinMeeting(){
 
             String userId = TeamMeetingApp.getTeamMeetingApp().getDevId();
-            int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_ENTER, mMeetingId,"");
+            int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, mMeetingId,"");
             if(code==0){
                 if(mDebug){
                     Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");
