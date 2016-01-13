@@ -59,11 +59,11 @@ public class StringHelper {
 
 
     public static String unReadMessageStr(long noReadMessageSize, String timeStr) {
-        return "(" + noReadMessageSize + ") " + "New message:" + timeStr;
+        return "<" + noReadMessageSize + "> " + "New message:" + timeStr;
     }
 
     public static String unReadMessageStr(long noReadMessageSize, long timeStr, Resources resources) {
-        return "(" + noReadMessageSize + ") " + "New message:" + formatDuration(timeStr, resources);
+        return "<" + noReadMessageSize + "> " + "New message " + formatDuration(timeStr, resources);
     }
 
 }

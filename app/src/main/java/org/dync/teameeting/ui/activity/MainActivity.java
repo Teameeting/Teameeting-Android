@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
@@ -199,7 +201,8 @@ public class MainActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyInitDataSetChanged();
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -368,7 +371,17 @@ public class MainActivity extends BaseActivity {
                     if (mDebug) {
                         Log.i(TAG, "meetingId-fl_front" + meetingId);
                     }
+                    code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, meetingId, "");
+                    if (code == 0) {
+                        if (mDebug) {
+                            Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Successed");
+                        }
+                    } else if (mDebug) {
+                        Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Failed");
+                    }
 
+                    // 推送接口
+                    // 跳转
                     intent = new Intent(mContext, MeetingActivity.class);
                     intent.putExtra("meetingName", meetingName);
                     intent.putExtra("meetingId", meetingId);
@@ -526,8 +539,8 @@ public class MainActivity extends BaseActivity {
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK:
                 String shareurl = data.getStringExtra("shareUrl");
-                if(mDebug){
-                    Log.e(TAG, "onActivityResult: shareurl "+shareurl );
+                if (mDebug) {
+                    Log.e(TAG, "onActivityResult: shareurl " + shareurl);
                 }
 
                 DialogHelper.onClickCopy(MainActivity.this, shareurl);
@@ -619,7 +632,6 @@ public class MainActivity extends BaseActivity {
         for (int i = 0; i < list.size(); i++) {
             list.get(i).initUnReadMessage(mContext);
         }
-        
         if (mDebug)
             Log.e(TAG, "upDataMeetingList: " + list.toString());
         if (list != null) {
@@ -654,14 +666,14 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
-        /**
-         *          1.save sql
-         *          2.update list isReadMessage
-         *          2016-01-09 20:15:24
-         *            Monday over
-         */
-        Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
+
+        Logger.e(CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
         mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
+    }
+
+    @Override
+    public void onMeetingNumChange(ReqSndMsgEntity requestMsg) {
+        mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
     }
 
     /**
@@ -701,15 +713,6 @@ public class MainActivity extends BaseActivity {
                 String meetingId = msg.getData().getString("meetingId");
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS " + meetingId);
-                //this code has deprecated
-                /*int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_CREATE, meetingId, "");
-                if (code == 0) {
-                    if (mDebug)
-                        Log.e(TAG, "TMCreateRoom " + "Successed");
-                } else {
-                    if (mDebug)
-                        Log.e(TAG, "TMCreateRoom " + "Failed");
-                }*/
                 getListNetWork();
                 break;
             case MSG_APPLY_ROOMT_FAILED:
@@ -737,8 +740,15 @@ public class MainActivity extends BaseActivity {
                 break;
             case MSG_MESSAGE_RECEIVE:
                 if (mDebug)
-
                     break;
+            case MCCMD_LEAVE:
+                if (mDebug)
+                    Log.e(TAG, "Someone is coming room !!!!!!!!!!!!!!!");
+                break;
+            case MCCMD_ENTER:
+                if (mDebug)
+                    Log.e(TAG, "Some people go room!!!!!!!!!!!!!!!!!");
+                break;
             default:
                 break;
         }

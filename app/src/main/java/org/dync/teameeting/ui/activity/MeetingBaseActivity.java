@@ -77,6 +77,11 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
                     onRequesageMsg(reqSndMsg);
                 }
             }
+
+            @Override
+            public void onMeetingNumChange(ReqSndMsgEntity reqSndMsg) {
+
+            }
         });
     }
 
@@ -159,7 +164,6 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
-        if (mDebug)
-            Log.e(TAG, "OnReqSndMsg:" + requestMsg.toString());
+
     }
 }
