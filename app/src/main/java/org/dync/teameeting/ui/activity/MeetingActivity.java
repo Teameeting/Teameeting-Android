@@ -107,6 +107,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private final String mPass = TeamMeetingApp.getmSelfData().getAuthorization();
     private boolean mMessageShowFlag = true;
     private TMMsgSender mMsgSender;
+    private int  mMessagePageNum=1;
 
 
     @Override
@@ -189,6 +190,17 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mShareUrl ="Let us see in a meeting!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
 
         leaveMessageDealWith();
+
+        int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, mMeetingId, "");
+        if (code == 0) {
+            if (mDebug) {
+                Log.e(TAG, "inintData: " + "TMEnterRoom Successed");
+            }
+        } else if (mDebug) {
+            Log.e(TAG, "inintData: " + "TMEnterRoom Failed");
+        }
+
+        mNetWork.getMeetingMsgList(getSign(),mMeetingId,""+mMessagePageNum,20+"");
 
     }
 
@@ -606,39 +618,6 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
     }
 
-    /**
-     * OnTouchListener
-     */
-/*    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            // TODO Auto-generated method stub
-            if (v.getId() == R.id.meet_parent) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    // View VISIBLE INVISIBLE
-                    {
-                        if (mDebug) {
-                            Log.e(TAG, " ");
-                        }
-                        if (mControlLayout.getVisibility() == View.VISIBLE) {
-                            mControlLayout.setVisibility(View.GONE);
-
-                            return true;
-                        } else if (mControlLayout.getVisibility() == View.GONE) {
-                            mControlLayout.setVisibility(View.VISIBLE);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            } else {
-                return false;
-            }
-        }
-    };*/
-
     @Override
     public void onPause() {
         super.onPause();
@@ -784,10 +763,30 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         int tags = requestMsg.getTags();
         final String message = requestMsg.getCont();
         final String name = requestMsg.getFrom();
+        int messagetype = requestMsg.getMtype();
+        int cmd = requestMsg.getCmd();
+
         if (tags == 4) {
             mAnyM2Mutlier.Subscribe(message, true);
             return;
         }
+
+        if (messagetype==JMClientType.MCMESSAGETYPE_REQUEST) {
+            switch(cmd) {
+                case JMClientType.MCCMD_ENTER:
+                   // content = "cont:"+cont;
+                    break;
+                case JMClientType.MCCMD_LEAVE:
+                   // content = "cont:"+cont;
+                    break;
+                case JMClientType.MCCMD_DCOMM:
+                   // content = "cont:"+cont;
+                    break;
+            }
+        }
+
+
+
         if (mDebug)
             Log.e(TAG, "onRequesageMsg  " + message);
         ChatMessage to = new ChatMessage(Type.INPUT, message, name, System.currentTimeMillis() + "");
@@ -814,6 +813,16 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             case MSG_MESSAGE_RECEIVE:
 
                 break;
+            case MSG_GET_MEETING_MSG_LIST_SUCCESS:
+                if(mDebug)
+                    Log.e(TAG, "onEventMainThread: "+ "MSG_GET_MEETING_MSG_LIST_SUCCESS");
+                break;
+            case MSG_GET_MEETING_MSG_LIST_FAILED:
+                if(mDebug)
+                    Log.e(TAG, "onEventMainThread: "+ "MSG_GET_MEETING_MSG_LIST_FAILED");
+                break;
+
+
             default:
                 break;
         }
