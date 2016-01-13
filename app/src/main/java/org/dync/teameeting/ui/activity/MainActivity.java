@@ -672,7 +672,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void onMeetingNumChange(ReqSndMsgEntity requestMsg) {
+    public void onMeetingNumSetChange(ReqSndMsgEntity requestMsg) {
         mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
     }
 
@@ -743,11 +743,11 @@ public class MainActivity extends BaseActivity {
                     break;
             case MCCMD_LEAVE:
                 if (mDebug)
-                    Log.e(TAG, "Someone is coming room !!!!!!!!!!!!!!!");
+                    Log.e(TAG, "Someone is go room !!!!!!!!!!!!!!!");
                 break;
             case MCCMD_ENTER:
                 if (mDebug)
-                    Log.e(TAG, "Some people go room!!!!!!!!!!!!!!!!!");
+                    Log.e(TAG, "Some people comming room!!!!!!!!!!!!!!!!!");
                 break;
             default:
                 break;
