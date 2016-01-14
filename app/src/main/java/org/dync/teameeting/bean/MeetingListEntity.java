@@ -15,6 +15,8 @@ import java.util.List;
  * Created by zhulang on 2016/1/8 0008.
  */
 public class MeetingListEntity implements Serializable {
+
+    private long createtime;
     private long jointime;
     private String meetdesc;
     private String meetingid;
@@ -28,6 +30,15 @@ public class MeetingListEntity implements Serializable {
     private int mMeetType2 = 0;
     private boolean isRead = true;
     private String unReadMessage;
+
+
+    public long getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
+    }
 
     public boolean isRead(Context context) {
         if (meetingid != null) {

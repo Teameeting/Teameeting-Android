@@ -73,14 +73,7 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
                             onRequesageMsg(reqSndMsg);
                         }
                     });
-                } else {
-                    onRequesageMsg(reqSndMsg);
                 }
-            }
-
-            @Override
-            public void onMeetingNumChange(ReqSndMsgEntity reqSndMsg) {
-
             }
         });
     }

@@ -149,7 +149,8 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         if (!meetingListEntity.isRead(mContext)) {
             unReadMessage = meetingListEntity.getUnReadMessage();
         } else {
-            unReadMessage = "创建: " + StringHelper.formatDuration(meetingListEntity.getJointime(), mResources);
+            String CreateOrJoin = (meetingListEntity.getCreatetime() < meetingListEntity.getJointime() ? mContext.getString(R.string.str_join) : mContext.getString(R.string.str_create));
+            unReadMessage = CreateOrJoin + StringHelper.formatDuration(meetingListEntity.getJointime(), mResources);
         }
         mHolder.mRoomTime.setText(unReadMessage);
 

@@ -41,7 +41,7 @@ public class JMClientType {
     public static final int MCSENDTAGS_NOTIFY=4;
     public static final int MCSENDTAGS_INVALID=5;
 
-    //* MsgClient message type
+    //* MsgClient message typew
     public static final int MCMESSAGETYPE_REQUEST=1;
     public static final int MCMESSAGETYPE_RESPONSE=2;
     public static final int MCMESSAGETYPE_INVALID=3;
