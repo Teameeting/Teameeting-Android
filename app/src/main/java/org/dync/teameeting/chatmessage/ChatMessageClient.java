@@ -12,6 +12,7 @@ import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientHelper;
+import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.structs.EventType;
 
 import java.security.PublicKey;
@@ -52,12 +53,6 @@ public class ChatMessageClient implements JMClientHelper {
     }
 
 
-    public synchronized void notifyMeetingNumChange(ReqSndMsgEntity reqSndMsg) {
-        for (ChatMessageObserver observer : mObServers) {
-            observer.onMeetingNumChange(reqSndMsg);
-        }
-    }
-
     /**
      * notify
      *
@@ -71,7 +66,7 @@ public class ChatMessageClient implements JMClientHelper {
 
     public interface ChatMessageObserver {
         public void OnReqSndMsg(ReqSndMsgEntity reqSndMsg);
-        public void onMeetingNumChange(ReqSndMsgEntity reqSndMsg);
+        //public void onMeetingNumChange(ReqSndMsgEntity reqSndMsg);
     }
 
 
@@ -81,47 +76,28 @@ public class ChatMessageClient implements JMClientHelper {
      * implement for JMClientHelper
      */
 
-    @Override
     public void OnSndMsg(String msg) {
-        String s = "ChatMessageClient" + msg;
+
         if (mDebug)
-            Logger.e(msg);
+            Logger.e(TAG, "OnSndMsg: ChatMessageClient " + msg);
+
         if (msg != null) {
             mMessage = new Message();
-
             Gson gson = new Gson();
             ReqSndMsgEntity reqSndMsgEntity = gson.fromJson(msg, ReqSndMsgEntity.class);
-
             if (mDebug) {
-                Logger.e(reqSndMsgEntity.getFrom() + "---" + TeamMeetingApp.getTeamMeetingApp().getDevId());
+                Log.e(TAG, reqSndMsgEntity.getFrom() + "---" + TeamMeetingApp.getTeamMeetingApp().getDevId());
             }
-
-            if (reqSndMsgEntity.getFrom() != TeamMeetingApp.getTeamMeetingApp().getDevId()) {
-                if (reqSndMsgEntity.getCmd() == 1) {
-                    notifyMeetingNumChange(reqSndMsgEntity);
-                    // men enter
-                    mMessage.what = EventType.MCCMD_ENTER.ordinal();
-
-                } else if (reqSndMsgEntity.getCmd() == 2) {
-                    notifyMeetingNumChange(reqSndMsgEntity);
-                    // men leaver
-                    mMessage.what = EventType.MCCMD_LEAVE.ordinal();
-                } else if (reqSndMsgEntity.getCmd() == 3) {
-                    notifyRequestMessage(reqSndMsgEntity);
+            if (!reqSndMsgEntity.getFrom().equals(TeamMeetingApp.getTeamMeetingApp().getDevId()) || reqSndMsgEntity.getTags() == JMClientType.MCSENDTAGS_NOTIFY) {
+                if (reqSndMsgEntity.getCmd() == JMClientType.MCCMD_DCOMM && reqSndMsgEntity.getTags() == JMClientType.MCSENDTAGS_TALK)
                     CRUDChat.queryInsert(context, reqSndMsgEntity);
-                    mMessage.what = EventType.MSG_MESSAGE_RECEIVE.ordinal();
-
-                }
-                EventBus.getDefault().post(mMessage);
-
-            } else {
-
+                notifyRequestMessage(reqSndMsgEntity);
             }
-
         }
 
 
     }
+
 
     @Override
     public void OnGetMsg(String msg) {

@@ -34,8 +34,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
  *         2015-12-11 17:00:42
  */
 
-public class StartFlashActivity extends BaseActivity
-{
+public class StartFlashActivity extends BaseActivity {
 
     private static final String TAG = "StartFlashActivity";
     private final int MessageConnectedFailed = 0x01;
@@ -44,16 +43,15 @@ public class StartFlashActivity extends BaseActivity
     private ImageView mView;
     private Context context;
     private TMMsgSender mMsgSender;
-    private final String mServer = "192.168.7.27";
+    private final String mServer = "192.168.7.39";
     private final int mPort = 9210;
-    private String mUserid ;
+    private String mUserid;
     private String mSign;
     private ProgressBar mLoadingProgress;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_flash);
@@ -68,8 +66,7 @@ public class StartFlashActivity extends BaseActivity
     /**
      * set Push Style
      */
-    public void setPushNotificationBuilderIcon()
-    {
+    public void setPushNotificationBuilderIcon() {
         CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(
                 this, R.layout.customer_notitfication_layout, R.id.icon,
                 R.id.title, R.id.text);
@@ -83,16 +80,15 @@ public class StartFlashActivity extends BaseActivity
     /**
      * inint View
      */
-    private void inintView(){
+    private void inintView() {
         mView = (ImageView) findViewById(R.id.splash_image);
-        mLoadingProgress = (ProgressBar)findViewById(R.id.pb_loading);
+        mLoadingProgress = (ProgressBar) findViewById(R.id.pb_loading);
     }
 
     /**
      * inintData
      */
-    private void initData()
-    {
+    private void initData() {
         context = this;
         mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this, sweetClickListener);
 
@@ -108,38 +104,33 @@ public class StartFlashActivity extends BaseActivity
     /**
      * chatMessageInint
      */
-    private void chatMessageInint(){
+    private void chatMessageInint() {
 
-        mMsgSender = new TMMsgSender(this,TeamMeetingApp.getmChatMessageClient());
+        mMsgSender = new TMMsgSender(this, TeamMeetingApp.getmChatMessageClient());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
-        int msg = mMsgSender.TMInit(mUserid,mSign,mServer, mPort);
-        if(msg ==0){
-            if(mDebug)
+        int msg = mMsgSender.TMInit(mUserid, mSign, mServer, mPort);
+        if (msg == 0) {
+            if (mDebug)
                 Log.e(TAG, "Chat Message Inint successed");
-        }
-        else if(mDebug){
+        } else if (mDebug) {
             Log.e(TAG, "Chat Message Inint failed");
         }
     }
 
-    private AnimationListener mAnimationListener = new AnimationListener()
-    {
+    private AnimationListener mAnimationListener = new AnimationListener() {
         @Override
-        public void onAnimationStart(Animation arg0)
-        {
+        public void onAnimationStart(Animation arg0) {
 
         }
 
         @Override
-        public void onAnimationRepeat(Animation arg0)
-        {
+        public void onAnimationRepeat(Animation arg0) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void onAnimationEnd(Animation arg0)
-        {
+        public void onAnimationEnd(Animation arg0) {
             mNetWork.init(mUserid, "2", "2", "2", "TeamMeeting");
         }
     };
@@ -148,21 +139,18 @@ public class StartFlashActivity extends BaseActivity
     /**
      * interfacejump
      */
-    private void interfacejump(Message msg )
-    {
+    private void interfacejump(Message msg) {
 
         mLoadingProgress.setVisibility(View.GONE);
         boolean firstLogin = LocalUserInfo.getInstance(StartFlashActivity.this)
                 .getUserInfoBoolean(LocalUserInfo.FIRST_LOGIN);
-         Intent intent ;
-        if (firstLogin)
-        {
+        Intent intent;
+        if (firstLogin) {
             intent = new Intent(StartFlashActivity.this, GuideActivity.class);
 
             LocalUserInfo.getInstance(StartFlashActivity.this).setUserInfoBoolean("firstLogin", false);
 
-        } else
-        {
+        } else {
 
             intent = new Intent(StartFlashActivity.this, MainActivity.class);
         }
@@ -172,24 +160,19 @@ public class StartFlashActivity extends BaseActivity
     }
 
 
-    OnSweetClickListener sweetClickListener = new OnSweetClickListener()
-    {
+    OnSweetClickListener sweetClickListener = new OnSweetClickListener() {
         @Override
-        public void onClick(SweetAlertDialog sweetAlertDialog)
-        {
+        public void onClick(SweetAlertDialog sweetAlertDialog) {
             sweetAlertDialog.dismiss();
             initNetWork();
         }
     };
 
-    public void netWorkTypeStart(int type)
-    {
+    public void netWorkTypeStart(int type) {
 
-        if (type == NetType.TYPE_NULL.ordinal())
-        {
+        if (type == NetType.TYPE_NULL.ordinal()) {
             mNetErrorSweetAlertDialog.show();
-        } else
-        {
+        } else {
             // initNetWork();
         }
     }
@@ -197,16 +180,14 @@ public class StartFlashActivity extends BaseActivity
     /**
      * For EventBus callback.
      */
-    public void onEventMainThread(Message msg)
-    {
-        switch (EventType.values()[msg.what])
-        {
+    public void onEventMainThread(Message msg) {
+        switch (EventType.values()[msg.what]) {
             case MSG_ININT_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_ININT_SUCCESS");
                 mSign = TeamMeetingApp.getmSelfData().getAuthorization();
                 mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
-              //  messageLogin();
+                //  messageLogin();
 
                 chatMessageInint();
 
@@ -246,21 +227,21 @@ public class StartFlashActivity extends BaseActivity
                 mNetErrorSweetAlertDialog.show();
                 break;
             case MSG_MESSAGE_LOGIN_SUCCESS:
-                if(mDebug){
-                    Log.e(TAG,"MSG_MESSAGE_LOGIN_SUCCESS");
+                if (mDebug) {
+                    Log.e(TAG, "MSG_MESSAGE_LOGIN_SUCCESS");
                 }
 
 
                 break;
             case MSG_MESSAGE_LOGIN_FAILED:
-                if(mDebug){
-                    Log.e(TAG,"MSG_MESSAGE_LOGIN_FAILED");
+                if (mDebug) {
+                    Log.e(TAG, "MSG_MESSAGE_LOGIN_FAILED");
                 }
 
                 break;
             case MSG_MESSAGE_SERVER_CONNECTED:
-                if(mDebug){
-                    Log.e(TAG,"MSG_MESSAGE_SERVER_CONNECTED");
+                if (mDebug) {
+                    Log.e(TAG, "MSG_MESSAGE_SERVER_CONNECTED");
                 }
 
 

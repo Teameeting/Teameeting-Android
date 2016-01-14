@@ -380,14 +380,15 @@ public class MainActivity extends BaseActivity {
                         Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Failed");
                     }
 
-                    // 推送接口
-                    // 跳转
+                    mNetWork.updateUserMeetingJointime(getSign(), meetingId);
+
                     intent = new Intent(mContext, MeetingActivity.class);
                     intent.putExtra("meetingName", meetingName);
                     intent.putExtra("meetingId", meetingId);
                     intent.putExtra("userId", mUserId);
-                    mContext.startActivity(intent);
 
+                    startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
+                    mContext.startActivity(intent);
                     break;
 
                 case R.id.btn_delete:
@@ -397,15 +398,7 @@ public class MainActivity extends BaseActivity {
                     mNetWork.deleteRoom(mSign, meetingId);
                     mRoomMeetingList.remove(position);
                     mAdapter.notifyDataSetChanged();
-                    //this code has deprecated
-                    /*code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
-                    if (code == 0) {
-                        if (mDebug) {
-                            Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Successed");
-                        }
-                    } else if (mDebug) {
-                        Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Failed");
-                    }*/
+                    CRUDChat.deleteByMeetingId(mContext, meetingId);
                     break;
 
                 case R.id.imgbtn_more_setting:
@@ -429,6 +422,7 @@ public class MainActivity extends BaseActivity {
                     mIMM.hideSoftInputFromWindow(reName.getWindowToken(), 0);
                     mUIHandler.sendEmptyMessageDelayed(UPDATE_RENAME_END, 500);
                     mReNameFlag = false;
+
                     break;
 
                 default:
@@ -542,7 +536,6 @@ public class MainActivity extends BaseActivity {
                 if (mDebug) {
                     Log.e(TAG, "onActivityResult: shareurl " + shareurl);
                 }
-
                 DialogHelper.onClickCopy(MainActivity.this, shareurl);
                 break;
             case ExtraType.RESULT_CODE_ROOM_SETTING_NOTIFICATION:
@@ -554,9 +547,13 @@ public class MainActivity extends BaseActivity {
                 seetingDeleteRoom(data);
             case ExtraType.RESULT_CODE_ROOM_SETTING_CLOSE:
                 if (mDebug)
-                    Log.e(TAG, "onActivityResult: 关闭");
+                    Log.e(TAG, "onActivityResult-Seeting: 关闭");
                 getListNetWork();
                 break;
+            case ExtraType.REQUEST_CODE_ROOM_MEETING:
+                if (mDebug)
+                    Log.e(TAG, "onActivityResult: -Meeting 关闭");
+                getListNetWork();
             default:
                 break;
         }
@@ -590,16 +587,6 @@ public class MainActivity extends BaseActivity {
         mAdapter.notifyDataSetChanged();
 
         String userId = mRoomMeetingList.get(position).getMeetinguserid();
-        //this code has deprecated
-        /*int code = mMsgSender.TMOptRoom(JMClientType.TMCMD_DESTROY, meetingId, "");
-        if (code == 0) {
-            if (mDebug) {
-                Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Successed");
-            }
-        } else if (mDebug) {
-            Log.e(TAG, "onItemClickListener: " + "TMDestroyRoom Failed");
-        }*/
-
     }
 
 
@@ -666,15 +653,26 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
+        switch (requestMsg.getCmd()) {
+            case JMClientType.MCCMD_DCOMM:
+                if (mDebug)
+                    Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
+                if (requestMsg.getTags() == JMClientType.MCSENDTAGS_TALK) {
+                    mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
+                }
+                break;
+            case JMClientType.MCCMD_LEAVE:
+                if (mDebug && requestMsg.getCmd() == 2)
+                    Log.e(TAG, "Someone is leave room !!!!!!!!!!!!!!!");
+            case JMClientType.MCCMD_ENTER:
+                mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
+                if (mDebug)
+                    Log.e(TAG, "Someone is go room !!!!!!!!!!!!!!!");
+                break;
+        }
 
-        Logger.e(CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
-        mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
     }
 
-    @Override
-    public void onMeetingNumSetChange(ReqSndMsgEntity requestMsg) {
-        mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
-    }
 
     /**
      * For EventBus callback.
@@ -742,8 +740,7 @@ public class MainActivity extends BaseActivity {
                 if (mDebug)
                     break;
             case MCCMD_LEAVE:
-                if (mDebug)
-                    Log.e(TAG, "Someone is go room !!!!!!!!!!!!!!!");
+
                 break;
             case MCCMD_ENTER:
                 if (mDebug)
