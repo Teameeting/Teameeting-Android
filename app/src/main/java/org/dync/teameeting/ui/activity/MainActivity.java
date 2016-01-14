@@ -136,16 +136,34 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getListNetWork();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
     private void initdata() {
         upDataMeetingList();
         mMsgSender = TeamMeetingApp.getmMsgSender();
 
-        mUrlMeetingId =  getIntent().getStringExtra("urlMeetingId");
-        if(mUrlMeetingId!=null){
-            if(mDebug){
-                Log.e(TAG, "initdata: mUrlMeetingId "+mUrlMeetingId);
+        mUrlMeetingId = getIntent().getStringExtra("urlMeetingId");
+        if (mUrlMeetingId != null) {
+            if (mDebug) {
+                Log.e(TAG, "initdata: mUrlMeetingId " + mUrlMeetingId);
             }
-            Toast.makeText(mContext,R.string.str_join_room_wait,Toast.LENGTH_LONG);
+            Toast.makeText(mContext, R.string.str_join_room_wait, Toast.LENGTH_LONG);
             mNetWork.getMeetingInfo(mUrlMeetingId);
         }
 
@@ -598,7 +616,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void getRoomListSuccess(Message msg) {
-        Bundle bundle = msg.getData();
+
         upDataMeetingList();
         mAdapter.notifyDataSetChanged();
 
@@ -627,12 +645,11 @@ public class MainActivity extends BaseActivity {
         if (list != null) {
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
-
         }
-
         if (mListView != null) {
             mListView.setSelection(0);
         }
+
     }
 
 
@@ -749,22 +766,22 @@ public class MainActivity extends BaseActivity {
                 if (mDebug)
                     Log.e(TAG, "Some people comming room!!!!!!!!!!!!!!!!!");
                 break;
-			case MSG_GET_MEETING_INFO_SUCCESS:
+            case MSG_GET_MEETING_INFO_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_GET_MEETING_INFO_SUCCESS");
                 int usable = msg.getData().getInt("usable");
-                mUrlMeetingName =  msg.getData().getString("meetingName");
-                switch (usable){
+                mUrlMeetingName = msg.getData().getString("meetingName");
+                switch (usable) {
                     case 0://no
-                        Toast.makeText(mContext,R.string.str_meeting_deleted,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.str_meeting_deleted, Toast.LENGTH_SHORT).show();
                         break;
 
                     case 1://yes
-                        mNetWork.insertUserMeetingRoom(getSign(),mUrlMeetingId);
+                        mNetWork.insertUserMeetingRoom(getSign(), mUrlMeetingId);
                         break;
 
                     case 2://private
-                        Toast.makeText(mContext,R.string.str_meeting_privated,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.str_meeting_privated, Toast.LENGTH_SHORT).show();
                         break;
                 }
 
@@ -772,22 +789,22 @@ public class MainActivity extends BaseActivity {
             case MSG_GET_MEETING_INFO_FAILED:
                 if (mDebug)
                     Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
-                Toast.makeText(mContext,msg.getData().getString("message"),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                 break;
             case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
 
-                Intent intent = new Intent(mContext,MeetingActivity.class);
+                Intent intent = new Intent(mContext, MeetingActivity.class);
                 intent.putExtra("meetingId", mUrlMeetingId);
                 intent.putExtra("userId", mUserId);
-                intent.putExtra("meetingName",mUrlMeetingName);
+                intent.putExtra("meetingName", mUrlMeetingName);
                 startActivity(intent);
                 break;
             case MSG_INSERT_USER_MEETING_ROOM_FAILED:
                 if (mDebug)
                     Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_FAILED");
-                Toast.makeText(mContext,msg.getData().getString("message"),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
