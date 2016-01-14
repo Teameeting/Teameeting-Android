@@ -39,7 +39,7 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="room_emty_tite">创建你的第一个房间</string>
     <string name="room_empty_content_str">创建一个带视屏的房间，把房间分享给您的同事或者好友，无论你在哪里，他们都能看到你</string>
-
+    <string name="str_join_room_wait">正在进入会议请等待</string>
 
   <!-- 进入会议界面  -->
     
@@ -55,4 +55,9 @@
     <string name="chat_time_string_minutes_age">分钟以前</string>
     <string name="chat_time_string_hour_age">小时以前</string>
     <string name="chat_time_string_day_age">天以前</string>
+
+
+    <!--会议室-->
+
+    <string name="str_message_server_not_connect">已断开连接，请稍后重试</string>
 </resources>

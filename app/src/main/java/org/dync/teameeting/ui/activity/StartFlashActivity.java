@@ -2,6 +2,7 @@ package org.dync.teameeting.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,11 +45,12 @@ public class StartFlashActivity extends BaseActivity
     private ImageView mView;
     private Context context;
     private TMMsgSender mMsgSender;
-    private final String mServer = "192.168.7.27";
+    private final String mServer = "192.168.7.39";
     private final int mPort = 9210;
     private String mUserid ;
     private String mSign;
     private ProgressBar mLoadingProgress;
+    private String   mUrlMeetingId=null;
 
 
     @Override
@@ -102,6 +104,23 @@ public class StartFlashActivity extends BaseActivity
                 R.anim.splash);
         loadAnimation.setAnimationListener(mAnimationListener);
         mView.setAnimation(loadAnimation);
+
+
+      /*  URL   join   meeting   */
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if(Intent.ACTION_VIEW.equals(action)){
+            Uri uri = intent.getData();
+            if(uri != null){
+                String content = uri.toString();
+
+                mUrlMeetingId =  content.substring(13);
+                if(mDebug)
+                Log.e(TAG, "initData: "+uri.toString() +" content "+content);
+            }
+        }
+
+
 
     }
 
@@ -163,8 +182,8 @@ public class StartFlashActivity extends BaseActivity
 
         } else
         {
-
             intent = new Intent(StartFlashActivity.this, MainActivity.class);
+            intent.putExtra("urlMeetingId",mUrlMeetingId);
         }
 
         startActivity(intent);
@@ -206,8 +225,6 @@ public class StartFlashActivity extends BaseActivity
                     Log.e(TAG, "MSG_ININT_SUCCESS");
                 mSign = TeamMeetingApp.getmSelfData().getAuthorization();
                 mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
-              //  messageLogin();
-
                 chatMessageInint();
 
                 break;

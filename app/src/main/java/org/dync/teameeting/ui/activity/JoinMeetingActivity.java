@@ -24,6 +24,7 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     private ImageButton mIbtnJoinMeeting,mIbtnback;
     private TMMsgSender mMsgSender;
     private String mMeetingId;
+    private String mMeetingName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +91,8 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
         else{
             Toast.makeText(JoinMeetingActivity.this,R.string.str_meeting_id_error,Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
 
@@ -99,17 +102,11 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     private void joinMeeting(){
 
             String userId = TeamMeetingApp.getTeamMeetingApp().getDevId();
-            int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, mMeetingId,"");
-            if(code==0){
-                if(mDebug){
-                    Log.e(TAG, "joinMeeting: "+"TMEnterRoom Successed");
-                }
-            }else if(mDebug){
-                Log.e(TAG, "joinMeeting: "+"TMEnterRoom Failed");
-            }
+
             Intent intent = new Intent(JoinMeetingActivity.this,MeetingActivity.class);
             intent.putExtra("meetingId", mMeetingId);
             intent.putExtra("userId", userId);
+            intent.putExtra("meetingName",mMeetingName);
             startActivity(intent);
 
     }
@@ -124,6 +121,7 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
                     if (mDebug)
                         Log.e(TAG, "MSG_GET_MEETING_INFO_SUCCESS");
                     int usable = msg.getData().getInt("usable");
+                    mMeetingName = msg.getData().getString("meetingName");
                     switch (usable){
                         case 0://no
                             Toast.makeText(JoinMeetingActivity.this,R.string.str_meeting_deleted,Toast.LENGTH_SHORT).show();
