@@ -456,7 +456,7 @@ public class MainActivity extends BaseActivity {
         intent.putExtra("meetingName", meetingName);
         intent.putExtra("meetingId", meetingId);
         intent.putExtra("userId", mUserId);
-        startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
+      //  startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
         mContext.startActivity(intent);
     }
 
