@@ -14,9 +14,8 @@
     <RelativeLayout
         android:id="@+id/rl_meeting_topbar"
         style="@style/TopBar_Style"
+        android:layout_height="@dimen/height_top_bar"
         android:background="@color/black_gray" >
-
-
 
         <RelativeLayout
             android:layout_width="@dimen/header_height"
@@ -25,7 +24,9 @@
             <ImageButton
                 android:id="@+id/imgbtn_chat"
                 style="@style/Btn_left"
+                android:layout_centerVertical="true"
                 android:src="@drawable/btn_chat"/>
+
             <TextView
                 android:id="@+id/tv_message_count"
                 android:layout_width="wrap_content"
@@ -51,6 +52,7 @@
         <ImageButton
             android:id="@+id/imgbtn_invite"
             style="@style/Btn_right"
+            android:layout_centerVertical="true"
             android:src="@drawable/btn_invite" />
     </RelativeLayout>
     <!-- Control Layout -->
