@@ -21,6 +21,8 @@ import org.apache.http.util.EntityUtils;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingInfo;
 import org.dync.teameeting.bean.MeetingList;
+import org.dync.teameeting.bean.MessageList;
+import org.dync.teameeting.bean.MessageListEntity;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
 import org.json.JSONException;
@@ -613,6 +615,11 @@ public class NetWork {
                     Log.e(TAG, "onSuccess: getMeetingMsgList" + responseString);
                 if (mDebug)
                     if (code == 200) {
+
+                        MessageList messageList = gson.fromJson(responseString,MessageList.class);
+                        List<MessageListEntity> messageListEntity = messageList.getMessageList();
+                        TeamMeetingApp.getmSelfData().setMessageListEntityList(messageListEntity);
+
                         msg.what = EventType.MSG_GET_MEETING_MSG_LIST_SUCCESS.ordinal();
                     } else {
                         msg.what = EventType.MSG_GET_MEETING_MSG_LIST_FAILED.ordinal();
@@ -914,8 +921,8 @@ public class NetWork {
     public void getMeetingInfo(String meetingid) {
 
 
-        String url = "meeting/getMeetingInfo/" + meetingid;
-        HttpContent.get(url, new TmTextHttpResponseHandler() {
+        String url = "meeting/getMeetingInfo/"+meetingid;
+        HttpContent.get(url,new TmTextHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
@@ -930,6 +937,7 @@ public class NetWork {
                         String info = json.getString("meetingInfo");
                         MeetingInfo meetingInfo = gson.fromJson(info, MeetingInfo.class);
                         bundle.putInt("usable", meetingInfo.getMeetusable());
+                        bundle.putString("meetingName", meetingInfo.getMeetname());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
