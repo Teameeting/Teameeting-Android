@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-
+        getListNetWork();
     }
 
     private void initdata() {
@@ -554,8 +554,8 @@ public class MainActivity extends BaseActivity {
      * @param position
      */
     private void moreSetting(int position) {
-        Intent intent;
-        intent = new Intent(mContext, RoomSettingActivity.class);
+
+        Intent intent = new Intent(mContext, RoomSettingActivity.class);
         MeetingListEntity meetingEntity = mRoomMeetingList.get(position);
         Bundle mBundle = new Bundle();
         mBundle.putSerializable(Intent_KEY.MEETING_ENTY, meetingEntity);

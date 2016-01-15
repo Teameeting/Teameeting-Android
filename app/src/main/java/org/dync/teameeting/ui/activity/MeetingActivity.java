@@ -840,12 +840,11 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 if (mMessageShowFlag) {
                     leaveMessageDealWith();
                     addAutoView(message, name);
-                } else {
-                    CRUDChat.deleteByMeetingId(MeetingActivity.this, requestMsg.getRoom());
                 }
                 break;
 
             case JMClientType.MCSENDTAGS_ENTER://2
+                mTvRemind.setVisibility(View.GONE);
                 break;
 
             case JMClientType.MCSENDTAGS_LEAVE://3
@@ -859,7 +858,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
 
             case JMClientType.MCSENDTAGS_UNSUBSCRIBE://5
-                mAnyM2Mutlier.UnSubscribe(message);
+                if (mAnyM2Mutlier != null)
+                    mAnyM2Mutlier.UnSubscribe(message);
+                else if (mDebug)
+                    Log.e(TAG, "onRequesageMsg: " + " mAnyM2Mutlier = = null ");
                 break;
 
             case JMClientType.MCSENDTAGS_INVALID://6

@@ -20,7 +20,7 @@
     <string name="str_weixin_invite">微信邀请</string>
     <string name="str_copy_link">拷贝链接</string>
     <string name="str_join_room">进入会议</string>
-    <string name="str_notifications">会议提醒</string>
+    <string name="str_notifications">通知</string>
     <string name="str_meeting_private">私密会议</string>
     <string name="str_delete_room">删除会议</string>
     <string name="str_rename_room">修改会议名称</string>
