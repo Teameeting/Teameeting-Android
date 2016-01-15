@@ -24,13 +24,18 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.loopj.android.http.RequestParams;
 import com.orhanobut.logger.Logger;
 
+import org.apache.http.Header;
+import org.apache.http.message.LineFormatter;
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.CRUDChat;
+import org.dync.teameeting.http.HttpContent;
+import org.dync.teameeting.http.TmTextHttpResponseHandler;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
@@ -41,6 +46,8 @@ import org.dync.teameeting.ui.adapter.SwipeListAdapter;
 import org.dync.teameeting.ui.adapter.SwipeListAdapter.SwipeListOnClick;
 import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.utils.ScreenUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +87,9 @@ public class MainActivity extends BaseActivity {
     private final String mPass = getSign();
     private String mUserId = TeamMeetingApp.getTeamMeetingApp().getDevId();
     private TMMsgSender mMsgSender;
+
+    private String mUrlMeetingId;
+    private String mUrlMeetingName;
 
     private Handler mUIHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -133,9 +143,26 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getListNetWork();
+    }
+
     private void initdata() {
         upDataMeetingList();
         mMsgSender = TeamMeetingApp.getmMsgSender();
+
+        mUrlMeetingId = getIntent().getStringExtra("urlMeetingId");
+        if (mUrlMeetingId != null) {
+            if (mDebug) {
+                Log.e(TAG, "initdata: mUrlMeetingId " + mUrlMeetingId);
+            }
+            Toast.makeText(mContext, R.string.str_join_room_wait, Toast.LENGTH_LONG);
+
+            mNetWork.getMeetingInfo(mUrlMeetingId);
+        }
+
 
     }
 
@@ -202,7 +229,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 mAdapter.notifyInitDataSetChanged();
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -276,6 +302,8 @@ public class MainActivity extends BaseActivity {
      * @return
      */
     private int getItemHeight(final ListView listView) {
+
+
         View view = mAdapter.getView(0, null, listView);
 
         view.measure(0, 0);
@@ -291,8 +319,7 @@ public class MainActivity extends BaseActivity {
      */
     private boolean hideKeyboard() {
         if (mIMM.isActive(mCreateRoom)) {
-            mIMM.hideSoftInputFromWindow(this.getCurrentFocus()
-                    .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            mIMM.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mIMM.restartInput(mCreateRoom);
 
             // mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
@@ -313,7 +340,6 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onClick(View view) {
-            // TODO Auto-generated method stub
             switch (view.getId()) {
                 case R.id.tv_cancel_create_room:
                     mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
@@ -365,32 +391,11 @@ public class MainActivity extends BaseActivity {
             Intent intent;
             switch (v.getId()) {
                 case R.id.fl_front:
-                    meetingName = mRoomMeetingList.get(position).getMeetname();
-                    meetingId = mRoomMeetingList.get(position).getMeetingid();
-                    // mUserId = mRoomMeetingList.get(position).getMeetinguserid();
                     if (mDebug) {
-                        Log.i(TAG, "meetingId-fl_front" + meetingId);
+                        Log.i(TAG, "meetingId-fl_front" + position);
                     }
-                    code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, meetingId, "");
-                    if (code == 0) {
-                        if (mDebug) {
-                            Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Successed");
-                        }
-                    } else if (mDebug) {
-                        Log.e(TAG, "onItemClickListener: " + "TMEnterRoom Failed");
-                    }
-
-                    mNetWork.updateUserMeetingJointime(getSign(), meetingId);
-
-                    intent = new Intent(mContext, MeetingActivity.class);
-                    intent.putExtra("meetingName", meetingName);
-                    intent.putExtra("meetingId", meetingId);
-                    intent.putExtra("userId", mUserId);
-
-                    startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
-                    mContext.startActivity(intent);
+                    enterMeetingActivity(position);
                     break;
-
                 case R.id.btn_delete:
                     mSign = getSign();
                     meetingId = mRoomMeetingList.get(position).getMeetingid();
@@ -398,6 +403,7 @@ public class MainActivity extends BaseActivity {
                     mNetWork.deleteRoom(mSign, meetingId);
                     mRoomMeetingList.remove(position);
                     mAdapter.notifyDataSetChanged();
+
                     CRUDChat.deleteByMeetingId(mContext, meetingId);
                     break;
 
@@ -432,6 +438,28 @@ public class MainActivity extends BaseActivity {
         }
     };
 
+    private void enterMeetingActivity(int position) {
+        MeetingListEntity meetingListEntity = mRoomMeetingList.get(position);
+        String meetingName = meetingListEntity.getMeetname();
+        String meetingId = meetingListEntity.getMeetingid();
+        int owner = meetingListEntity.getOwner();
+        if (owner == 0) {
+            mNetWork.getMeetingInfo(meetingId);
+
+        } else {
+            statrMeetingActivity(meetingName, meetingId);
+        }
+    }
+
+    private void statrMeetingActivity(String meetingName, String meetingId) {
+        Intent intent = new Intent(mContext, MeetingActivity.class);
+        intent.putExtra("meetingName", meetingName);
+        intent.putExtra("meetingId", meetingId);
+        intent.putExtra("userId", mUserId);
+      //  startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
+        mContext.startActivity(intent);
+    }
+
 
     /**
      * soft keyboard Listener
@@ -457,9 +485,11 @@ public class MainActivity extends BaseActivity {
     };
 
     private void applyRoom(String meetingName) {
+
         mIMM.hideSoftInputFromWindow(mCreateRoom.getWindowToken(), 0);
         mCreateRoom.setVisibility(View.GONE);
         mRoomCancel.setVisibility(View.GONE);
+
         String pushable = "1";
         String meetdesc = "";
         String meetenablde = "1";
@@ -471,12 +501,52 @@ public class MainActivity extends BaseActivity {
         meetingList.setJointime(System.currentTimeMillis());
 
         mRoomMeetingList.add(0, meetingList);
+
         mAdapter.notifyDataSetChanged();
         mListView.setSelection(0);
-        mNetWork.applyRoom(mSign, meetingName, "0", "", meetenablde, pushable);
 
+        // mNetWork.applyRoom(mSign, meetingName, "0", "", meetenablde, pushable);
+        applyRoomNetWrod(meetingName, "0", "", meetenablde, pushable);
         mCreateRoomFlag = true;
     }
+
+    public void applyRoomNetWrod(final String meetingname, final String meetingtype, final String meetdesc, final String meetenable, final String pushable) {
+        String url = "meeting/applyRoom";
+        RequestParams params = new RequestParams();
+        params.put("sign", getSign());
+        params.put("meetingname", meetingname);
+        params.put("meetingtype", meetingtype);
+        params.put("meetdesc", meetdesc);
+        params.put("meetenable", meetenable);
+        params.put("pushable", pushable);
+        HttpContent.post(url, params, new TmTextHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
+                if (mDebug)
+                    Log.e(TAG, "onSuccess: applyRoom" + responseString);
+                if (code == 200) {
+                    try {
+                        JSONObject json = new JSONObject(responseString);
+                        String meetingInfo = json.getString("meetingInfo");
+                        MeetingListEntity meeting = gson.fromJson(meetingInfo, MeetingListEntity.class);
+                        meeting.setCreatetime(meeting.getJointime());
+                        meeting.setOwner(1);
+                        meeting.setMemnumber(0);
+                        meeting.setMeetinguserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
+
+                        mRoomMeetingList.remove(0);
+                        mRoomMeetingList.add(0, meeting);
+                        mAdapter.notifyDataSetChanged();
+                        startInvitePeopleActivity();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 
     /**
      * moreSetting
@@ -484,8 +554,8 @@ public class MainActivity extends BaseActivity {
      * @param position
      */
     private void moreSetting(int position) {
-        Intent intent;
-        intent = new Intent(mContext, RoomSettingActivity.class);
+
+        Intent intent = new Intent(mContext, RoomSettingActivity.class);
         MeetingListEntity meetingEntity = mRoomMeetingList.get(position);
         Bundle mBundle = new Bundle();
         mBundle.putSerializable(Intent_KEY.MEETING_ENTY, meetingEntity);
@@ -595,11 +665,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void getRoomListSuccess(Message msg) {
-        Bundle bundle = msg.getData();
+
         upDataMeetingList();
+
         mAdapter.notifyDataSetChanged();
 
-        startInvitePeopleActivity();
+        // startInvitePeopleActivity();
     }
 
     private void startInvitePeopleActivity() {
@@ -619,17 +690,14 @@ public class MainActivity extends BaseActivity {
         for (int i = 0; i < list.size(); i++) {
             list.get(i).initUnReadMessage(mContext);
         }
-        if (mDebug)
-            Log.e(TAG, "upDataMeetingList: " + list.toString());
         if (list != null) {
             mRoomMeetingList.clear();
             mRoomMeetingList.addAll(list);
-
         }
-
         if (mListView != null) {
             mListView.setSelection(0);
         }
+
     }
 
 
@@ -653,18 +721,18 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
-        switch (requestMsg.getCmd()) {
-            case JMClientType.MCCMD_DCOMM:
+        switch (requestMsg.getTags()) {
+            case JMClientType.MCSENDTAGS_TALK:
                 if (mDebug)
                     Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
                 if (requestMsg.getTags() == JMClientType.MCSENDTAGS_TALK) {
                     mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
                 }
                 break;
-            case JMClientType.MCCMD_LEAVE:
+            case JMClientType.MCSENDTAGS_LEAVE:
                 if (mDebug && requestMsg.getCmd() == 2)
                     Log.e(TAG, "Someone is leave room !!!!!!!!!!!!!!!");
-            case JMClientType.MCCMD_ENTER:
+            case JMClientType.MCSENDTAGS_ENTER:
                 mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
                 if (mDebug)
                     Log.e(TAG, "Someone is go room !!!!!!!!!!!!!!!");
@@ -708,9 +776,8 @@ public class MainActivity extends BaseActivity {
                     Log.e(TAG, "MSG_GET_ROOM_LIST_FAILED");
                 break;
             case MSG_APPLY_ROOM_SUCCESS:
-                String meetingId = msg.getData().getString("meetingId");
                 if (mDebug)
-                    Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS " + meetingId);
+                    Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS ");
                 getListNetWork();
                 break;
             case MSG_APPLY_ROOMT_FAILED:
@@ -745,6 +812,47 @@ public class MainActivity extends BaseActivity {
             case MCCMD_ENTER:
                 if (mDebug)
                     Log.e(TAG, "Some people comming room!!!!!!!!!!!!!!!!!");
+                break;
+            case MSG_GET_MEETING_INFO_SUCCESS:
+                if (mDebug)
+                    Log.e(TAG, "MSG_GET_MEETING_INFO_SUCCESS");
+                int usable = msg.getData().getInt("usable");
+                mUrlMeetingName = msg.getData().getString("meetingName");
+                switch (usable) {
+                    case 0://no
+                        Toast.makeText(mContext, R.string.str_meeting_deleted, Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case 1://yes
+                        String meetinId = msg.getData().getString("meetingId");
+                        statrMeetingActivity(mUrlMeetingName, meetinId);
+                        break;
+
+                    case 2://private
+                        Toast.makeText(mContext, R.string.str_meeting_privated, Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
+                break;
+            case MSG_GET_MEETING_INFO_FAILED:
+                if (mDebug)
+                    Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
+                Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                break;
+            case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
+                if (mDebug)
+                    Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
+
+                Intent intent = new Intent(mContext, MeetingActivity.class);
+                intent.putExtra("meetingId", mUrlMeetingId);
+                intent.putExtra("userId", mUserId);
+                intent.putExtra("meetingName", mUrlMeetingName);
+                startActivity(intent);
+                break;
+            case MSG_INSERT_USER_MEETING_ROOM_FAILED:
+                if (mDebug)
+                    Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_FAILED");
+                Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;

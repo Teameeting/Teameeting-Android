@@ -21,6 +21,9 @@ import org.apache.http.util.EntityUtils;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingInfo;
 import org.dync.teameeting.bean.MeetingList;
+import org.dync.teameeting.bean.MeetingListEntity;
+import org.dync.teameeting.bean.MessageList;
+import org.dync.teameeting.bean.MessageListEntity;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
 import org.json.JSONException;
@@ -34,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.xml.transform.Templates;
 
 public class NetWork {
 
@@ -267,9 +272,9 @@ public class NetWork {
      * @param pushable
      */
 
-    public void applyRoom(final String sign, final String meetingname,
-                          final String meetingtype, final String meetdesc, final String meetenable,
-                          final String pushable) {
+    public MeetingListEntity applyRoom(final String sign, final String meetingname,
+                                       final String meetingtype, final String meetdesc, final String meetenable,
+                                       final String pushable) {
         String url = "meeting/applyRoom";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -279,42 +284,41 @@ public class NetWork {
         params.put("meetenable", meetenable);
         params.put("pushable", pushable);
 
-
         HttpContent.post(url, params, new TmTextHttpResponseHandler() {
+
+            MeetingListEntity meeting;
+
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: applyRoom" + responseString);
                 if (code == 200) {
-                    //Bundle bundle = new Bundle();
-
                     try {
                         JSONObject json = new JSONObject(responseString);
                         String meetingInfo = json.getString("meetingInfo");
-                        JSONObject jsonMeetingInfo = new JSONObject(meetingInfo);
-                        String meetingId = jsonMeetingInfo.getString("meetingid");
-                        bundle.putString("meetingId", meetingId);
-                        if (mDebug) {
-                            Log.e(TAG, "meetingId " + meetingId);
-                        }
+                        meeting = gson.fromJson(meetingInfo, MeetingListEntity.class);
 
+                        meeting.setCreatetime(meeting.getJointime());
+                        meeting.setOwner(1);
+                        meeting.setMemnumber(0);
+                        meeting.setMeetinguserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
+
+                        if (mDebug)
+                            Log.e(TAG, "applyRoom:-----" + meeting.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    msg.setData(bundle);
-                    msg.what = EventType.MSG_APPLY_ROOM_SUCCESS
-                            .ordinal();
+                    msg.what = EventType.MSG_APPLY_ROOM_SUCCESS.ordinal();
                 } else {
-                    msg.what = EventType.MSG_APPLY_ROOMT_FAILED
-                            .ordinal();
+                    msg.what = EventType.MSG_APPLY_ROOMT_FAILED.ordinal();
                 }
-
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
-
+        return null;
     }
 
     /**
@@ -506,7 +510,6 @@ public class NetWork {
         new Thread() {
             @Override
             public synchronized void run() {
-                // TODO Auto-generated method stub
                 super.run();
 
                 Map<String, String> params = new HashMap<String, String>();
@@ -539,7 +542,6 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -613,6 +615,11 @@ public class NetWork {
                     Log.e(TAG, "onSuccess: getMeetingMsgList" + responseString);
                 if (mDebug)
                     if (code == 200) {
+
+                        MessageList messageList = gson.fromJson(responseString, MessageList.class);
+                        List<MessageListEntity> messageListEntity = messageList.getMessageList();
+                        TeamMeetingApp.getmSelfData().setMessageListEntityList(messageListEntity);
+
                         msg.what = EventType.MSG_GET_MEETING_MSG_LIST_SUCCESS.ordinal();
                     } else {
                         msg.what = EventType.MSG_GET_MEETING_MSG_LIST_FAILED.ordinal();
@@ -678,7 +685,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
+
                     e.printStackTrace();
                 }
             }
@@ -739,7 +746,6 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -790,7 +796,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
+
                     e.printStackTrace();
                 }
             }
@@ -842,7 +848,6 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -896,7 +901,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
+
                     e.printStackTrace();
                 }
             }
@@ -904,16 +909,12 @@ public class NetWork {
 
     }
 
-    // ******************************************
-
     /**
-     * .获取会议室的信息 单独封装 提交响应的设置 16
+     * TODO Obtain information on the conference room A single 16 submit response Settings 16
      *
      * @param meetingid
      */
     public void getMeetingInfo(String meetingid) {
-
-
         String url = "meeting/getMeetingInfo/" + meetingid;
         HttpContent.get(url, new TmTextHttpResponseHandler() {
             @Override
@@ -922,30 +923,23 @@ public class NetWork {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: getMeetingInfo" + responseString);
                 if (code == 200) {
-                    msg.what = EventType.MSG_GET_MEETING_INFO_SUCCESS
-                            .ordinal();
-
                     try {
                         JSONObject json = new JSONObject(responseString);
                         String info = json.getString("meetingInfo");
                         MeetingInfo meetingInfo = gson.fromJson(info, MeetingInfo.class);
                         bundle.putInt("usable", meetingInfo.getMeetusable());
-
+                        bundle.putString("meetingName", meetingInfo.getMeetname());
+                        bundle.putString("meetingId", meetingInfo.getMeetingid());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
+                    msg.what = EventType.MSG_GET_MEETING_INFO_SUCCESS.ordinal();
                 } else {
-                    msg.what = EventType.MSG_GET_MEETING_INFO_FAILED
-                            .ordinal();
+                    msg.what = EventType.MSG_GET_MEETING_INFO_FAILED.ordinal();
                 }
-
                 bundle.putString("message", message);
                 msg.setData(bundle);
-
                 EventBus.getDefault().post(msg);
-
             }
         });
 
@@ -1105,7 +1099,6 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

@@ -77,9 +77,8 @@ public class ChatMessageClient implements JMClientHelper {
      */
 
     public void OnSndMsg(String msg) {
-
         if (mDebug)
-            Logger.e(TAG, "OnSndMsg: ChatMessageClient " + msg);
+            Logger.e("OnSndMsg: ChatMessageClient " + msg);
 
         if (msg != null) {
             mMessage = new Message();
@@ -88,10 +87,12 @@ public class ChatMessageClient implements JMClientHelper {
             if (mDebug) {
                 Log.e(TAG, reqSndMsgEntity.getFrom() + "---" + TeamMeetingApp.getTeamMeetingApp().getDevId());
             }
-            if (!reqSndMsgEntity.getFrom().equals(TeamMeetingApp.getTeamMeetingApp().getDevId()) || reqSndMsgEntity.getTags() == JMClientType.MCSENDTAGS_NOTIFY) {
-                if (reqSndMsgEntity.getCmd() == JMClientType.MCCMD_DCOMM && reqSndMsgEntity.getTags() == JMClientType.MCSENDTAGS_TALK)
+            if (!reqSndMsgEntity.getFrom().equals(TeamMeetingApp.getTeamMeetingApp().getDevId())) {
+                if (reqSndMsgEntity.getTags() == JMClientType.MCSENDTAGS_TALK)
                     CRUDChat.queryInsert(context, reqSndMsgEntity);
                 notifyRequestMessage(reqSndMsgEntity);
+            } else {
+
             }
         }
 

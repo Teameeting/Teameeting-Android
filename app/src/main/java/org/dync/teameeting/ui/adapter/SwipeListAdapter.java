@@ -129,6 +129,8 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
                 mHolder.mNotificationsClose.setVisibility(View.GONE);
             }
         }
+
+
         if (!meetingListEntity.isApplyTyep()) {
             mHolder.mPbCreeat.setVisibility(View.VISIBLE);
             mHolder.mMoreSetting.setVisibility(View.GONE);
@@ -143,6 +145,12 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         } else {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.white));
             mHolder.mIvPrivate.setVisibility(View.INVISIBLE);
+        }
+
+        if (meetingListEntity.getOwner() == 1) {
+            mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
+        } else {
+            mHolder.mRoomName.setTextColor(mResources.getColor(R.color.white));
         }
 
         String unReadMessage;
@@ -250,7 +258,6 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
     public void closeAllLayout() {
         if (mUnClosedLayouts.size() == 0)
             return;
-
         for (SwipeLayout l : mUnClosedLayouts) {
             l.close(true, false);
         }

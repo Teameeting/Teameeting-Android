@@ -50,7 +50,6 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         mNetWork = new NetWork();
         mainView = (RelativeLayout) View.inflate(this, R.layout.activity_meeting, null);
@@ -78,6 +77,7 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
         });
     }
 
+
     public String getSign() {
         return TeamMeetingApp.getmSelfData().getAuthorization();
     }
@@ -89,8 +89,10 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
         TextView tvChatContent = (TextView) showView.findViewById(R.id.tv_chat_content);
         TextView tvSendName = (TextView) showView.findViewById(R.id.tv_send_name);
         showView.setBackgroundColor(colors[random.nextInt(10)]);
+
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
         params.topMargin = (int) getResources().getDimension(R.dimen.height_top_bar);
         showView.setLayoutParams(params);
         showView.postDelayed(new Runnable() {
@@ -99,9 +101,9 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
                 alphaAnimation(showView, viewList);
             }
         }, 1000);
+
         viewList.add(showView);
         mainView.addView(showView);
-
         tvChatContent.setText(msg);
         tvSendName.setText(name);
 
@@ -120,6 +122,8 @@ public class MeetingBaseActivity extends Activity implements IChatMessageIntefac
         });
         anim.setDuration(3000).start();
     }
+
+
 
     private void MoveDownView() {
         int topMargin = 0;

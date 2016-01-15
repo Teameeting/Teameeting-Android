@@ -36,6 +36,17 @@ public class SelfData {
 
     private List<MeetingListEntity> meetingLists = new ArrayList<MeetingListEntity>();
 
+
+    private List<MessageListEntity> messageListEntityList = new ArrayList<MessageListEntity>();
+
+    public List<MessageListEntity> getMessageListEntityList() {
+        return messageListEntityList;
+    }
+
+    public void setMessageListEntityList(List<MessageListEntity> messageListEntityList) {
+        this.messageListEntityList = messageListEntityList;
+    }
+
     public List<MeetingListEntity> getMeetingLists() {
         return meetingLists;
     }
