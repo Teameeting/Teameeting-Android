@@ -36,10 +36,11 @@ public class JMClientType {
 
     //* MsgClient send msg tags
     public static final int MCSENDTAGS_TALK=1;
-    public static final int MCSENDTAGS_CHAT=2;
-    public static final int MCSENDTAGS_LVMSG=3;
-    public static final int MCSENDTAGS_NOTIFY=4;
-    public static final int MCSENDTAGS_INVALID=5;
+    public static final int MCSENDTAGS_ENTER=2;
+    public static final int MCSENDTAGS_LEAVE=3;
+    public static final int MCSENDTAGS_SUBSCRIBE=4;
+    public static final int MCSENDTAGS_UNSUBSCRIBE=5;
+    public static final int MCSENDTAGS_INVALID=6;
 
     //* MsgClient message type
     public static final int MCMESSAGETYPE_REQUEST=1;

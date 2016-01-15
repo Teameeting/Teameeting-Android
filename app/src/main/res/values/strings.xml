@@ -29,7 +29,7 @@
     <string name="str_weixin">微信</string>
     <string name="str_invite_people_to_room">你想通过什么方法邀请好友进入会议?</string>
     <string name="str_copy_link_invite">你也可以复制粘贴会议的安全链接来邀请好友</string>
-    <string name="exit_once_more">再点击一次退出</string>
+    <string name="exit_once_more">再次点击退出</string>
     <string name="str_chat">聊天室</string>
     <string name="str_hint_send_message">发送消息</string>
     <string name="str_send_message">发送</string>
@@ -40,6 +40,8 @@
     <string name="room_emty_tite">创建你的第一个房间</string>
     <string name="room_empty_content_str">创建一个带视屏的房间，把房间分享给您的同事或者好友，无论你在哪里，他们都能看到你</string>
     <string name="str_join_room_wait">正在进入会议请等待</string>
+    <string name="str_create">"创建 "</string>
+    <string name="str_join">"加入 "</string>
 
   <!-- 进入会议界面  -->
     
