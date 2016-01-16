@@ -9,7 +9,7 @@ import org.dync.teameeting.R;
  */
 public class StringHelper {
     public static String formatDuration(long paramLong, Resources resources) {
-        String mTimeFormat = " %d %s ";
+        String mTimeFormat = ": %d %s ";
         long l = System.currentTimeMillis() / 1000L - paramLong / 1000L;
         System.out.println("l" + l);
         if (l < 60L) {
