@@ -15,6 +15,7 @@ import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.structs.JoinActType;
 
 public class JoinMeetingActivity extends BaseActivity implements View.OnClickListener {
     private final static String TAG = "JoinMeetingActivity";
@@ -46,6 +47,7 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     private void inintdata() {
         mMsgSender = TeamMeetingApp.getmMsgSender();
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -66,7 +68,6 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-
             meetingDealWith();
             return false;
         }
@@ -79,12 +80,11 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
         mMeetingId = mEtMeetingId.getText().toString();
         if (mMeetingId.length() == 12) {
             Log.e(TAG, "meetingDealWith: " + getSign() + " mMeetingId " + mMeetingId);
-            mNetWork.getMeetingInfo(mMeetingId);
+
+            mNetWork.getMeetingInfo(mMeetingId, JoinActType.JOIN_START_ACTIVITY);
         } else {
             Toast.makeText(JoinMeetingActivity.this, R.string.str_meeting_id_error, Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
 
@@ -92,21 +92,21 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
      * joinMeeting
      */
     private void joinMeeting() {
-
         String userId = TeamMeetingApp.getTeamMeetingApp().getDevId();
-
         Intent intent = new Intent(JoinMeetingActivity.this, MeetingActivity.class);
         intent.putExtra("meetingId", mMeetingId);
         intent.putExtra("userId", userId);
         intent.putExtra("meetingName", mMeetingName);
         startActivity(intent);
-
+        finish();
     }
+
 
 
     @Override
     public void onEventMainThread(Message msg) {
         {
+            String join_insert_type;
             switch (EventType.values()[msg.what]) {
 
                 case MSG_GET_MEETING_INFO_SUCCESS:
@@ -120,7 +120,9 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
                             break;
 
                         case 1://yes
-                            mNetWork.insertUserMeetingRoom(getSign(), mMeetingId);
+                            if (msg.getData().getString(JoinActType.JOIN_TYPE) == JoinActType.JOIN_START_ACTIVITY) {
+                                mNetWork.insertUserMeetingRoom(getSign(), mMeetingId, JoinActType.JOIN_INSERT_START_ACTIVITY);
+                            }
                             break;
 
                         case 2://private
@@ -132,12 +134,20 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
                 case MSG_GET_MEETING_INFO_FAILED:
                     if (mDebug)
                         Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
-                    Toast.makeText(JoinMeetingActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                    join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
+                    if (join_insert_type == JoinActType.JOIN_INSERT_START_ACTIVITY) {
+                        Toast.makeText(JoinMeetingActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
                 case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
                     if (mDebug)
                         Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
-                    joinMeeting();
+                    join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
+                    if (join_insert_type == JoinActType.JOIN_INSERT_START_ACTIVITY) {
+                        joinMeeting();
+                    }
+
                     break;
                 case MSG_INSERT_USER_MEETING_ROOM_FAILED:
                     if (mDebug)
