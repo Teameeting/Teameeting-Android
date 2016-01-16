@@ -156,6 +156,7 @@ public class NetWork {
                 }
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -187,6 +188,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -195,7 +197,6 @@ public class NetWork {
 
     /**
      * updatePushtoken
-     *
      * @param sign
      * @param upushtoken
      */
@@ -225,6 +226,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -351,6 +353,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -387,6 +390,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -423,6 +427,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -457,6 +462,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -510,6 +516,7 @@ public class NetWork {
         new Thread() {
             @Override
             public synchronized void run() {
+                // TODO Auto-generated method stub
                 super.run();
 
                 Map<String, String> params = new HashMap<String, String>();
@@ -542,6 +549,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -582,6 +590,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -616,7 +625,7 @@ public class NetWork {
                 if (mDebug)
                     if (code == 200) {
 
-                        MessageList messageList = gson.fromJson(responseString, MessageList.class);
+                        MessageList messageList = gson.fromJson(responseString,MessageList.class);
                         List<MessageListEntity> messageListEntity = messageList.getMessageList();
                         TeamMeetingApp.getmSelfData().setMessageListEntityList(messageListEntity);
 
@@ -628,6 +637,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -685,7 +695,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -746,6 +756,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -796,7 +807,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -848,6 +859,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -901,7 +913,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
-
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -978,7 +990,7 @@ public class NetWork {
     }
 
     /**
-     * insertUserMeetingRoom 19
+     * insertUserMeetingRoom
      *
      * @param sign
      * @param meetingid
@@ -996,7 +1008,7 @@ public class NetWork {
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
-                    Log.e(TAG, "onSuccess: insertUserMeetingRoom" + responseString);
+                    Log.e(TAG, "onSuccess: pushMeetingMsg" + responseString);
                 if (code == 200) {
                     msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
                             .ordinal();
@@ -1004,6 +1016,7 @@ public class NetWork {
                     msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
                             .ordinal();
                 }
+
                 bundle.putString("message", message);
                 msg.setData(bundle);
 
@@ -1051,6 +1064,7 @@ public class NetWork {
                 msg.setData(bundle);
                 // 测试
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -1099,6 +1113,7 @@ public class NetWork {
                     }
 
                 } catch (JSONException e) {
+                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
