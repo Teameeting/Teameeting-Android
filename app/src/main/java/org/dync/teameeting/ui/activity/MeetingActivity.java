@@ -348,13 +348,15 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
             Anims.animateRightMarginTo(mTvRemind, 0, controllMove, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mTvRoomName, 0, controllMove, showTime, Anims.ACCELERATE);
 
-        }
-        if (moveX < 0 && mChatLayoutShow) {
+        } else if (moveX < 0 && mChatLayoutShow) {
             mChatLayoutShow = false;
             Anims.animateRightMarginTo(mChatLayout, mChatLayout.getWidth() - 10, 0, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mControlLayout, controllMove, 0, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mTvRemind, controllMove, 0, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mTvRoomName, controllMove, 0, showTime, Anims.ACCELERATE);
+            //delete db  data
+            CRUDChat.deleteByMeetingId(MeetingActivity.this, mMeetingId);
+            mTvMessageCount.setVisibility(View.GONE);
         }
     }
 
@@ -387,19 +389,27 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN
-                && mChatLayout.getVisibility() == View.VISIBLE) {
-            mChatLayout.setVisibility(View.GONE);
-            mTopbarLayout.setVisibility(View.VISIBLE);
-            mControlLayout.setVisibility(View.VISIBLE);
-            if (!mMessageShowFlag) {
-                mMessageShowFlag = true;
-                //delete db  data
-                CRUDChat.deleteByMeetingId(MeetingActivity.this, mMeetingId);
-                mTvMessageCount.setVisibility(View.GONE);
-
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (TeamMeetingApp.isPad) {
+                if (mChatLayoutShow)
+                    chatLayoutControl(-100);
+                else
+                    finish();
+            } else {
+                if (mChatLayout.getVisibility() == View.VISIBLE) {
+                    mMessageShowFlag = true;
+                    mChatLayout.setVisibility(View.GONE);
+                    mTopbarLayout.setVisibility(View.VISIBLE);
+                    mControlLayout.setVisibility(View.VISIBLE);
+                    //delete db  data
+                    CRUDChat.deleteByMeetingId(MeetingActivity.this, mMeetingId);
+                    mTvMessageCount.setVisibility(View.GONE);
+                } else {
+                    finish();
+                }
             }
+
+
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -580,6 +590,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     CRUDChat.deleteByMeetingId(MeetingActivity.this, mMeetingId);
                     mTvMessageCount.setVisibility(View.GONE);
 
+
                     break;
                 case R.id.btn_chat_send:
                     sendMessageChat();
@@ -587,6 +598,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.imgbtn_back:
                     //startShowMessage();
                     mMessageShowFlag = true;
+
+                    //delete db  data
+                    CRUDChat.deleteByMeetingId(MeetingActivity.this, mMeetingId);
+                    mTvMessageCount.setVisibility(View.GONE);
 
                     mIMM.hideSoftInputFromWindow(mMsg.getWindowToken(), 0);
                     new Handler().postDelayed(new Runnable() {
@@ -858,10 +873,12 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
 
             case JMClientType.MCSENDTAGS_UNSUBSCRIBE://5
+
                 if (mAnyM2Mutlier != null)
                     mAnyM2Mutlier.UnSubscribe(message);
                 else if (mDebug)
                     Log.e(TAG, "onRequesageMsg: " + " mAnyM2Mutlier = = null ");
+
                 break;
 
             case JMClientType.MCSENDTAGS_INVALID://6
