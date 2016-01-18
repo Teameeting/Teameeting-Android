@@ -172,7 +172,8 @@ public class MeetingListEntity implements Serializable {
     @Override
     public String toString() {
         return "MeetingListEntity{" +
-                "jointime=" + jointime +
+                "createtime=" + createtime +
+                ", jointime=" + jointime +
                 ", meetdesc='" + meetdesc + '\'' +
                 ", meetingid='" + meetingid + '\'' +
                 ", meetinguserid='" + meetinguserid + '\'' +
@@ -183,6 +184,9 @@ public class MeetingListEntity implements Serializable {
                 ", owner=" + owner +
                 ", pushable=" + pushable +
                 ", mMeetType2=" + mMeetType2 +
+                ", isRead=" + isRead +
+                ", unReadMessage='" + unReadMessage + '\'' +
+                ", applyTyep=" + applyTyep +
                 '}';
     }
 }

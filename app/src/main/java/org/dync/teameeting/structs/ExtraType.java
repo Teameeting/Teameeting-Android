@@ -11,6 +11,5 @@ public class ExtraType {
     public final static int RESULT_CODE_ROOM_SETTING_DELETE = 7;
     public final static int RESULT_CODE_ROOM_SETTING_CLOSE = 8;
     public final static int REQUEST_CODE_ROOM_MEETING = 9;
-    public final static int RESULT_CODE_ROOM_MEETING_CLOSE = 10;
 
 }

@@ -21,10 +21,12 @@ import org.apache.http.util.EntityUtils;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingInfo;
 import org.dync.teameeting.bean.MeetingList;
+import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.MessageList;
 import org.dync.teameeting.bean.MessageListEntity;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.structs.JoinActType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +38,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.xml.transform.Templates;
 
 public class NetWork {
 
@@ -153,6 +157,7 @@ public class NetWork {
                 }
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -184,6 +189,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -222,6 +228,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -269,9 +276,9 @@ public class NetWork {
      * @param pushable
      */
 
-    public void applyRoom(final String sign, final String meetingname,
-                          final String meetingtype, final String meetdesc, final String meetenable,
-                          final String pushable) {
+    public MeetingListEntity applyRoom(final String sign, final String meetingname,
+                                       final String meetingtype, final String meetdesc, final String meetenable,
+                                       final String pushable) {
         String url = "meeting/applyRoom";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -281,42 +288,41 @@ public class NetWork {
         params.put("meetenable", meetenable);
         params.put("pushable", pushable);
 
-
         HttpContent.post(url, params, new TmTextHttpResponseHandler() {
+
+            MeetingListEntity meeting;
+
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: applyRoom" + responseString);
                 if (code == 200) {
-                    //Bundle bundle = new Bundle();
-
                     try {
                         JSONObject json = new JSONObject(responseString);
                         String meetingInfo = json.getString("meetingInfo");
-                        JSONObject jsonMeetingInfo = new JSONObject(meetingInfo);
-                        String meetingId = jsonMeetingInfo.getString("meetingid");
-                        bundle.putString("meetingId", meetingId);
-                        if (mDebug) {
-                            Log.e(TAG, "meetingId " + meetingId);
-                        }
+                        meeting = gson.fromJson(meetingInfo, MeetingListEntity.class);
 
+                        meeting.setCreatetime(meeting.getJointime());
+                        meeting.setOwner(1);
+                        meeting.setMemnumber(0);
+                        meeting.setMeetinguserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
+
+                        if (mDebug)
+                            Log.e(TAG, "applyRoom:-----" + meeting.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    msg.setData(bundle);
-                    msg.what = EventType.MSG_APPLY_ROOM_SUCCESS
-                            .ordinal();
+                    msg.what = EventType.MSG_APPLY_ROOM_SUCCESS.ordinal();
                 } else {
-                    msg.what = EventType.MSG_APPLY_ROOMT_FAILED
-                            .ordinal();
+                    msg.what = EventType.MSG_APPLY_ROOMT_FAILED.ordinal();
                 }
-
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
-
+        return null;
     }
 
     /**
@@ -349,6 +355,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -385,6 +392,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -421,6 +429,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -455,6 +464,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -582,6 +592,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
 
@@ -616,7 +627,7 @@ public class NetWork {
                 if (mDebug)
                     if (code == 200) {
 
-                        MessageList messageList = gson.fromJson(responseString,MessageList.class);
+                        MessageList messageList = gson.fromJson(responseString, MessageList.class);
                         List<MessageListEntity> messageListEntity = messageList.getMessageList();
                         TeamMeetingApp.getmSelfData().setMessageListEntityList(messageListEntity);
 
@@ -628,6 +639,7 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
+
             }
         });
     }
@@ -911,49 +923,40 @@ public class NetWork {
 
     }
 
-    // ******************************************
 
     /**
-     * .获取会议室的信息 单独封装 提交响应的设置 16
+     * TODO Obtain information on the conference room A single 16 submit response Settings 16
      *
      * @param meetingid
      */
-    public void getMeetingInfo(String meetingid) {
-
-
-        String url = "meeting/getMeetingInfo/"+meetingid;
-        HttpContent.get(url,new TmTextHttpResponseHandler(){
+    public void getMeetingInfo(String meetingid, final String joinType) {
+        String url = "meeting/getMeetingInfo/" + meetingid;
+        HttpContent.get(url, new TmTextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: getMeetingInfo" + responseString);
                 if (code == 200) {
-                    msg.what = EventType.MSG_GET_MEETING_INFO_SUCCESS
-                            .ordinal();
-
                     try {
                         JSONObject json = new JSONObject(responseString);
                         String info = json.getString("meetingInfo");
                         MeetingInfo meetingInfo = gson.fromJson(info, MeetingInfo.class);
                         bundle.putInt("usable", meetingInfo.getMeetusable());
                         bundle.putString("meetingName", meetingInfo.getMeetname());
+                        bundle.putString("meetingId", meetingInfo.getMeetingid());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
+                    msg.what = EventType.MSG_GET_MEETING_INFO_SUCCESS.ordinal();
                 } else {
-                    msg.what = EventType.MSG_GET_MEETING_INFO_FAILED
-                            .ordinal();
+                    msg.what = EventType.MSG_GET_MEETING_INFO_FAILED.ordinal();
                 }
-
+                bundle.putString(JoinActType.JOIN_TYPE, joinType);
                 bundle.putString("message", message);
                 msg.setData(bundle);
-
                 EventBus.getDefault().post(msg);
-
             }
         });
 
@@ -992,13 +995,13 @@ public class NetWork {
     }
 
     /**
-     * insertUserMeetingRoom 19
+     * insertUserMeetingRoom
      *
      * @param sign
      * @param meetingid
      */
 
-    public void insertUserMeetingRoom(final String sign, final String meetingid) {
+    public void insertUserMeetingRoom(final String sign, final String meetingid, final String join_insert_type) {
 
         String url = "meeting/insertUserMeetingRoom";
         RequestParams params = new RequestParams();
@@ -1010,7 +1013,7 @@ public class NetWork {
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
-                    Log.e(TAG, "onSuccess: insertUserMeetingRoom" + responseString);
+                    Log.e(TAG, "onSuccess: pushMeetingMsg" + responseString);
                 if (code == 200) {
                     msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
                             .ordinal();
@@ -1018,7 +1021,9 @@ public class NetWork {
                     msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
                             .ordinal();
                 }
+
                 bundle.putString("message", message);
+                bundle.putString(JoinActType.JOIN_INSERT_TYPE, join_insert_type);
                 msg.setData(bundle);
 
                 EventBus.getDefault().post(msg);
@@ -1065,6 +1070,7 @@ public class NetWork {
                 msg.setData(bundle);
                 // 测试
                 EventBus.getDefault().post(msg);
+
             }
         });
 

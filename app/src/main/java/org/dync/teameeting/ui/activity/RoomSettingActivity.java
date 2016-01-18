@@ -55,7 +55,18 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
     private String mShareUrl = "Empty url";
     private ImageView ivNotifation;
 
-    private boolean mMeetingPrivateFlag=false;
+    private boolean mMeetingPrivateFlag = false;
+    private int mOwner;
+    private View mvRoomName;
+    private View vJoninRoom;
+    private View mvIniviteMessage;
+    private View vInviteWeixin;
+    private View mvInviteWeiXin;
+    private View mvCopyLink;
+    private View mvNotifications;
+    private View mvRenameRoom;
+    private View mvDeleteRoom;
+    private View mvMeetingPrivate;
 
 
     @Override
@@ -66,48 +77,62 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         context = this;
         initData();
         initLayout();
-        inintSwitchState();
 
+        inintSwitchState();
+        initwidgetState();
     }
+
 
     private void initData() {
         Intent intent = getIntent();
         mPosition = intent.getIntExtra(Intent_KEY.POSITION, 0);
         Bundle extras = intent.getExtras();
         mMeetingEntity = (MeetingListEntity) extras.getSerializable(Intent_KEY.MEETING_ENTY);
+
         mMeetingId = mMeetingEntity.getMeetingid();
         mMeetingName = mMeetingEntity.getMeetname();
+        mOwner = mMeetingEntity.getOwner();
+
         if (mDebug) {
             Log.e(TAG, mMeetingEntity.toString());
         }
 
         mSign = getSign();
-        mShareUrl ="Let us see in a meeting!:"+"http://115.28.70.232/share_meetingRoom/#"+mMeetingId;
+        mShareUrl = "Let us see in a meeting!:" + "http://115.28.70.232/share_meetingRoom/#" + mMeetingId;
     }
 
     void initLayout() {
         mTvRoomName = (TextView) findViewById(R.id.tv_room_name);
+        mvRoomName = findViewById(R.id.v_room_name);
+
         mTvRoomName.setText(mMeetingName);
         mTvJoninRoom = (TextView) findViewById(R.id.tv_join_room);
+        vJoninRoom = findViewById(R.id.v_join_room);
         mTvJoninRoom.setOnClickListener(this);
 
         mTvIniviteMessage = (TextView) findViewById(R.id.tv_invite_message);
+        mvIniviteMessage = findViewById(R.id.v_invite_message);
         mTvIniviteMessage.setOnClickListener(this);
 
         mTvInviteWeixin = (TextView) findViewById(R.id.tv_invite_weixin);
+        mvInviteWeiXin = findViewById(R.id.v_invite_weixin);
         mTvInviteWeixin.setOnClickListener(this);
 
         mTvCopyLink = (TextView) findViewById(R.id.tv_copy_link);
+        mvCopyLink = findViewById(R.id.v_copy_link);
         mTvCopyLink.setOnClickListener(this);
 
         mLlNotifications = (LinearLayout) findViewById(R.id.ll_notifications);
+        mvNotifications = findViewById(R.id.v_notifications);
         mLlNotifications.setOnClickListener(this);
         // mLlNotifications.setOnTouchListener();
 
         mTvRenameRoom = (TextView) findViewById(R.id.tv_rename_room);
+        mvRenameRoom = findViewById(R.id.v_rename_room);
         mTvRenameRoom.setOnClickListener(this);
 
         mTvDeleteRoom = (TextView) findViewById(R.id.tv_delete_room);
+        mvDeleteRoom = findViewById(R.id.v_delete_room);
         mTvDeleteRoom.setOnClickListener(this);
 
         mTvClose = (TextView) findViewById(R.id.tv_close);
@@ -116,15 +141,19 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         mSlideSwitch.setSlideListener(slideNotificationListener);
 
         mSlideSwitchPrivate = (SlideSwitch) findViewById(R.id.ss_SlideSwitch_private);
+
         mSlideSwitchPrivate.setSlideListener(mslideMeetingPrivateListener);
 
         mLlMeetingPrivate = (LinearLayout) findViewById(R.id.ll_private);
+        mvMeetingPrivate = findViewById(R.id.v_private);
         mLlMeetingPrivate.setOnClickListener(this);
 
         ivNotifation = (ImageView) findViewById(R.id.iv_notifications);
 
         BottomMenu bottomMenu = (BottomMenu) findViewById(R.id.bottomMenu);
         bottomMenu.setOnTouchQuickSpeedListener(onTouchSpeedListener);
+
+
     }
 
     private void inintSwitchState() {
@@ -139,6 +168,36 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
     }
 
+
+    private void initwidgetState() {
+        int visible;
+        if (mOwner == 1) {
+            visible = View.VISIBLE;
+        } else {
+            visible = View.GONE;
+        }
+        viewVisilility(visible);
+    }
+
+    public void viewVisilility(int visible) {
+
+        mTvIniviteMessage.setVisibility(visible);
+        mvIniviteMessage.setVisibility(visible);
+
+        mTvInviteWeixin.setVisibility(visible);
+        mvInviteWeiXin.setVisibility(visible);
+
+        mTvCopyLink.setVisibility(visible);
+        mvCopyLink.setVisibility(visible);
+
+        mTvRenameRoom.setVisibility(visible);
+        mvRenameRoom.setVisibility(visible);
+        mLlMeetingPrivate.setVisibility(visible);
+        mvMeetingPrivate.setVisibility(visible);
+
+    }
+
+
     /**
      * 　Touch slide Listener
      */
@@ -152,15 +211,15 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
     };
 
 
-    private  void  meetingPrivateUIUpdate(){
-        if(mMeetingPrivateFlag){
+    private void meetingPrivateUIUpdate() {
+        if (mMeetingPrivateFlag) {
             mTvIniviteMessage.setTextColor(getResources().getColor(R.color.black));
             mTvInviteWeixin.setTextColor(getResources().getColor(R.color.black));
             mTvCopyLink.setTextColor(getResources().getColor(R.color.black));
             mTvIniviteMessage.setClickable(false);
             mTvInviteWeixin.setClickable(false);
             mTvCopyLink.setClickable(false);
-        }else{
+        } else {
             mTvIniviteMessage.setTextColor(getResources().getColor(R.color.white));
             mTvInviteWeixin.setTextColor(getResources().getColor(R.color.white));
             mTvCopyLink.setTextColor(getResources().getColor(R.color.white));
@@ -175,14 +234,14 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
      */
     SlideListener mslideMeetingPrivateListener = new SlideListener() {
         public void open() {
-            mNetWork.updateRoomEnable(mSign,mMeetingId,"2");
-            mMeetingPrivateFlag =true;
+            mNetWork.updateRoomEnable(mSign, mMeetingId, "2");
+            mMeetingPrivateFlag = true;
             meetingPrivateUIUpdate();
         }
 
         @Override
         public void close() {
-            mNetWork.updateRoomEnable(mSign,mMeetingId,"1");
+            mNetWork.updateRoomEnable(mSign, mMeetingId, "1");
             mMeetingPrivateFlag = false;
             meetingPrivateUIUpdate();
         }
@@ -225,10 +284,6 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
     };
 
 
-
-
-
-
     @Override
     public void onClick(View view) {
         Intent intent = null;
@@ -261,8 +316,8 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_copy_link:
 
                 intent = new Intent();
-                intent.putExtra("shareUrl",mShareUrl);
-                setResult(ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK,intent);
+                intent.putExtra("shareUrl", mShareUrl);
+                setResult(ExtraType.RESULT_CODE_ROOM_SETTING_COPY_LINK, intent);
                 finish();
 
                 break;

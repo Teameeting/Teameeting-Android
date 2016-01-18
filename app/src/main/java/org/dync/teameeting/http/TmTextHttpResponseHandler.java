@@ -17,16 +17,13 @@ import org.json.JSONObject;
 /**
  * Created by zhulang on 2015/12/28 0028.
  */
-public class TmTextHttpResponseHandler extends TextHttpResponseHandler
-{
+public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
     public boolean mDebug = TeamMeetingApp.mIsDebug;
     public Gson gson = null;
     public Bundle bundle;
     public Message msg;
 
-
-    public TmTextHttpResponseHandler()
-    {
+    public TmTextHttpResponseHandler() {
         super("UTF-8");
         gson = new Gson();
         msg = new Message();
@@ -34,38 +31,30 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler
     }
 
     @Override
-    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
-    {
+    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
         // network or server  problem 
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
-        if (mDebug)
-        {
+        if (mDebug) {
             Log.e("TextHttpResponseHandler", "onFailure: responseString" + responseString);
         }
     }
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, String responseString)
-    {
+    public void onSuccess(int statusCode, Header[] headers, String responseString) {
         JSONObject jsonObject = null;
         String message = null;
-        try
-        {
+        try {
             jsonObject = new JSONObject(responseString);
             int code = jsonObject.getInt("code");
             message = jsonObject.getString("message");
             this.onSuccess(statusCode, code, message, responseString, headers);
-
-        } catch (JSONException e)
-        {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-
-    public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers)
-    {
+    public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
         Log.w("TextHttpResponseHandler", "onSuccess(int, Header[], JSONArray) was not overriden, but callback was received");
     }
 

@@ -235,8 +235,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
 
     /* Init UI */
-    private void initView()
-    {
+    private void initView() {
 
         // Create UI controls.
 
