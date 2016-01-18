@@ -732,7 +732,8 @@ public class MainActivity extends BaseActivity {
                     Log.e(TAG, "Someone is leave room !!!!!!!!!!!!!!!");
             case JMClientType.MCSENDTAGS_ENTER:
                 mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
-                if (mDebug)
+
+                if (mDebug&& requestMsg.getCmd()==1)
                     Log.e(TAG, "Someone is go room !!!!!!!!!!!!!!!");
                 break;
         }

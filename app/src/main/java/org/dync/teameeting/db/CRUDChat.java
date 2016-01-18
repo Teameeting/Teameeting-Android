@@ -3,7 +3,9 @@ package org.dync.teameeting.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.SeekBar;
 
+import org.apache.http.io.SessionOutputBuffer;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.chatdao.ChatCacheEntity;
 import org.dync.teameeting.db.chatdao.ChatCacheEntityDao;
@@ -30,14 +32,18 @@ public class CRUDChat {
         ChatCacheEntityDao chatEnity = session.getChatCacheEntityDao();
         List<ChatCacheEntity> list = new ArrayList<ChatCacheEntity>();
         list = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).list();
+        closeDB(session);
         return list;
+
     }
 
     public static long selectLoadListSize(Context context, String meetingId) {
         DaoSession session = getSession(context);
         ChatCacheEntityDao chatEnity = session.getChatCacheEntityDao();
         long count = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).count();
+
         Log.i("CRUDChat", "count" + count);
+        closeDB(session);
         return count;
     }
 
@@ -45,6 +51,7 @@ public class CRUDChat {
         DaoSession session = getSession(context);
         ChatCacheEntityDao chatEnity = session.getChatCacheEntityDao();
         List<ChatCacheEntity> list = chatEnity.loadAll();
+        closeDB(session);
         return list;
     }
 
@@ -53,7 +60,9 @@ public class CRUDChat {
 
         DaoSession session = getSession(context);
         ChatCacheEntityDao chatEnity = session.getChatCacheEntityDao();
-        long isReadSize = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).count();
+        QueryBuilder<ChatCacheEntity> where = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId));
+        long isReadSize = (long) where.count();
+        closeDB(session);
         return isReadSize;
     }
 
@@ -74,7 +83,8 @@ public class CRUDChat {
          *       Current statement is not efficient
          */
         list = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).list();
-       //  chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).limit(1);
+        //  chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).limit(1);
+        closeDB(session);
         if (list.size() > 0) {
             return list.get(list.size() - 1);
         }
@@ -101,11 +111,14 @@ public class CRUDChat {
      */
 
     public static void deleteByMeetingId(Context context, String meetingId) {
+
         DaoSession session = getSession(context);
         ChatCacheEntityDao personDao = session.getChatCacheEntityDao();
         QueryBuilder<ChatCacheEntity> qb = personDao.queryBuilder();
         DeleteQuery<ChatCacheEntity> bd = qb.where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
+        closeDB(session);
+
     }
 
 
@@ -113,6 +126,7 @@ public class CRUDChat {
         SQLiteDatabase db = new DaoMaster.DevOpenHelper(context,
                 "CHAT.db", null).getWritableDatabase();
         DaoMaster dm = new DaoMaster(db);
+        
         DaoSession sesion = dm.newSession();
         return sesion;
     }
@@ -126,6 +140,10 @@ public class CRUDChat {
                 false
         );
         return chatCacheEntity;
+    }
+
+    private static void closeDB(DaoSession session) {
+        session.getDatabase().close();
     }
 
 
