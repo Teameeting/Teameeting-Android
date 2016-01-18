@@ -228,14 +228,16 @@ public class MainActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mAdapter.notifyInitDataSetChanged();
+
+                getListNetWork();
+                //mAdapter.notifyInitDataSetChanged();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, 3000);
+                    }, 3000);
             }
         });
     }
@@ -440,8 +442,8 @@ public class MainActivity extends BaseActivity {
         MeetingListEntity meetingListEntity = mRoomMeetingList.get(position);
         String meetingName = meetingListEntity.getMeetname();
         String meetingId = meetingListEntity.getMeetingid();
+        mNetWork.updateUserMeetingJointime(getSign(),meetingId);
         int owner = meetingListEntity.getOwner();
-
         if (owner == 0) {
             mNetWork.getMeetingInfo(meetingId, JoinActType.JOIN_ENTER_ACTIVITY);
         } else {
@@ -753,7 +755,7 @@ public class MainActivity extends BaseActivity {
                 String joinType = msg.getData().getString(JoinActType.JOIN_TYPE);
                 if (joinType == JoinActType.JOIN_ENTER_ACTIVITY) {
                     statrMeetingActivity(mUrlMeetingName, meetinId);
-                } else if (joinType == JoinActType.JOIN_LINK_JOIN_ACTIVITY || joinType == JoinActType.JOIN_ENTER_JOIN_ACTIVITY) {
+                } else if (joinType == JoinActType.JOIN_LINK_JOIN_ACTIVITY ) {
                     mNetWork.insertUserMeetingRoom(getSign(), meetinId, JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY);
                 }
                 break;

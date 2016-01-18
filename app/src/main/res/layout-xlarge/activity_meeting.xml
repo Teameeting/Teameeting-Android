@@ -26,7 +26,7 @@
             <ImageButton
                 android:id="@+id/imgbtn_chat"
                 style="@style/Btn_left"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/btn_chat"/>
 
             <TextView
