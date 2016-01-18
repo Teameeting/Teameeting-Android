@@ -8,7 +8,7 @@ import android.content.Context;
  *
  * 向jni层注册和注销Java虚拟机
  *
- * @author DYNC```
+ * @author DYNC
  *
  */
 
