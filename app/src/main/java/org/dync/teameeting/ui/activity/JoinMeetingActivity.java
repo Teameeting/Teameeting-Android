@@ -134,8 +134,8 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
                 case MSG_GET_MEETING_INFO_FAILED:
                     if (mDebug)
                         Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
-                    join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
-                    if (join_insert_type == JoinActType.JOIN_INSERT_START_ACTIVITY) {
+                    join_insert_type = msg.getData().getString(JoinActType.JOIN_TYPE);
+                    if (join_insert_type == JoinActType.JOIN_START_ACTIVITY) {
                         Toast.makeText(JoinMeetingActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                     }
 
@@ -152,7 +152,10 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
                 case MSG_INSERT_USER_MEETING_ROOM_FAILED:
                     if (mDebug)
                         Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_FAILED");
-                    Toast.makeText(JoinMeetingActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                    join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
+                    if (join_insert_type == JoinActType.JOIN_INSERT_START_ACTIVITY) {
+                        Toast.makeText(JoinMeetingActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
                 case MSG_NET_WORK_TYPE:

@@ -945,7 +945,7 @@ public class NetWork {
                         bundle.putInt("usable", meetingInfo.getMeetusable());
                         bundle.putString("meetingName", meetingInfo.getMeetname());
                         bundle.putString("meetingId", meetingInfo.getMeetingid());
-                        bundle.putString(JoinActType.JOIN_TYPE, joinType);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -953,6 +953,7 @@ public class NetWork {
                 } else {
                     msg.what = EventType.MSG_GET_MEETING_INFO_FAILED.ordinal();
                 }
+                bundle.putString(JoinActType.JOIN_TYPE, joinType);
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
