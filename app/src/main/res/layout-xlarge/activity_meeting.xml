@@ -17,6 +17,8 @@
         android:layout_height="@dimen/height_top_bar"
         android:background="@color/black_gray" >
 
+
+
         <RelativeLayout
             android:layout_width="@dimen/header_height"
             android:layout_height="wrap_content">

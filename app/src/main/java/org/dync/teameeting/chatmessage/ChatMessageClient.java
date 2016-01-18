@@ -87,7 +87,6 @@ public class ChatMessageClient implements JMClientHelper {
             if (mDebug) {
                 Log.e(TAG, reqSndMsgEntity.getFrom() + "---" + TeamMeetingApp.getTeamMeetingApp().getDevId());
             }
-
             if (!reqSndMsgEntity.getFrom().equals(TeamMeetingApp.getTeamMeetingApp().getDevId())) {
                 if (reqSndMsgEntity.getTags() == JMClientType.MCSENDTAGS_TALK)
                     CRUDChat.queryInsert(context, reqSndMsgEntity);

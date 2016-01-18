@@ -26,6 +26,7 @@ import org.dync.teameeting.bean.MessageList;
 import org.dync.teameeting.bean.MessageListEntity;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.structs.JoinActType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -197,6 +198,7 @@ public class NetWork {
 
     /**
      * updatePushtoken
+     *
      * @param sign
      * @param upushtoken
      */
@@ -625,7 +627,7 @@ public class NetWork {
                 if (mDebug)
                     if (code == 200) {
 
-                        MessageList messageList = gson.fromJson(responseString,MessageList.class);
+                        MessageList messageList = gson.fromJson(responseString, MessageList.class);
                         List<MessageListEntity> messageListEntity = messageList.getMessageList();
                         TeamMeetingApp.getmSelfData().setMessageListEntityList(messageListEntity);
 
@@ -921,12 +923,13 @@ public class NetWork {
 
     }
 
+
     /**
      * TODO Obtain information on the conference room A single 16 submit response Settings 16
      *
      * @param meetingid
      */
-    public void getMeetingInfo(String meetingid) {
+    public void getMeetingInfo(String meetingid, final String joinType) {
         String url = "meeting/getMeetingInfo/" + meetingid;
         HttpContent.get(url, new TmTextHttpResponseHandler() {
             @Override
@@ -942,6 +945,7 @@ public class NetWork {
                         bundle.putInt("usable", meetingInfo.getMeetusable());
                         bundle.putString("meetingName", meetingInfo.getMeetname());
                         bundle.putString("meetingId", meetingInfo.getMeetingid());
+                        bundle.putString(JoinActType.JOIN_TYPE, joinType);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -996,7 +1000,7 @@ public class NetWork {
      * @param meetingid
      */
 
-    public void insertUserMeetingRoom(final String sign, final String meetingid) {
+    public void insertUserMeetingRoom(final String sign, final String meetingid, final String join_insert_type) {
 
         String url = "meeting/insertUserMeetingRoom";
         RequestParams params = new RequestParams();
@@ -1018,6 +1022,7 @@ public class NetWork {
                 }
 
                 bundle.putString("message", message);
+                bundle.putString(JoinActType.JOIN_INSERT_TYPE, join_insert_type);
                 msg.setData(bundle);
 
                 EventBus.getDefault().post(msg);

@@ -65,8 +65,16 @@ public class CRUDChat {
         DaoSession session = getSession(context);
         ChatCacheEntityDao chatEnity = session.getChatCacheEntityDao();
         List<ChatCacheEntity> list = new ArrayList<ChatCacheEntity>();
-        list = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).list();
 
+        /**
+         *       // zhulang TODO: 2016/1/15
+         *
+         *       Modify database statements
+         *
+         *       Current statement is not efficient
+         */
+        list = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).list();
+       //  chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).limit(1);
         if (list.size() > 0) {
             return list.get(list.size() - 1);
         }
@@ -114,7 +122,7 @@ public class CRUDChat {
                 reqSndMsgEntity.getRoom(),
                 reqSndMsgEntity.getFrom(),
                 reqSndMsgEntity.getCont(),
-                reqSndMsgEntity.getNtime()+ "",
+                reqSndMsgEntity.getNtime() + "",
                 false
         );
         return chatCacheEntity;
