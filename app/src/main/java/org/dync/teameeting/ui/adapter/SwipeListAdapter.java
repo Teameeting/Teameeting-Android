@@ -118,9 +118,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             mHolder.mPeopleico.setVisibility(View.VISIBLE);
             mHolder.mRoomPeopleCount.setVisibility(View.VISIBLE);
             mHolder.mRoomPeopleCount.setText(meetingListEntity.getMemnumber() + "");
-        }
-
-        if (meetingListEntity.getMemnumber() <= 0) {
+        }else  {
             mHolder.mPeopleico.setVisibility(View.GONE);
             mHolder.mRoomPeopleCount.setVisibility(View.GONE);
             if (meetingListEntity.getPushable() == 0) {
@@ -141,7 +139,9 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
 
         if (meetingListEntity.getMeetusable() == 2) {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
-            mHolder.mIvPrivate.setVisibility(View.VISIBLE);
+            if (meetingListEntity.getOwner() != 1) {
+                mHolder.mIvPrivate.setVisibility(View.INVISIBLE);
+            }
         } else {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.white));
             mHolder.mIvPrivate.setVisibility(View.INVISIBLE);
@@ -149,6 +149,9 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
 
         if (meetingListEntity.getOwner() == 1) {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
+            if(meetingListEntity.getMeetusable() == 2){
+                mHolder.mIvPrivate.setVisibility(View.VISIBLE);
+            }
         } else {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.white));
         }

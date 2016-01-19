@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -16,10 +15,7 @@ import android.widget.ProgressBar;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.chatmessage.ChatMessageClient;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
-import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.ui.helper.DialogHelper;
@@ -46,7 +42,7 @@ public class StartFlashActivity extends BaseActivity
     private Context context;
     private TMMsgSender mMsgSender;
     private final String mServer = "192.168.7.39";
-    private final int mPort = 9210;
+    private final int mPort = 6630;
     private String mUserid ;
     private String mSign;
     private ProgressBar mLoadingProgress;
