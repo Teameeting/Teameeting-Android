@@ -347,6 +347,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_delete_room:
                 intent = new Intent();
                 intent.putExtra("position", mPosition);
+
                 intent.putExtra("meetingId", mMeetingId);
                 setResult(ExtraType.RESULT_CODE_ROOM_SETTING_DELETE, intent);
                 finishActivity();

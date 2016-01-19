@@ -56,13 +56,11 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".ui.activity.StartFlashActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -78,10 +76,6 @@
 
                 <data android:scheme="teameeting" /><!-- 打开以teameeting协议的URL,这个自己随便定义。 -->
             </intent-filter>
-
-
-
-
         </activity>
 
         <activity
@@ -117,6 +111,7 @@
                 <category android:name="jpush.testCategory" />
             </intent-filter>
         </activity>
+
         <!-- Required SDK 核心功能 -->
         <!-- option since 2.0.5 可配置PushService，DaemonService,PushReceiver,AlarmReceiver的android:process参数 将JPush相关组件设置为一个独立进程 -->
         <!-- 如：android:process=":remote" -->

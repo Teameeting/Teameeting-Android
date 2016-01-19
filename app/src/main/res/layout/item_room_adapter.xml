@@ -22,6 +22,7 @@
             android:hint="@string/str_hintm"
             android:imeOptions="actionDone"
             android:paddingLeft="20dp"
+            android:maxLength="10"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textColorHint="@color/black"
