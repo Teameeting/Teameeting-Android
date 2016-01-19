@@ -126,7 +126,7 @@ public class CRUDChat {
         SQLiteDatabase db = new DaoMaster.DevOpenHelper(context,
                 "CHAT.db", null).getWritableDatabase();
         DaoMaster dm = new DaoMaster(db);
-        
+
         DaoSession sesion = dm.newSession();
         return sesion;
     }
