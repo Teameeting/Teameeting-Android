@@ -43,6 +43,7 @@ import org.dync.teameeting.http.NetWork;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.ui.adapter.ChatMessageAdapter;
 import org.dync.teameeting.ui.helper.Anims;
 import org.dync.teameeting.ui.helper.DialogHelper;
@@ -59,6 +60,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * @author zhangqilu org.dync.teammeeting.activity MeetingActivity create at
@@ -112,7 +115,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private TMMsgSender mMsgSender;
     private int  mMessagePageNum=1;
 
-
+    private SweetAlertDialog mNetErrorSweetAlertDialog;
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -190,6 +193,8 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         EventBus.getDefault().register(this);
+
+        mNetErrorSweetAlertDialog = DialogHelper.createNetErroDilaog(this, sweetClickListener);
 
         mIMM = (InputMethodManager) MeetingActivity.this
                 .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
@@ -788,9 +793,15 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
         //mAnyM2Mutlier.Subscribe(publishId, true);
         Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
-        mMsgSender.TMNotifyMsg(mMeetingId, publishId);
-    }
+        int code = mMsgSender.TMNotifyMsg(mMeetingId, publishId);
 
+        if(mDebug){
+            if(code ==0)
+                 Log.e(TAG, "PublishOK: Successed " );
+            else
+                Log.e(TAG, "PublishOK: failed " );
+        }
+    }
     @Override
     public void OnRtcPublishFailed(int i, String s) {
         if(mDebug){
@@ -856,13 +867,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 break;
 
             case JMClientType.MCSENDTAGS_ENTER://2
-                mTvRemind.setVisibility(View.GONE);
+               // mTvRemind.setVisibility(View.GONE);
                 break;
 
             case JMClientType.MCSENDTAGS_LEAVE://3
                 break;
 
             case JMClientType.MCSENDTAGS_SUBSCRIBE://4
+                mTvRemind.setVisibility(View.GONE);
                 if(mAnyM2Mutlier!=null)
                   mAnyM2Mutlier.Subscribe(message, true);
                 else if(mDebug)
@@ -882,6 +894,22 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
 
     }
+    private void netWorkTypeStart(int type) {
+        if (type == NetType.TYPE_NULL.ordinal()) {
+            mNetErrorSweetAlertDialog.show();
+        } else {
+            mSign = getSign();
+            Log.e(TAG, "netWorkTypeStart: mSign" + mSign);
+           // getListNetWork();
+        }
+    }
+
+    SweetAlertDialog.OnSweetClickListener sweetClickListener = new SweetAlertDialog.OnSweetClickListener() {
+        @Override
+        public void onClick(SweetAlertDialog sweetAlertDialog) {
+            sweetAlertDialog.dismiss();
+        }
+    };
 
 
 
@@ -902,6 +930,12 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 if(mDebug)
                     Log.e(TAG, "onEventMainThread: "+ "MSG_GET_MEETING_MSG_LIST_FAILED");
 
+                break;
+            case MSG_NET_WORK_TYPE:
+                if (mDebug)
+                    Log.e(TAG, "MSG_NET_WORK_TYPE");
+                int type = msg.getData().getInt("net_type");
+                netWorkTypeStart(type);
                 break;
 
 

@@ -1022,6 +1022,7 @@ public class NetWork {
                             .ordinal();
                 }
 
+                bundle.putString("meetingid",meetingid);
                 bundle.putString("message", message);
                 bundle.putString(JoinActType.JOIN_INSERT_TYPE, join_insert_type);
                 msg.setData(bundle);

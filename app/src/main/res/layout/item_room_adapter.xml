@@ -55,10 +55,14 @@
 
                 <ImageView
                     android:id="@+id/iv_private"
-                    android:layout_width="14dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="16dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@null"
+
+                    android:layout_gravity="center_vertical"
                     android:src="@drawable/iv_private" />
 
 

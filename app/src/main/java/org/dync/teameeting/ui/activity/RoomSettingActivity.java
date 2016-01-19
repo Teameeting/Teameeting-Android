@@ -296,9 +296,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
                 finishActivity();
                 return;
             case R.id.tv_join_room:
-
-                intent = new Intent(RoomSettingActivity.this, MeetingActivity.class);
-                intent.putExtra("meetingName", mMeetingName);
+                statrMeetingActivity(mMeetingName,mMeetingId);
                 finishActivity();
                 break;
             case R.id.tv_invite_message:
@@ -358,6 +356,16 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
                 break;
         }
 
+    }
+
+
+    private void statrMeetingActivity(String meetingName, String meetingId) {
+        Intent intent = new Intent(context, MeetingActivity.class);
+        intent.putExtra("meetingName", meetingName);
+        intent.putExtra("meetingId", meetingId);
+        intent.putExtra("userId", TeamMeetingApp.getTeamMeetingApp().getDevId());
+        //  startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
+        startActivity(intent);
     }
 
     private void finishActivity() {

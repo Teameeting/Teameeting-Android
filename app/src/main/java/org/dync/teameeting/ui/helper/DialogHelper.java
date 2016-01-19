@@ -7,6 +7,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DialogHelper
 {
+    static  SweetAlertDialog netErrorSweetAlertDialog=null;
 	@SuppressWarnings("deprecation")
 	public static void onClickCopy(Context context, String conpyUrl)
 	{
@@ -17,12 +18,15 @@ public class DialogHelper
 		new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
 				.setTitleText("复制成功").setContentText("粘贴给朋友邀请加入会议!").show();
 	}
-
-    public static SweetAlertDialog createNetErroDilaog(Context context)
+  //
+    public  static  SweetAlertDialog createNetErroDilaog(Context context)
     {
-        return createNetErroDilaog(context,null);
+        if(netErrorSweetAlertDialog==null)
+          return createNetErroDilaog(context,null);
+        else
+            return netErrorSweetAlertDialog;
     }
-
+  //
     public static SweetAlertDialog createNetErroDilaog(Context context, SweetAlertDialog.OnSweetClickListener sweetClickListener)
     {
         SweetAlertDialog netErrorSweetAlertDialog = new SweetAlertDialog(context,
