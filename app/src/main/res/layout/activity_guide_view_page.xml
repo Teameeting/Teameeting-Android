@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/guide_bg"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/guide_bg"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,8 +12,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/vp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/btn_guide"
@@ -24,7 +23,7 @@
             android:background="@drawable/btn_guide"
             android:text="立即体验"
             android:textColor="#54b8a0"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -44,15 +43,15 @@
                 <View
                     android:id="@+id/v_dot0"
                     style="@style/dot_style"
-                    android:background="@drawable/dot_focused"/>
+                    android:background="@drawable/dot_focused" />
 
                 <View
                     android:id="@+id/v_dot1"
-                    style="@style/dot_style"/>
+                    style="@style/dot_style" />
 
                 <View
                     android:id="@+id/v_dot2"
-                    style="@style/dot_style"/>
+                    style="@style/dot_style" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
