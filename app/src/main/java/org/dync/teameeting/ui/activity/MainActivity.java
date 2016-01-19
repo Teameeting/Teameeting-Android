@@ -269,12 +269,14 @@ public class MainActivity extends BaseActivity {
         int itemHeight = getItemHeight(mListView);
         float temp = mListView.getHeight() / (float) getItemHeight(mListView);
         int maxItemTop = 0;
-
+        int d= 0;
         int visibleItem = (int) Math.ceil(temp);
 
         if (mAdapter.getCount() < visibleItem) {
             mDy = itemHeight * position;
+            d= (int) (mDy*0.5);
             mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, 100);
+            sendMsgUpDateReadMeShow(position, d);
             return;
         } else {
             maxItemTop = mAdapter.getCount() - visibleItem;
@@ -282,7 +284,7 @@ public class MainActivity extends BaseActivity {
         if (position <= maxItemTop) {
             mDy = 0;
             int i = maxItemTop - position;
-            int v = (int) (i * itemHeight * 0.5);
+            d = (int) (i * itemHeight * 0.5);
             mListView.smoothScrollToPositionFromTop(position, 0, SHOW_EDIT_TEXT_TIME);
             sendMsgUpDateReadMeShow(position, SHOW_EDIT_TEXT_TIME);
 
@@ -290,11 +292,12 @@ public class MainActivity extends BaseActivity {
             int incompleteItemheight = mListView.getHeight() - (visibleItem - 1) * itemHeight;
             mDy = itemHeight * (position - maxItemTop - 1) + incompleteItemheight;
             int posDiff = position - maxItemTop;
-            int d = (int) (posDiff * itemHeight * 0.5);
+            d = (int) (posDiff * itemHeight * 0.5);
             mListView.setSelection(mListView.getBottom());
             mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, d);
+            sendMsgUpDateReadMeShow(position, SHOW_EDIT_TEXT_TIME+d);
 
-            sendMsgUpDateReadMeShow(position, d+SHOW_EDIT_TEXT_TIME);
+            //sendMsgUpDateReadMeShow(position, d+SHOW_EDIT_TEXT_TIME);
             Log.e(TAG, "maxItemTop " + maxItemTop + " incompleteItemheight "
                     + incompleteItemheight);
             // mListView.smoothScrollToPositionFromTop(maxItemTop, 0, 1000);
@@ -668,7 +671,7 @@ public class MainActivity extends BaseActivity {
         mRoomMeetingList.remove(position);
         mAdapter.notifyDataSetChanged();
 
-        String userId = mRoomMeetingList.get(position).getMeetinguserid();
+        //String userId = mRoomMeetingList.get(position).getMeetinguserid();
     }
 
 
