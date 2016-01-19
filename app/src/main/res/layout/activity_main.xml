@@ -31,7 +31,6 @@
         <ImageButton
             android:id="@+id/ibtn_join_meeting"
             style="@style/Btn_right"
-            android:background="@android:color/transparent"
             android:paddingRight="15dp"
             android:src="@drawable/btn_invite"/>
 

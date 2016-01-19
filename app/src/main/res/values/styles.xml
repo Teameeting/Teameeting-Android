@@ -70,21 +70,21 @@
    
 
     <style name="Btn_left">
-        <item name="android:layout_width">@dimen/header_height</item>
-        <item name="android:layout_height">@dimen/header_height</item>
+        <item name="android:layout_width">@dimen/header_width</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:background">@null</item>
-        <item name="android:scaleType">fitCenter</item>
+        <item name="android:scaleType">centerInside</item>
         <item name="android:padding">5dp</item>
     </style>  
     
     
     <style name="Btn_right">
-        <item name="android:layout_width">35dp</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">@dimen/header_width</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:background">@null</item>
-        <item name="android:scaleType">fitCenter</item>
+        <item name="android:scaleType">centerInside</item>
         <item name="android:paddingRight">15dp</item>
         
     </style> 

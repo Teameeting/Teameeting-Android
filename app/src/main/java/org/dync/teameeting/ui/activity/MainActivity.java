@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity {
     public final static int UPDATE_RENAME_SHOW = 0X02;
     public final static int UPDATE_LISTVIEW_SCROLL = 0X03;
     public final static int UPDATE_RENAME_END = 0X04;
-    public final static int SHOW_EDIT_TEXT_TIME = 2000;
+    public final static int SHOW_EDIT_TEXT_TIME = 1000;
 
     private final static String TAG = "MainActivity";
     private boolean mDebug = TeamMeetingApp.mIsDebug;
@@ -228,14 +228,16 @@ public class MainActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mAdapter.notifyInitDataSetChanged();
+
+                getListNetWork();
+                //mAdapter.notifyInitDataSetChanged();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, 3000);
+                    }, 3000);
             }
         });
     }
@@ -279,12 +281,20 @@ public class MainActivity extends BaseActivity {
         }
         if (position <= maxItemTop) {
             mDy = 0;
-            mListView.smoothScrollToPositionFromTop(position, 0, 2000);
+            int i = maxItemTop - position;
+            int v = (int) (i * itemHeight * 0.5);
+            mListView.smoothScrollToPositionFromTop(position, 0, SHOW_EDIT_TEXT_TIME);
+            sendMsgUpDateReadMeShow(position, SHOW_EDIT_TEXT_TIME);
+
         } else {
             int incompleteItemheight = mListView.getHeight() - (visibleItem - 1) * itemHeight;
             mDy = itemHeight * (position - maxItemTop - 1) + incompleteItemheight;
+            int posDiff = position - maxItemTop;
+            int d = (int) (posDiff * itemHeight * 0.5);
             mListView.setSelection(mListView.getBottom());
-            mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, 1500);
+            mUIHandler.sendEmptyMessageDelayed(UPDATE_LISTVIEW_SCROLL, d);
+
+            sendMsgUpDateReadMeShow(position, d+SHOW_EDIT_TEXT_TIME);
             Log.e(TAG, "maxItemTop " + maxItemTop + " incompleteItemheight "
                     + incompleteItemheight);
             // mListView.smoothScrollToPositionFromTop(maxItemTop, 0, 1000);
@@ -440,8 +450,8 @@ public class MainActivity extends BaseActivity {
         MeetingListEntity meetingListEntity = mRoomMeetingList.get(position);
         String meetingName = meetingListEntity.getMeetname();
         String meetingId = meetingListEntity.getMeetingid();
+        mNetWork.updateUserMeetingJointime(getSign(), meetingId);
         int owner = meetingListEntity.getOwner();
-
         if (owner == 0) {
             mNetWork.getMeetingInfo(meetingId, JoinActType.JOIN_ENTER_ACTIVITY);
         } else {
@@ -454,7 +464,7 @@ public class MainActivity extends BaseActivity {
         intent.putExtra("meetingName", meetingName);
         intent.putExtra("meetingId", meetingId);
         intent.putExtra("userId", mUserId);
-        mNetWork.updateUserMeetingJointime(getSign(),meetingId);
+        //  startActivityForResult(intent, ExtraType.REQUEST_CODE_ROOM_MEETING);
         mContext.startActivity(intent);
     }
 
@@ -629,6 +639,7 @@ public class MainActivity extends BaseActivity {
 
 
     private void settingReName(Intent data) {
+
         String meetingId;
         mReNameFlag = true;
         mSign = TeamMeetingApp.getmSelfData().getAuthorization();
@@ -636,13 +647,17 @@ public class MainActivity extends BaseActivity {
         mPosition = position;
         meetingId = data.getStringExtra("meetingId");
         String meetingName = data.getStringExtra("meetingName");
+
         listViewSetScroll(position);
+    }
+
+    private void sendMsgUpDateReadMeShow(int position, int delayed) {
         Message msg = new Message();
         msg.what = UPDATE_RENAME_SHOW;
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
         msg.setData(bundle);
-        mUIHandler.sendMessageDelayed(msg, SHOW_EDIT_TEXT_TIME);
+        mUIHandler.sendMessageDelayed(msg, delayed);
     }
 
     private void seetingDeleteRoom(Intent data) {
@@ -722,7 +737,7 @@ public class MainActivity extends BaseActivity {
         switch (requestMsg.getTags()) {
             case JMClientType.MCSENDTAGS_TALK:
                 if (mDebug)
-                    Log.e(TAG, CRUDChat.selectLoadListSize(mContext, "400000000491") + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
+                    Log.e(TAG, CRUDChat.selectLoadListSize(mContext, requestMsg.getRoom()) + "onEventMainThread :" + (CRUDChat.setectAllList(mContext)).size());
                 if (requestMsg.getTags() == JMClientType.MCSENDTAGS_TALK) {
                     mAdapter.notifyNoReadMessageChanged(requestMsg.getRoom(), requestMsg.getNtime());
                 }
@@ -733,7 +748,7 @@ public class MainActivity extends BaseActivity {
             case JMClientType.MCSENDTAGS_ENTER:
                 mAdapter.notifyMemnumberSetChanged(requestMsg.getRoom(), requestMsg.getNmem());
 
-                if (mDebug&& requestMsg.getCmd()==1)
+                if (mDebug && requestMsg.getCmd() == 1)
                     Log.e(TAG, "Someone is go room !!!!!!!!!!!!!!!");
                 break;
         }
@@ -744,40 +759,28 @@ public class MainActivity extends BaseActivity {
     private void getMeetingInfoSuccess(Message msg) {
         int usable = msg.getData().getInt("usable");
         mUrlMeetingName = msg.getData().getString("meetingName");
-        String meetinId ;
-        String joinType ;
         switch (usable) {
             case 0://no
                 Toast.makeText(mContext, R.string.str_meeting_deleted, Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                 meetinId = msg.getData().getString("meetingId");
-                 joinType = msg.getData().getString(JoinActType.JOIN_TYPE);
+                String meetinId = msg.getData().getString("meetingId");
+                String joinType = msg.getData().getString(JoinActType.JOIN_TYPE);
                 if (joinType == JoinActType.JOIN_ENTER_ACTIVITY) {
                     statrMeetingActivity(mUrlMeetingName, meetinId);
-                } else if (joinType == JoinActType.JOIN_LINK_JOIN_ACTIVITY ) {
+                } else if (joinType == JoinActType.JOIN_LINK_JOIN_ACTIVITY) {
                     mNetWork.insertUserMeetingRoom(getSign(), meetinId, JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY);
                 }
                 break;
 
             case 2://private
-
-                 meetinId = msg.getData().getString("meetingId");
-                 joinType = msg.getData().getString(JoinActType.JOIN_TYPE);
-                if (joinType == JoinActType.JOIN_ENTER_ACTIVITY) {
-                    statrMeetingActivity(mUrlMeetingName, meetinId);
-                } else if (joinType == JoinActType.JOIN_LINK_JOIN_ACTIVITY ) {
-
-                    Toast.makeText(mContext, R.string.str_meeting_privated, Toast.LENGTH_SHORT).show();
-                }
-
+                Toast.makeText(mContext, R.string.str_meeting_privated, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
 
     private void insertUserMeetingRoomSuccess(Message msg) {
-        Log.e(TAG, "insertUserMeetingRoomSuccess: "+msg.getData().toString() );
         String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
 
         if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
@@ -785,7 +788,6 @@ public class MainActivity extends BaseActivity {
             intent.putExtra("meetingId", mUrlMeetingId);
             intent.putExtra("userId", mUserId);
             intent.putExtra("meetingName", mUrlMeetingName);
-            mNetWork.updateUserMeetingJointime(getSign(),mUrlMeetingId);
             startActivity(intent);
         }
     }
@@ -870,23 +872,16 @@ public class MainActivity extends BaseActivity {
             case MSG_GET_MEETING_INFO_FAILED:
                 if (mDebug)
                     Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
-/*                String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
+                String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
                 if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
+                    Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                }
 
-                }else if(join_insert_type == JoinActType.JOIN_ENTER_ACTIVITY){
-
-                }*/
-                Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                 break;
             case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
-
-                Log.e(TAG, "insertUserMeetingRoomSuccess: "+msg.getData().toString() );
-                String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
-                if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
-                    statrMeetingActivity(mUrlMeetingName,mUrlMeetingId);
-                }
+                insertUserMeetingRoomSuccess(msg);
                 break;
             case MSG_INSERT_USER_MEETING_ROOM_FAILED:
                 if (mDebug)

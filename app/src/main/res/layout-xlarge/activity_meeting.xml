@@ -20,13 +20,13 @@
 
 
         <RelativeLayout
-            android:layout_width="@dimen/header_height"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageButton
                 android:id="@+id/imgbtn_chat"
                 style="@style/Btn_left"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/btn_chat"/>
 
             <TextView
@@ -35,10 +35,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/unread_count_bg"
                 android:textColor="@color/white"
+                android:layout_marginLeft="20dp"
                 android:textSize="12sp"
-                android:gravity="center"
                 android:visibility="gone"
-                android:layout_alignParentRight="true"
+                android:gravity="center"
                 />
 
 

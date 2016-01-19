@@ -20,7 +20,6 @@
         <ImageButton
             android:id="@+id/imgbtn_back"
             style="@style/Btn_left"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@drawable/close"/>
     </RelativeLayout>

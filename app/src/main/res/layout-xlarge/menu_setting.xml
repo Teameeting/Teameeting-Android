@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/tv_join_room"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/more_item_height"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/view_join_room"
@@ -55,7 +55,7 @@
 
         <TextView
             android:id="@+id/tv_invite_message"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/more_item_height"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/view_invite_message"
@@ -75,7 +75,7 @@
 
         <TextView
             android:id="@+id/tv_invite_weixin"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/more_item_height"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/view_invite_weixin"
@@ -95,7 +95,7 @@
 
         <TextView
             android:id="@+id/tv_copy_link"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/more_item_height"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/view_copy_link"
@@ -215,7 +215,7 @@
 
         <TextView
             android:id="@+id/tv_rename_room"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/more_item_height"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/view_rename_room"
@@ -235,7 +235,7 @@
 
         <TextView
             android:id="@+id/tv_delete_room"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/more_item_height"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/view_delete_room"
