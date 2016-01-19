@@ -9,6 +9,7 @@
         android:id="@+id/rl_chat_topbar"
         style="@style/TopBar_Style"
         android:layout_height="@dimen/height_top_bar"
+        android:paddingLeft="10dp"
         android:background="@color/black_gray">
 
         <TextView

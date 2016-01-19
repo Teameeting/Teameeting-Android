@@ -862,7 +862,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 mMsg.setText("");
                 if (mMessageShowFlag) {
                     leaveMessageDealWith();
-                    addAutoView(message, name);
+                    //addAutoView(message, name);
                 }
                 break;
 

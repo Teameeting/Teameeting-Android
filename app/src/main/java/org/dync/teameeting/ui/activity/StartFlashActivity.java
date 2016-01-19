@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +16,10 @@ import android.widget.ProgressBar;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.http.NetWork;
+import org.dync.teameeting.chatmessage.ChatMessageClient;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.ui.helper.DialogHelper;
@@ -34,7 +38,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
 public class StartFlashActivity extends BaseActivity {
 
     private static final String TAG = "StartFlashActivity";
-    private final int MessageConnectedFailed = 0x01;
     public SweetAlertDialog mNetErrorSweetAlertDialog;
 
     private ImageView mView;
