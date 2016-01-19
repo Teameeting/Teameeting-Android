@@ -6,8 +6,9 @@ package org.dync.teameeting.sdkmsgclientandroid.jni;
 public class JMClientType {
     //* Connection Status
     public static final int CSNOT_CONNECTED = 0;
-    public static final int CSCONNECTTING = 1;
-    public static final int CSCONNECTED = 2;
+    public static final int CSRESOLVING = 1;
+    public static final int CSCONNECTTING = 2;
+    public static final int CSCONNECTED = 3;
 
     //* MsgClient Callback Error Code
     public static final int ERR_OK = 0;
@@ -26,6 +27,12 @@ public class JMClientType {
     public static final int MCCMD_LEAVE = 2;
     public static final int MCCMD_DCOMM = 3;
     public static final int MCMD_MEETCMD_INVALID = 4;
+
+    //* MsgClient communication action
+    public static final int MCDCOMMACTION_MSEND=1;
+    public static final int MCDCOMMACTION_MSETT=2;
+    public static final int MCDCOMMACTION_SHARE=3;
+    public static final int MCDCOMMACTION_INVALID=4;
 
     //* MsgClient send msg tags
     public static final int MCSENDTAGS_TALK=1;
