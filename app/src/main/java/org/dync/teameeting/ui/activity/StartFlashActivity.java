@@ -42,7 +42,7 @@ public class StartFlashActivity extends BaseActivity
     private Context context;
     private TMMsgSender mMsgSender;
     private final String mServer = "192.168.7.39";
-    private final int mPort = 6630;
+    private final int mPort = 9210;
     private String mUserid ;
     private String mSign;
     private ProgressBar mLoadingProgress;
