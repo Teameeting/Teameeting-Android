@@ -12,13 +12,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import org.anyrtc.Anyrtc;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.chatmessage.ChatMessageClient;
-import org.dync.teameeting.receiver.NetWorkReceiver;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.receiver.NetWorkReceiver;
 import org.dync.teameeting.utils.ScreenUtils;
 
 import cn.jpush.android.api.JPushInterface;
@@ -123,8 +124,6 @@ public class TeamMeetingApp extends Application {
 
     public void Destroy() {
         unregisterReceiver(mNetReceiver);
-        if (mMsgSender!=null)
-            mMsgSender.TMUnin();
     }
 
     /**
