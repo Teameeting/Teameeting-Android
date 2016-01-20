@@ -1,11 +1,13 @@
 package org.dync.teameeting.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,6 +18,9 @@ import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.JoinActType;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class JoinMeetingActivity extends BaseActivity implements View.OnClickListener {
     private final static String TAG = "JoinMeetingActivity";
@@ -41,11 +46,27 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
         mIbtnback.setOnClickListener(this);
         mIbtnJoinMeeting.setOnClickListener(this);
         mEtMeetingId.setOnEditorActionListener(mOnEditorActionListener);
+
     }
 
 
     private void inintdata() {
         mMsgSender = TeamMeetingApp.getmMsgSender();
+
+        mEtMeetingId.setFocusable(true);
+        mEtMeetingId.setFocusableInTouchMode(true);
+        mEtMeetingId.requestFocus();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+               InputMethodManager inputManager =
+               (InputMethodManager) mEtMeetingId.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+               inputManager.showSoftInput(mEtMeetingId, 0);
+            }
+
+        }, 998);
+
     }
 
     @Override
