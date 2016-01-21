@@ -23,17 +23,14 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.loopj.android.http.RequestParams;
 import com.orhanobut.logger.Logger;
 
-import org.apache.http.Header;
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingList;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.CRUDChat;
-import org.dync.teameeting.http.HttpContent;
-import org.dync.teameeting.http.TmTextHttpResponseHandler;
 import org.dync.teameeting.sdkmsgclientandroid.jni.JMClientType;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
@@ -45,11 +42,11 @@ import org.dync.teameeting.ui.adapter.SwipeListAdapter;
 import org.dync.teameeting.ui.adapter.SwipeListAdapter.SwipeListOnClick;
 import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.utils.ScreenUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.webrtc.CallSessionFileRotatingLogSink;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
@@ -446,7 +443,6 @@ public class MainActivity extends BaseActivity {
         int position = mAdapter.getMeetingIdPosition(meetingId);
         if (mDebug)
             Log.e(TAG, "statrMeetingActivity: position" + position);
-
         //mNetWork.updateUserMeetingJointime(getSign(), meetingId, position);
         mContext.startActivity(intent);
     }
@@ -496,7 +492,7 @@ public class MainActivity extends BaseActivity {
         mListView.setSelection(0);
 
         mNetWork.applyRoom(mSign, meetingName, "0", "", meetenablde, pushable);
-       // applyRoomNetWrod(meetingName, "0", "", meetenablde, pushable);
+        // applyRoomNetWrod(meetingName, "0", "", meetenablde, pushable);
         mCreateRoomFlag = true;
     }
 
@@ -577,7 +573,7 @@ public class MainActivity extends BaseActivity {
             case ExtraType.REQUEST_CODE_ROOM_MEETING:
                 if (mDebug)
                     Log.e(TAG, "onActivityResult: -Meeting 关闭");
-                //getListNetWork();
+                mAdapter.notifyDataSetChanged();
             default:
                 break;
         }
@@ -665,15 +661,55 @@ public class MainActivity extends BaseActivity {
 
     /**
      * netWork can user
+     *
      * @param type
      */
     public void netWorkTypeStart(int type) {
-        if (type == NetType.TYPE_NULL.ordinal()) {
-            mNetErrorSweetAlertDialog.show();
-        } else {
-            mSign = getSign();
-            Log.e(TAG, "netWorkTypeStart: mSign" + mSign);
-            getListNetWork();
+        switch (NetType.values()[type]) {
+            case TYPE_WIFI:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_WIFI ");
+               // netCatchGreatRoom();
+
+                break;
+            case TYPE_4G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_4G ");
+                break;
+            case TYPE_3G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_3G ");
+                break;
+            case TYPE_2G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_2G ");
+                break;
+
+            case TYPE_NULL:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_NULL ");
+
+                break;
+            case TYPE_UNKNOWN:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_UNKNOWN: ");
+
+            default:
+                break;
+        }
+
+    }
+
+    private void netCatchGreatRoom() {
+        for (int i = 0; i < mRoomMeetingList.size(); i++) {
+            MeetingListEntity meetingListEntity = mRoomMeetingList.get(i);
+            if (!meetingListEntity.isApplyTyep()) {
+                mNetWork.applyRoom(getSign(), meetingListEntity.getMeetname(), meetingListEntity.getMeettype() + "",
+                        meetingListEntity.getMeetdesc(), meetingListEntity.getMeetusable() + "",
+                        meetingListEntity.getPushable() + "", 0, i);
+            }
+            mAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -744,22 +780,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
-    private void insertUserMeetingRoomSuccess(Message msg) {
-        Log.e(TAG, "insertUserMeetingRoomSuccess: " + msg.getData().toString());
-        String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
-
-        if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
-            Intent intent = new Intent(mContext, MeetingActivity.class);
-            intent.putExtra("meetingId", mUrlMeetingId);
-            intent.putExtra("userId", mUserId);
-            intent.putExtra("meetingName", mUrlMeetingName);
-            int position = mAdapter.getMeetingIdPosition(mUrlMeetingId);
-            mNetWork.updateUserMeetingJointime(getSign(), mUrlMeetingId, position);
-            startActivity(intent);
-        }
-    }
-
     /**
      * For EventBus callback.
      */
@@ -797,9 +817,9 @@ public class MainActivity extends BaseActivity {
             case MSG_APPLY_ROOM_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_APPLY_ROOM_SUCCESS ");
-               mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
                 startInvitePeopleActivity();
-               // getListNetWork();
+                // getListNetWork();
                 break;
             case MSG_APPLY_ROOMT_FAILED:
                 if (mDebug)
@@ -852,7 +872,6 @@ public class MainActivity extends BaseActivity {
             case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
                 if (mDebug)
                     Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
-
                 Log.e(TAG, "insertUserMeetingRoomSuccess: " + msg.getData().toString());
                 String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
                 if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
