@@ -49,6 +49,7 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
             int code = jsonObject.getInt("code");
             message = jsonObject.getString("message");
             this.onSuccess(statusCode, code, message, responseString, headers);
+            this.onSuccess(statusCode, code, message, jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -56,6 +57,10 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
 
     public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
         Log.w("TextHttpResponseHandler", "onSuccess(int, Header[], JSONArray) was not overriden, but callback was received");
+    }
+
+    public void onSuccess(int statusCode, int code, String message, JSONObject jsonObject) {
+        // Log.w("TextHttpResponseHandler", "onSuccess(int, Header[], JSONArray) was not overriden, but callback was received");
     }
 
 }
