@@ -264,6 +264,13 @@ public class NetWork {
         });
     }
 
+    public MeetingListEntity applyRoom(final String sign, final String meetingname,
+                                       final String meetingtype, final String meetdesc, final String meetenable,
+                                       final String pushable) {
+        applyRoom(sign, meetingname, meetingtype, meetdesc, meetenable, pushable, 1,0);
+
+        return null;
+    }
 
     /**
      * applyRoom
@@ -278,7 +285,7 @@ public class NetWork {
 
     public MeetingListEntity applyRoom(final String sign, final String meetingname,
                                        final String meetingtype, final String meetdesc, final String meetenable,
-                                       final String pushable) {
+                                       final String pushable, final int netCachCreate, final int position) {
         String url = "meeting/applyRoom";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -289,7 +296,7 @@ public class NetWork {
         params.put("pushable", pushable);
 
         HttpContent.post(url, params, new TmTextHttpResponseHandler() {
-            
+
 
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
@@ -306,9 +313,11 @@ public class NetWork {
                         meeting.setMemnumber(0);
                         meeting.setMeetinguserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
                         List<MeetingListEntity> meetingLists = TeamMeetingApp.getmSelfData().getMeetingLists();
-                        meetingLists.remove(0);
+                        if (meetingLists.size() >= 20) {
+                            meetingLists.remove(19);
+                        }
+                        meetingLists.remove(position);
                         meetingLists.add(0, meeting);
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -316,9 +325,12 @@ public class NetWork {
                 } else {
                     msg.what = EventType.MSG_APPLY_ROOMT_FAILED.ordinal();
                 }
-                bundle.putString("message", message);
-                msg.setData(bundle);
-                EventBus.getDefault().post(msg);
+                if (netCachCreate == 1) {
+                    bundle.putString("message", message);
+                    msg.setData(bundle);
+                    EventBus.getDefault().post(msg);
+                }
+
 
             }
         });

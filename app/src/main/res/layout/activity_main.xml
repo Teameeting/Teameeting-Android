@@ -66,7 +66,7 @@
             android:layout_height="match_parent"
             android:background="@color/black_alpha_half">
 
-            <ListView
+            <org.dync.teameeting.widgets.MyListView
                 android:id="@+id/lv_listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
