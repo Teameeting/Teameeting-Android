@@ -289,8 +289,7 @@ public class NetWork {
         params.put("pushable", pushable);
 
         HttpContent.post(url, params, new TmTextHttpResponseHandler() {
-
-            MeetingListEntity meeting;
+            
 
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
@@ -300,15 +299,16 @@ public class NetWork {
                     try {
                         JSONObject json = new JSONObject(responseString);
                         String meetingInfo = json.getString("meetingInfo");
-                        meeting = gson.fromJson(meetingInfo, MeetingListEntity.class);
+                        MeetingListEntity meeting = gson.fromJson(meetingInfo, MeetingListEntity.class);
 
                         meeting.setCreatetime(meeting.getJointime());
                         meeting.setOwner(1);
                         meeting.setMemnumber(0);
                         meeting.setMeetinguserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
+                        List<MeetingListEntity> meetingLists = TeamMeetingApp.getmSelfData().getMeetingLists();
+                        meetingLists.remove(0);
+                        meetingLists.add(0, meeting);
 
-                        if (mDebug)
-                            Log.e(TAG, "applyRoom:-----" + meeting.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -442,8 +442,7 @@ public class NetWork {
      * @param meetingid
      * @param pushable
      */
-    public void updateRoomPushable(final String sign, final String meetingid,
-                                   final String pushable) {
+    public void updateRoomPushable(final String sign, final String meetingid, final int pushable, final int position) {
         String url = "meeting/updateRoomPushable";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -451,12 +450,18 @@ public class NetWork {
         params.put("pushable", pushable);
 
         HttpContent.post(url, params, new TmTextHttpResponseHandler() {
+
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
-                    Log.e(TAG, "onSuccess: updateRoomPushable" + responseString);
+                    Log.e(TAG, "onSuccess: updateRoomPushable123" + responseString);
                 if (code == 200) {
+
+                    List<MeetingListEntity> meetingLists = TeamMeetingApp.getmSelfData().getMeetingLists();
+
+                    meetingLists.get(position).setPushable(pushable);
+
                     msg.what = EventType.MSG_UPDATE_ROOM_PUSHABLE_SUCCESS.ordinal();
                 } else {
                     msg.what = EventType.MSG_UPDATE_ROOM_PUSHABLE_FAILED.ordinal();
@@ -464,8 +469,8 @@ public class NetWork {
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
-
             }
+
         });
     }
 
@@ -476,8 +481,7 @@ public class NetWork {
      * @param meetingid
      * @param enable
      */
-    public void updateRoomEnable(final String sign, final String meetingid,
-                                 final String enable) {
+    public void updateRoomEnable(final String sign, final String meetingid, final int enable, final int position) {
         String url = "meeting/updateRoomEnable";
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -490,6 +494,7 @@ public class NetWork {
                 super.onSuccess(statusCode, code, message, responseString, headers);
                 if (mDebug)
                     Log.e(TAG, "onSuccess: updateRoomEnable" + responseString);
+                TeamMeetingApp.getmSelfData().getMeetingLists().get(position).setMeetusable(enable);
                 if (code == 200) {
                     msg.what = EventType.MSG_UPDATE_ROOM_ENABLE_SUCCESS.ordinal();
                 } else {
@@ -968,8 +973,7 @@ public class NetWork {
      * @param sign
      * @param meetingid
      */
-
-    public void updateUserMeetingJointime(final String sign, final String meetingid) {
+    public void updateUserMeetingJointime(final String sign, final String meetingid, final int position) {
 
         RequestParams params = new RequestParams();
         params.put("sign", sign);
@@ -983,7 +987,26 @@ public class NetWork {
                 if (mDebug)
                     Log.e(TAG, "onSuccess: updateUserMeetingJointime" + responseString);
                 if (code == 200) {
+                    try {
+                        //更新当前room的值
+                        JSONObject jsonObject = new JSONObject(responseString);
+                        long jointime = jsonObject.getLong("jointime");
+                        List<MeetingListEntity> meetingLists = TeamMeetingApp.getmSelfData().getMeetingLists();
+
+                        MeetingListEntity meetingListEntity = meetingLists.get(position);
+                        meetingListEntity.setJointime(jointime);
+                        meetingLists.remove(position);
+                        meetingLists.add(0, meetingListEntity);
+                        //Logger.e(meetingLists.size()+"------"+ TeamMeetingApp.getmSelfData().getMeetingLists().size());
+                        //TeamMeetingApp.getmSelfData().setMeetingLists(meetingLists);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     msg.what = EventType.MSG_UP_DATE_USER_MEETING_JOIN_TIME_SUCCESS.ordinal();
+
+
                 } else {
                     msg.what = EventType.MSG_UP_DATE_USER_MEETING_JOIN_TIME_FAILED.ordinal();
                 }
@@ -1022,7 +1045,7 @@ public class NetWork {
                             .ordinal();
                 }
 
-                bundle.putString("meetingid",meetingid);
+                bundle.putString("meetingid", meetingid);
                 bundle.putString("message", message);
                 bundle.putString(JoinActType.JOIN_INSERT_TYPE, join_insert_type);
                 msg.setData(bundle);

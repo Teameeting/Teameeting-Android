@@ -25,6 +25,7 @@ import com.orhanobut.logger.Logger;
 import org.dync.teameeting.R;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.db.CRUDChat;
+import org.dync.teameeting.structs.HttpApiTpye;
 import org.dync.teameeting.utils.StringHelper;
 import org.dync.teameeting.widgets.swipe.FrontLayout;
 import org.dync.teameeting.widgets.swipe.SwipeLayout;
@@ -88,6 +89,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         MeetingListEntity meetingListEntity = mDatas.get(position);
+
         ViewHolder mHolder;
         if (convertView != null) {
             mHolder = (ViewHolder) convertView.getTag();
@@ -100,11 +102,8 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         SwipeLayout swipeLayout = (SwipeLayout) convertView;
         swipeLayout.close(false, false);
         swipeLayout.setSwipeListener(mSwipeListener);
-
         setData(meetingListEntity, mHolder);
-
         showEidt(position, mHolder);
-
         setHolderListener(position, mHolder);
         return swipeLayout;
     }
@@ -118,7 +117,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             mHolder.mPeopleico.setVisibility(View.VISIBLE);
             mHolder.mRoomPeopleCount.setVisibility(View.VISIBLE);
             mHolder.mRoomPeopleCount.setText(meetingListEntity.getMemnumber() + "");
-        }else  {
+        } else {
             mHolder.mPeopleico.setVisibility(View.GONE);
             mHolder.mRoomPeopleCount.setVisibility(View.GONE);
             if (meetingListEntity.getPushable() == 0) {
@@ -137,7 +136,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             mHolder.mMoreSetting.setVisibility(View.VISIBLE);
         }
 
-        if (meetingListEntity.getMeetusable() == 2) {
+        if (meetingListEntity.getMeetusable() == HttpApiTpye.RoomEnablePrivate) {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
             if (meetingListEntity.getOwner() != 1) {
                 mHolder.mIvPrivate.setVisibility(View.INVISIBLE);
@@ -149,7 +148,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
 
         if (meetingListEntity.getOwner() == 1) {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
-            if(meetingListEntity.getMeetusable() == 2){
+            if (meetingListEntity.getMeetusable() == HttpApiTpye.RoomEnablePrivate) {
                 mHolder.mIvPrivate.setVisibility(View.VISIBLE);
             }
         } else {
@@ -164,7 +163,6 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             unReadMessage = CreateOrJoin + StringHelper.formatDuration(meetingListEntity.getJointime(), mResources);
         }
         mHolder.mRoomTime.setText(unReadMessage);
-
     }
 
 
