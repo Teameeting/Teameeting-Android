@@ -2,12 +2,20 @@ package org.dync.teameeting.utils;
 
 import android.content.res.Resources;
 
+import com.orhanobut.logger.Logger;
+
 import org.dync.teameeting.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by zhulang on 2016/1/6 0006.
  */
 public class StringHelper {
+    private static GregorianCalendar calendar = new GregorianCalendar();
+
     public static String formatDuration(long paramLong, Resources resources) {
         String mTimeFormat = " %d %s ";
         long l = System.currentTimeMillis() / 1000L - paramLong / 1000L;
@@ -57,21 +65,23 @@ public class StringHelper {
         return String.format(str1, arrayOfObject1);
     }
 
+    public static String format(long timeStr, Resources resources) {
 
-    public static String unReadMessageStr(long noReadMessageSize, String timeStr) {
-        return "<" + noReadMessageSize + "> " + "New message:" + timeStr;
+        Date date = new Date(timeStr);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("   HH : mm");
+        String YYMMDD = TimeHelper.getCustomStr(getYYMMDD(date), resources);
+        return YYMMDD + simpleDateFormat.format(date);
+    }
+
+    private static String getYYMMDD(Date date) {
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd");
+        String yueDay = time.format(date);
+        return yueDay;
     }
 
     public static String unReadMessageStr(long noReadMessageSize, long timeStr, Resources resources) {
         return "<" + noReadMessageSize + "> " + "New message " + formatDuration(timeStr, resources);
     }
 
-    public static String formatDuring(long mss) {
-        long days = mss / (1000 * 60 * 60 * 24);
-        long hours = (mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-        long minutes = (mss % (1000 * 60 * 60)) / (1000 * 60);
-        long seconds = (mss % (1000 * 60)) / 1000;
-        return days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
-    }
 
 }

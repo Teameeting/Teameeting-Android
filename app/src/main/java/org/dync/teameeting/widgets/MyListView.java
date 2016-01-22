@@ -25,35 +25,10 @@ public class MyListView extends ListView {
     private int downY;
     private int downX;
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        final int action = event.getAction();
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                downY = (int) event.getY();
-                downX = (int) event.getX();
-                return super.onInterceptTouchEvent(event);
-            case MotionEvent.ACTION_MOVE:
-                int deltaY = (int) (event.getY() - downY);
-                int deltaX = (int) (event.getX() - downX);
-                if (deltaY - Math.abs(deltaX) > 10)
-                    return super.onInterceptTouchEvent(event);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                break;
-        }
-        return false;
-    }
 
     @Override
     protected boolean overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX,
                                    int scrollRangeY, int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
-        Log.e("MyListView", "overScrollBy: deltaY" +deltaY);
-        Log.e("MyListView", "overScrollBy: scrollY" +scrollY);
-        Log.e("MyListView", "overScrollBy: scrollRangeY" +scrollRangeY);
-        Log.e("MyListView", "overScrollBy: maxOverScrollY" +maxOverScrollY);
-        Log.e("MyListView", "-----------------------------------------" );
 
         return super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY,
                 maxOverScrollX, 100, isTouchEvent);
