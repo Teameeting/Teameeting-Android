@@ -267,7 +267,7 @@ public class NetWork {
     public MeetingListEntity applyRoom(final String sign, final String meetingname,
                                        final String meetingtype, final String meetdesc, final String meetenable,
                                        final String pushable) {
-        applyRoom(sign, meetingname, meetingtype, meetdesc, meetenable, pushable, 1,0);
+        applyRoom(sign, meetingname, meetingtype, meetdesc, meetenable, pushable, 1, 0);
 
         return null;
     }
@@ -363,7 +363,7 @@ public class NetWork {
                     msg.what = EventType.MSG_DELETE_ROOM_FAILED
                             .ordinal();
                 }
-
+                bundle.putString("meetingid", meetingid);
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
@@ -946,7 +946,7 @@ public class NetWork {
      *
      * @param meetingid
      */
-    public void getMeetingInfo(String meetingid, final String joinType) {
+    public void getMeetingInfo(final String meetingid, final String joinType) {
         String url = "meeting/getMeetingInfo/" + meetingid;
         HttpContent.get(url, new TmTextHttpResponseHandler() {
             @Override
@@ -972,6 +972,7 @@ public class NetWork {
                 }
                 bundle.putString(JoinActType.JOIN_TYPE, joinType);
                 bundle.putString("message", message);
+                bundle.putString("meetingid", meetingid);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
             }

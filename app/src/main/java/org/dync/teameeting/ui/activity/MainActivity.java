@@ -378,10 +378,9 @@ public class MainActivity extends BaseActivity {
                     mSign = getSign();
                     meetingId = mRoomMeetingList.get(position).getMeetingid();
                     //mUserId = mRoomMeetingList.get(position).getMeetinguserid();
+
                     mNetWork.deleteRoom(mSign, meetingId);
-                    mRoomMeetingList.remove(position);
-                    mAdapter.notifyDataSetChanged();
-                    CRUDChat.deleteByMeetingId(mContext, meetingId);
+
                     break;
 
                 case R.id.imgbtn_more_setting:
@@ -857,12 +856,10 @@ public class MainActivity extends BaseActivity {
             case MSG_GET_MEETING_INFO_FAILED:
                 if (mDebug)
                     Log.e(TAG, "MSG_GET_MEETING_INFO_FAILED");
-/*          String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
-                if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
-                }else if(join_insert_type == JoinActType.JOIN_ENTER_ACTIVITY){
+                String meetingId = msg.getData().getString("meetingid");
+                mNetWork.deleteRoom(getSign(), meetingId);
+                Toast.makeText(mContext, R.string.meeting_delete_create, Toast.LENGTH_SHORT).show();
 
-                }*/
-                Toast.makeText(mContext, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                 break;
             case MSG_INSERT_USER_MEETING_ROOM_SUCCESS:
                 if (mDebug)
@@ -892,6 +889,13 @@ public class MainActivity extends BaseActivity {
                     Log.e(TAG, "MSG_UPDATE_ROOM_PUSHABLE_SUCCESS");
                 mAdapter.notifyDataSetChanged();
                 break;
+            case MSG_DELETE_ROOM_SUCCESS:
+
+                meetingId = msg.getData().getString("meetingid");
+                int position = mAdapter.getMeetingIdPosition(meetingId);
+                mRoomMeetingList.remove(position);
+                mAdapter.notifyDataSetChanged();
+                CRUDChat.deleteByMeetingId(mContext, meetingId);
             default:
                 break;
         }
