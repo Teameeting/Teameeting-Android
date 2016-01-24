@@ -13,7 +13,7 @@
     <RelativeLayout
         android:id="@+id/rl_meeting_topbar"
         style="@style/TopBar_Style"
-        android:background="@color/black_gray">
+        android:background="@color/totil_bar_back_alpha_meeting">
 
 
         <RelativeLayout

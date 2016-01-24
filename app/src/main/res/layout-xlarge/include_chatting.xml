@@ -11,7 +11,7 @@
         style="@style/TopBar_Style"
         android:layout_height="@dimen/height_top_bar"
         android:background="@color/black_gray"
-        android:visibility="visible"
+        android:visibility="gone"
         >
 
         <TextView

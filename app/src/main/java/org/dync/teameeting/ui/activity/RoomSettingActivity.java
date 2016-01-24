@@ -214,9 +214,9 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
     private void meetingPrivateUIUpdate() {
         if (mMeetingPrivateFlag) {
-            mTvIniviteMessage.setTextColor(getResources().getColor(R.color.black));
-            mTvInviteWeixin.setTextColor(getResources().getColor(R.color.black));
-            mTvCopyLink.setTextColor(getResources().getColor(R.color.black));
+            mTvIniviteMessage.setTextColor(getResources().getColor(R.color.darkGray));
+            mTvInviteWeixin.setTextColor(getResources().getColor(R.color.darkGray));
+            mTvCopyLink.setTextColor(getResources().getColor(R.color.darkGray));
             mTvIniviteMessage.setClickable(false);
             mTvInviteWeixin.setClickable(false);
             mTvCopyLink.setClickable(false);

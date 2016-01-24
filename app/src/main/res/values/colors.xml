@@ -14,7 +14,8 @@
     <!-- In-call UI -->
     <!-- <color name="incall_textConnected">#99CE3F</color>  green -->
     <color name="black">#000000</color>
-    <color name="black_alpha_half">#88000000</color>
+    <color name="black_alpha_half">#bb000000</color>
+    <color name="totil_bar_back_alpha_meeting">#50000000</color>
     <color name="mcu_black">#353738</color>
     <color name="none">#00FFFFFF</color>
     <color name="darkGray">#808080</color>

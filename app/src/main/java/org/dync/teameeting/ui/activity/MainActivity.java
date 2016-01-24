@@ -27,7 +27,6 @@ import com.orhanobut.logger.Logger;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.bean.MeetingList;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.CRUDChat;
@@ -42,11 +41,9 @@ import org.dync.teameeting.ui.adapter.SwipeListAdapter;
 import org.dync.teameeting.ui.adapter.SwipeListAdapter.SwipeListOnClick;
 import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.utils.ScreenUtils;
-import org.webrtc.CallSessionFileRotatingLogSink;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
@@ -122,8 +119,6 @@ public class MainActivity extends BaseActivity {
                     break;
             }
         }
-
-        ;
     };
 
     @Override
@@ -669,7 +664,7 @@ public class MainActivity extends BaseActivity {
             case TYPE_WIFI:
                 if (mDebug)
                     Log.e(TAG, "TYPE_WIFI ");
-               // netCatchGreatRoom();
+                // netCatchGreatRoom();
 
                 break;
             case TYPE_4G:
