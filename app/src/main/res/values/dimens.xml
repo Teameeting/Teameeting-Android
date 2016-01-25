@@ -26,7 +26,7 @@
     <dimen name="image_thumbnail_size">100dp</dimen>
     <dimen name="image_thumbnail_spacing">1dp</dimen>
     <dimen name="btn_create_room_height">50dp</dimen>
-    <dimen name="chat_people_width">30dp</dimen>
+    <dimen name="chat_people_width">40dp</dimen>
     <dimen name="remind_buttom">110dp</dimen>
     <!-- The Text Size -->
     <dimen name="largest_most_txt_size">21sp</dimen>
@@ -42,7 +42,7 @@
     <!-- 底部弹出菜单宽高设置 -->
     <dimen name="seeting_padding">200dp</dimen>
     <dimen name="roomControls">270dp</dimen>
-    <dimen name="top_bar_text_size">24sp</dimen>
+    <dimen name="top_bar_text_size">20sp</dimen>
     <dimen name="btn_send_width">100dp</dimen>
 
 

@@ -78,7 +78,7 @@ public class ChatMessageClient implements JMClientHelper {
 
     public void OnSndMsg(String msg) {
         if (mDebug)
-            Logger.e("OnSndMsg: ChatMessageClient " + msg);
+            Logger.e(msg);
 
         if (msg != null) {
             mMessage = new Message();
