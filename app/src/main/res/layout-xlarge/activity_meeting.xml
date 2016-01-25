@@ -3,7 +3,7 @@
     android:id="@+id/meet_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true" >
+    android:animateLayoutChanges="true">
 
     <android.opengl.GLSurfaceView
         android:id="@+id/glview_call"
@@ -11,52 +11,6 @@
         android:layout_height="match_parent" />
     <!-- TopBar -->
 
-    <RelativeLayout
-        android:id="@+id/rl_meeting_topbar"
-        style="@style/TopBar_Style"
-        android:layout_height="@dimen/height_top_bar"
-        android:background="@color/black_gray" >
-
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/imgbtn_chat"
-                style="@style/Btn_left"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/btn_chat"/>
-
-            <TextView
-                android:id="@+id/tv_message_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/unread_count_bg"
-                android:textColor="@color/white"
-                android:layout_marginLeft="20dp"
-                android:textSize="12sp"
-                android:visibility="gone"
-                android:gravity="center"
-                />
-
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_room_name"
-            style="@style/Title_Txt"
-            android:text="Room name"
-            android:textColor="#ffffff"
-            android:textStyle="normal" />
-
-        <ImageButton
-            android:id="@+id/imgbtn_invite"
-            style="@style/Btn_right"
-            android:layout_centerVertical="true"
-            android:src="@drawable/btn_invite" />
-    </RelativeLayout>
     <!-- Control Layout -->
 
     <org.dync.teameeting.widgets.RoomControls
@@ -68,7 +22,7 @@
         android:layout_marginBottom="20dp"
         android:background="@color/transparent"
         android:orientation="horizontal"
-        android:padding="10dp" >
+        android:padding="10dp">
 
         <ImageButton
             android:id="@+id/meeting_camera"
@@ -133,9 +87,56 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/chact_margin_left_margin"
-        android:visibility="visible" >
+        android:visibility="visible">
 
         <include layout="@layout/include_chatting" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_meeting_topbar"
+        style="@style/TopBar_Style"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@color/totil_bar_back_alpha_meeting">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
+
+            <ImageButton
+                android:id="@+id/imgbtn_chat"
+                style="@style/Btn_left"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/btn_chat" />
+
+            <TextView
+                android:id="@+id/tv_message_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/unread_count_bg"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_room_name"
+            style="@style/Title_Txt"
+            android:text="Room name"
+            android:textColor="#ffffff"
+            android:textStyle="normal" />
+
+        <ImageButton
+            android:id="@+id/imgbtn_invite"
+            style="@style/Btn_right"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_invite" />
     </RelativeLayout>
 
     <TextView

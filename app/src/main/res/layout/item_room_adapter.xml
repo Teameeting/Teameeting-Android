@@ -79,7 +79,7 @@
                 android:layout_marginTop="5dp"
                 android:singleLine="true"
                 android:text="创建:11/18/15 下午 14:14"
-                android:textColor="@color/darkGray"
+                android:textColor="@color/milkWhite"
                 android:textSize="@dimen/middle_txt_size" />
 
 
@@ -114,7 +114,7 @@
                 android:layout_toLeftOf="@id/imgbtn_more_setting"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="11"
+                android:text="6"
                 android:textColor="@color/white" />
 
             <ImageView
@@ -133,14 +133,14 @@
                 android:layout_height="@dimen/chat_people_width"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="19dp"
                 android:layout_toLeftOf="@id/imgbtn_more_setting"
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:scaleType="centerInside"
                 android:singleLine="true"
                 android:src="@drawable/notifications_close"
-                android:visibility="gone" />
+                 />
         </RelativeLayout>
 
 

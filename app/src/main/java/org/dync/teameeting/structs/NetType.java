@@ -32,4 +32,5 @@ public enum NetType
 	 * unkenow connection
 	 */
 	TYPE_UNKNOWN
+
 }
