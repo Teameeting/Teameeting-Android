@@ -146,13 +146,19 @@ public class MainActivity extends BaseActivity {
         mMsgSender = TeamMeetingApp.getmMsgSender();
 
         mUrlMeetingId = getIntent().getStringExtra("urlMeetingId");
+
         if (mUrlMeetingId != null) {
             mUrlInsertMeegting = true;
             if (mDebug) {
                 Log.e(TAG, "initdata: mUrlMeetingId " + mUrlMeetingId);
             }
-            Toast.makeText(mContext, R.string.str_join_room_wait, Toast.LENGTH_LONG);
-            mNetWork.getMeetingInfo(mUrlMeetingId, JoinActType.JOIN_LINK_JOIN_ACTIVITY);
+            int position = TeamMeetingApp.getmSelfData().getMeetingIdPosition(mUrlMeetingId);
+            if (position >= 0) {
+                enterMeetingActivity(position);
+            } else {
+                Toast.makeText(mContext, R.string.str_join_room_wait, Toast.LENGTH_LONG);
+                mNetWork.getMeetingInfo(mUrlMeetingId, JoinActType.JOIN_LINK_JOIN_ACTIVITY);
+            }
         }
 
 
@@ -417,11 +423,9 @@ public class MainActivity extends BaseActivity {
         MeetingListEntity meetingListEntity = mRoomMeetingList.get(position);
         String meetingName = meetingListEntity.getMeetname();
         String meetingId = meetingListEntity.getMeetingid();
-
         mNetWork.updateUserMeetingJointime(getSign(), meetingId, position);
 
         int owner = meetingListEntity.getOwner();
-
         if (owner == 0) {
             mNetWork.getMeetingInfo(meetingId, JoinActType.JOIN_ENTER_ACTIVITY);
         } else {
@@ -434,9 +438,9 @@ public class MainActivity extends BaseActivity {
         intent.putExtra("meetingName", meetingName);
         intent.putExtra("meetingId", meetingId);
         intent.putExtra("userId", mUserId);
-        int position = mAdapter.getMeetingIdPosition(meetingId);
-        if (mDebug)
-            Log.e(TAG, "statrMeetingActivity: position" + position);
+        //int position = TeamMeetingApp.getmSelfData().getMeetingIdPosition(meetingId);
+        //if (mDebug)
+        //  Log.e(TAG, "statrMeetingActivity: position" + position);
         //mNetWork.updateUserMeetingJointime(getSign(), meetingId, position);
         mContext.startActivity(intent);
     }
@@ -741,16 +745,17 @@ public class MainActivity extends BaseActivity {
 
 
     private void getMeetingInfoSuccess(Message msg) {
-        int usable = msg.getData().getInt("usable");
-        mUrlMeetingName = msg.getData().getString("meetingName");
-        String meetinId;
+        MeetingListEntity meetingListEntity = TeamMeetingApp.getmSelfData().getMeetingListEntity();
+        int usable = meetingListEntity.getMeetusable();
+        mUrlMeetingName = meetingListEntity.getMeetname();
+        String meetinId = meetingListEntity.getMeetingid();
         String joinType;
         switch (usable) {
             case 0://no
                 Toast.makeText(mContext, R.string.str_meeting_deleted, Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                meetinId = msg.getData().getString("meetingId");
+
                 joinType = msg.getData().getString(JoinActType.JOIN_TYPE);
                 if (joinType == JoinActType.JOIN_ENTER_ACTIVITY) {
                     statrMeetingActivity(mUrlMeetingName, meetinId);
@@ -761,7 +766,6 @@ public class MainActivity extends BaseActivity {
 
             case 2://private
 
-                meetinId = msg.getData().getString("meetingId");
                 joinType = msg.getData().getString(JoinActType.JOIN_TYPE);
                 if (joinType == JoinActType.JOIN_ENTER_ACTIVITY) {
                     statrMeetingActivity(mUrlMeetingName, meetinId);
@@ -865,6 +869,7 @@ public class MainActivity extends BaseActivity {
                 if (mDebug)
                     Log.e(TAG, "MSG_INSERT_USER_MEETING_ROOM_SUCCESS");
                 Log.e(TAG, "insertUserMeetingRoomSuccess: " + msg.getData().toString());
+                mAdapter.notifyDataSetChanged();
                 String join_insert_type = msg.getData().getString(JoinActType.JOIN_INSERT_TYPE);
                 if (join_insert_type == JoinActType.JOIN_INSERT_LINK_JOIN_ACTIVITY) {
                     statrMeetingActivity(mUrlMeetingName, mUrlMeetingId);
@@ -889,13 +894,19 @@ public class MainActivity extends BaseActivity {
                     Log.e(TAG, "MSG_UPDATE_ROOM_PUSHABLE_SUCCESS");
                 mAdapter.notifyDataSetChanged();
                 break;
-            case MSG_DELETE_ROOM_SUCCESS:
 
+            case MSG_DELETE_ROOM_SUCCESS:
                 meetingId = msg.getData().getString("meetingid");
                 int position = mAdapter.getMeetingIdPosition(meetingId);
                 mRoomMeetingList.remove(position);
                 mAdapter.notifyDataSetChanged();
                 CRUDChat.deleteByMeetingId(mContext, meetingId);
+
+            case JOIN_MEETINGID_EXIST:
+                int pos = (int) msg.obj;
+                if (mDebug)
+                    Log.e(TAG, "onEventMainThread: pos" + pos);
+                enterMeetingActivity(pos);
             default:
                 break;
         }

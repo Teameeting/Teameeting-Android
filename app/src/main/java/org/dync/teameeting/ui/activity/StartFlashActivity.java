@@ -39,7 +39,7 @@ public class StartFlashActivity extends BaseActivity {
     private ImageView mView;
     private Context context;
     private TMMsgSender mMsgSender;
-    private final String mServer = "192.168.7.39";
+    private final String mServer = "180.150.179.128";
     private final int mPort = 6630;
     private String mUserid;
     private String mSign;

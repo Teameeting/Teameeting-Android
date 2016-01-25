@@ -19,7 +19,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.dync.teameeting.TeamMeetingApp;
-import org.dync.teameeting.bean.MeetingInfo;
 import org.dync.teameeting.bean.MeetingList;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.bean.MessageList;
@@ -38,8 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.xml.transform.Templates;
 
 public class NetWork {
 
@@ -311,7 +308,7 @@ public class NetWork {
                         meeting.setCreatetime(meeting.getJointime());
                         meeting.setOwner(1);
                         meeting.setMemnumber(0);
-                        meeting.setMeetinguserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
+                        meeting.setUserid(TeamMeetingApp.getTeamMeetingApp().getDevId());
                         List<MeetingListEntity> meetingLists = TeamMeetingApp.getmSelfData().getMeetingLists();
                         if (meetingLists.size() >= 20) {
                             meetingLists.remove(19);
@@ -437,7 +434,6 @@ public class NetWork {
                     msg.what = EventType.MSG_UPDATE_ROOM_ADD_MEM_NUMBER_FAILED
                             .ordinal();
                 }
-
                 bundle.putString("message", message);
                 msg.setData(bundle);
                 EventBus.getDefault().post(msg);
@@ -956,12 +952,14 @@ public class NetWork {
                     Log.e(TAG, "onSuccess: getMeetingInfo" + responseString);
                 if (code == 200) {
                     try {
+
                         JSONObject json = new JSONObject(responseString);
                         String info = json.getString("meetingInfo");
-                        MeetingInfo meetingInfo = gson.fromJson(info, MeetingInfo.class);
-                        bundle.putInt("usable", meetingInfo.getMeetusable());
-                        bundle.putString("meetingName", meetingInfo.getMeetname());
-                        bundle.putString("meetingId", meetingInfo.getMeetingid());
+
+                        MeetingListEntity meetingInfo = gson.fromJson(info, MeetingListEntity.class);
+
+
+                        TeamMeetingApp.getmSelfData().setMeetingListEntity(meetingInfo);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -1048,11 +1046,12 @@ public class NetWork {
             @Override
             public void onSuccess(int statusCode, int code, String message, String responseString, Header[] headers) {
                 super.onSuccess(statusCode, code, message, responseString, headers);
+
                 if (mDebug)
-                    Log.e(TAG, "onSuccess: pushMeetingMsg" + responseString);
+                    Log.e(TAG, "onSuccess: insertUserMeetingRoom" + responseString);
                 if (code == 200) {
-                    msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS
-                            .ordinal();
+                    TeamMeetingApp.getmSelfData().addMeetingHeardEntity();
+                    msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_SUCCESS.ordinal();
                 } else {
                     msg.what = EventType.MSG_INSERT_USER_MEETING_ROOM_FAILED
                             .ordinal();

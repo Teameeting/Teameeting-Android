@@ -79,4 +79,6 @@ public enum EventType {
     MCCMD_LEAVE,
     MCCMD_DCOMM,
 
+    JOIN_MEETINGID_EXIST,
+
 }
