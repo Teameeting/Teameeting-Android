@@ -13,10 +13,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ypy.eventbus.EventBus;
+
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.structs.ExtraType;
 import org.dync.teameeting.structs.JoinActType;
 
 import java.util.Timer;
@@ -41,6 +45,8 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
 
     private void inintView() {
         mEtMeetingId = (EditText) findViewById(R.id.et_meeting_id);
+
+
         mIbtnJoinMeeting = (ImageButton) findViewById(R.id.ibtn_join_meeting);
         mIbtnback = (ImageButton) findViewById(R.id.ibtn_back);
         mIbtnback.setOnClickListener(this);
@@ -60,9 +66,9 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {
-               InputMethodManager inputManager =
-               (InputMethodManager) mEtMeetingId.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-               inputManager.showSoftInput(mEtMeetingId, 0);
+                InputMethodManager inputManager =
+                        (InputMethodManager) mEtMeetingId.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(mEtMeetingId, 0);
             }
 
         }, 998);
@@ -85,7 +91,6 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-
     TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -100,9 +105,20 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     private void meetingDealWith() {
         mMeetingId = mEtMeetingId.getText().toString();
         if (mMeetingId.length() == 12) {
-            Log.e(TAG, "meetingDealWith: " + getSign() + " mMeetingId " + mMeetingId);
+            if (mDebug)
+                Log.e(TAG, "meetingDealWith: " + getSign() + " mMeetingId " + mMeetingId);
+            int position = TeamMeetingApp.getmSelfData().getMeetingIdPosition(mMeetingId);
+            if (position >= 0) {
+                Message msg = new Message();
+                msg.what = EventType.JOIN_MEETINGID_EXIST.ordinal();
+                msg.obj = position;
+                EventBus.getDefault().post(msg);
+                finish();
+            } else {
+                mNetWork.getMeetingInfo(mMeetingId, JoinActType.JOIN_START_ACTIVITY);
+            }
 
-            mNetWork.getMeetingInfo(mMeetingId, JoinActType.JOIN_START_ACTIVITY);
+
         } else {
             Toast.makeText(JoinMeetingActivity.this, R.string.str_meeting_id_error, Toast.LENGTH_SHORT).show();
         }
@@ -123,7 +139,6 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-
     @Override
     public void onEventMainThread(Message msg) {
         {
@@ -133,23 +148,8 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
                 case MSG_GET_MEETING_INFO_SUCCESS:
                     if (mDebug)
                         Log.e(TAG, "MSG_GET_MEETING_INFO_SUCCESS");
-                    int usable = msg.getData().getInt("usable");
-                    mMeetingName = msg.getData().getString("meetingName");
-                    switch (usable) {
-                        case 0://no
-                            Toast.makeText(JoinMeetingActivity.this, R.string.str_meeting_deleted, Toast.LENGTH_SHORT).show();
-                            break;
 
-                        case 1://yes
-                            if (msg.getData().getString(JoinActType.JOIN_TYPE) == JoinActType.JOIN_START_ACTIVITY) {
-                                mNetWork.insertUserMeetingRoom(getSign(), mMeetingId, JoinActType.JOIN_INSERT_START_ACTIVITY);
-                            }
-                            break;
-
-                        case 2://private
-                            Toast.makeText(JoinMeetingActivity.this, R.string.str_meeting_privated, Toast.LENGTH_SHORT).show();
-                            break;
-                    }
+                    getMeetingInfoSuccess(msg);
 
                     break;
                 case MSG_GET_MEETING_INFO_FAILED:
@@ -196,5 +196,24 @@ public class JoinMeetingActivity extends BaseActivity implements View.OnClickLis
         }
 
 
+    }
+
+    private void getMeetingInfoSuccess(Message msg) {
+        MeetingListEntity meetingListEntity = TeamMeetingApp.getmSelfData().getMeetingListEntity();
+        int usable = meetingListEntity.getMeetusable();
+        mMeetingName = meetingListEntity.getMeetname();
+        switch (usable) {
+            case 0://no
+                Toast.makeText(JoinMeetingActivity.this, R.string.str_meeting_deleted, Toast.LENGTH_SHORT).show();
+                break;
+            case 1://yes
+                if (msg.getData().getString(JoinActType.JOIN_TYPE) == JoinActType.JOIN_START_ACTIVITY) {
+                    mNetWork.insertUserMeetingRoom(getSign(), mMeetingId, JoinActType.JOIN_INSERT_START_ACTIVITY);
+                }
+                break;
+            case 2://private
+                Toast.makeText(JoinMeetingActivity.this, R.string.str_meeting_privated, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
