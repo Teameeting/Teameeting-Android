@@ -20,6 +20,7 @@ import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.http.HttpContent;
 import org.dync.teameeting.structs.EventType;
 import org.dync.teameeting.structs.ExtraType;
+import org.dync.teameeting.structs.HttpApiTpye;
 import org.dync.teameeting.structs.Intent_KEY;
 import org.dync.teameeting.ui.helper.Anims;
 import org.dync.teameeting.ui.helper.ShareHelper;
@@ -213,9 +214,9 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
     private void meetingPrivateUIUpdate() {
         if (mMeetingPrivateFlag) {
-            mTvIniviteMessage.setTextColor(getResources().getColor(R.color.black));
-            mTvInviteWeixin.setTextColor(getResources().getColor(R.color.black));
-            mTvCopyLink.setTextColor(getResources().getColor(R.color.black));
+            mTvIniviteMessage.setTextColor(getResources().getColor(R.color.darkGray));
+            mTvInviteWeixin.setTextColor(getResources().getColor(R.color.darkGray));
+            mTvCopyLink.setTextColor(getResources().getColor(R.color.darkGray));
             mTvIniviteMessage.setClickable(false);
             mTvInviteWeixin.setClickable(false);
             mTvCopyLink.setClickable(false);
@@ -234,14 +235,14 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
      */
     SlideListener mslideMeetingPrivateListener = new SlideListener() {
         public void open() {
-            mNetWork.updateRoomEnable(mSign, mMeetingId, "2");
+            mNetWork.updateRoomEnable(mSign, mMeetingId, HttpApiTpye.RoomEnablePrivate, mPosition);
             mMeetingPrivateFlag = true;
             meetingPrivateUIUpdate();
         }
 
         @Override
         public void close() {
-            mNetWork.updateRoomEnable(mSign, mMeetingId, "1");
+            mNetWork.updateRoomEnable(mSign, mMeetingId, HttpApiTpye.RoomEnableYes, mPosition);
             mMeetingPrivateFlag = false;
             meetingPrivateUIUpdate();
         }
@@ -255,31 +256,15 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void open() {
 
-            mNetWork.updateRoomPushable(mSign, mMeetingId, 1 + "");
+            mNetWork.updateRoomPushable(mSign, mMeetingId, HttpApiTpye.pushableYes, mPosition);
             Anims.ScaleAnim(ivNotifation, 1, 0, 500);
-            Toast.makeText(context, "打开推送", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void close() {
 
-            mNetWork.updateRoomPushable(mSign, mMeetingId, 0 + "");
+            mNetWork.updateRoomPushable(mSign, mMeetingId, HttpApiTpye.pushableNO, mPosition);
             Anims.ScaleAnim(ivNotifation, 0, 1, 500);
-            String url = "meeting/getMeetingInfo/" + mMeetingId;
-
-            Log.e(TAG, "close: mMeetingId" + mMeetingId);
-            HttpContent.get(url, new TextHttpResponseHandler() {
-                @Override
-                public void onFailure(int i, Header[] headers, String respospone, Throwable throwable) {
-                    Log.e(TAG, "onFailure:  respospone" + respospone);
-                }
-
-                @Override
-                public void onSuccess(int i, Header[] headers, String respospone) {
-                    Log.e(TAG, "onSuccess:  respospone" + respospone);
-                }
-            });
-
         }
     };
 
@@ -296,7 +281,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
                 finishActivity();
                 return;
             case R.id.tv_join_room:
-                statrMeetingActivity(mMeetingName,mMeetingId);
+                statrMeetingActivity(mMeetingName, mMeetingId);
                 finishActivity();
                 break;
             case R.id.tv_invite_message:

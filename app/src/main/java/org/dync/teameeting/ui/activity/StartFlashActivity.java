@@ -169,7 +169,6 @@ public class StartFlashActivity extends BaseActivity {
             intent = new Intent(StartFlashActivity.this, MainActivity.class);
             intent.putExtra("urlMeetingId", mUrlMeetingId);
         }
-
         startActivity(intent);
         finish();
     }
