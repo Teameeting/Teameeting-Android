@@ -37,6 +37,7 @@ import org.dync.teameeting.structs.ExtraType;
 import org.dync.teameeting.structs.Intent_KEY;
 import org.dync.teameeting.structs.JoinActType;
 import org.dync.teameeting.structs.NetType;
+import org.dync.teameeting.ui.PushSetActivity;
 import org.dync.teameeting.ui.adapter.SwipeListAdapter;
 import org.dync.teameeting.ui.adapter.SwipeListAdapter.SwipeListOnClick;
 import org.dync.teameeting.ui.helper.DialogHelper;
@@ -353,6 +354,8 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.ibtn_join_meeting:
                     Intent intent = new Intent(mContext, JoinMeetingActivity.class);
+                    //Intent intent = new Intent(mContext, PushSetActivity.class);
+
                     startActivity(intent);
                     break;
 
