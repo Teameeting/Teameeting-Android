@@ -4,7 +4,7 @@
     android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_bg_pad"
+    android:background="@drawable/start_bg"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -72,6 +72,7 @@
                 android:layout_height="match_parent"
                 android:headerDividersEnabled="true"
                 android:scrollbars="none" />
+
 
             <include
                 android:id="@+id/empty_layout"
