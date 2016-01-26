@@ -1,7 +1,7 @@
 #Teameeting
 
 ### 项目简介
-Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软件研发部门设计并开发的`App`,主要用于介绍并宣传本公司的实时音视频`SDK`，改SDK可以是您的`App`只需要几条代码即可实现语音视频通信功能，让你app和web无缝融合。具体介绍请进入SDK官网--[AnyRtc](http://www.anyrtc.io/)。公司本着对开源精神的热爱，现将公司项目开源如下；
+Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软件研发部门设计并开发的`App`,主要用于介绍并宣传本公司的实时音视频`SDK`，该SDK可以使您的`App`只需要几行代码即可实现语音视频通信功能，让你app和web无缝融合。具体介绍请进入SDK官网--[AnyRtc](http://www.anyrtc.io/)。公司本着对开源精神的热爱,现将公司项目开源如下；
 
 
 ---
@@ -77,7 +77,7 @@ Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软�
 * **Teameeting-MsgServer ：**[https://github.com/Teameeting/Teameeting-MsgServer
 ](https://github.com/Teameeting/Teameeting-MsgServer)
 
-> **Mobile API **
+> **Mobile API**
 
 * **Teameeting-node.js :** [https://github.com/Teameeting/Teameeting-node.js](https://github.com/Teameeting/Teameeting-node.js)
 
