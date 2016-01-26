@@ -27,6 +27,7 @@ Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软�
 * **IDE :** Android Studion
 
 * **目录：**
+ ![App](https://github.com/DyncLang/Teameeting-Android/blob/master/img/protree.png)
 
 
 ---
