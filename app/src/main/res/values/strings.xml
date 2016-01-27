@@ -43,21 +43,21 @@
     <string name="str_create">"创建  :  "</string>
     <string name="str_join">"加入  :  "</string>
 
-  <!-- 进入会议界面  -->
-    
+    <!-- 进入会议界面  -->
+
     <string name="str_join_meeting">加入会议</string>
     <string name="str_edittext_meeting_id_hint">请输入会议 ID</string>
     <string name="str_meeting_id_error">会议 ID 格式错误</string>
     <string name="str_meeting_deleted">会议已经无效</string>
     <string name="str_meeting_privated">私密会议不能加入</string>
 
-   <!-- 时间 -->
+    <!-- 时间 -->
 
     <string name="chat_time_string_now">刚刚</string>
     <string name="chat_time_string_minutes_age">分钟以前</string>
     <string name="chat_time_string_hour_age">小时以前</string>
     <string name="chat_time_string_day_age">天以前</string>
-
+    <string name="meeting_delete_create">会议已经被创建者删除</string>
 
     <!--会议室-->
 
@@ -66,5 +66,20 @@
     <string name="yesterday">昨天</string>
     <string name="newadays">今天</string>
     <string name="work">星期</string>
-    <string name="meeting_delete_create">会议已经被创建者删除</string>
+
+    <!--dilaog -->
+
+    <string name="dialog_copy_success">复制成功</string>
+    <string name="dialog_pase_send_friend">发送给朋友邀请加入会议!</string>
+    <string name="dialog_network_disconnect">网络已断开...</string>
+    <string name="dialog_try">重试</string>
+    <string name="dialog_please_conn_network">请连接网络!</string>
+    <string name="dialog_suer_next_meeting">确定入会?</string>
+    <string name="dialog_meeting_exist">当前列表中已经有该会议!</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_loading">链接中...</string>
+    <string name="dialog_net_exception">网络异常</string>
+    <string name="dialog_net_conn_failure">链接失败!</string>
+    <string name="dialog_exit">退出</string>
 </resources>

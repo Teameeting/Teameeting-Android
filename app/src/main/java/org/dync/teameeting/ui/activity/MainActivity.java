@@ -776,6 +776,52 @@ public class MainActivity extends BaseActivity {
     }
 
     /**
+     * netWork can user
+     *
+     * @param type
+     */
+
+    public void netWorkTypeStart(int type) {
+        switch (NetType.values()[type]) {
+            case TYPE_WIFI:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_WIFI ");
+                netTyp = true;
+                break;
+            case TYPE_4G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_4G ");
+                netTyp = true;
+                break;
+            case TYPE_3G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_3G ");
+                netTyp = true;
+                break;
+            case TYPE_2G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_2G ");
+                netTyp = true;
+                break;
+
+            case TYPE_NULL:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_NULL ");
+                netTyp = false;
+                progressDiloag();
+                break;
+            case TYPE_UNKNOWN:
+                netTyp = false;
+                if (mDebug)
+                    Log.e(TAG, "TYPE_UNKNOWN: ");
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
      * For EventBus callback.
      */
     public void onEventMainThread(Message msg) {

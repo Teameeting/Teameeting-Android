@@ -1,6 +1,7 @@
 package org.dync.teameeting.ui.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -42,13 +43,11 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         registerObserverClinet();
-
         createDialog();
     }
 
     private void createDialog() {
         pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-
     }
 
     private void registerObserverClinet() {
@@ -126,23 +125,24 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
     }
 
     void progressDiloag() {
+        if (pDialog.isShowing()) {
+            return;
+        }
         pDialog.setCancelable(false);
-        pDialog.setTitleText("链接中...");
-        pDialog.setContentText("网络异常");
+        pDialog.setTitleText(getString(R.string.dialog_loading));
+        pDialog.setContentText(getString(R.string.dialog_net_exception));
+        pDialog.showCancelButton(false);
         pDialog.changeAlertType(SweetAlertDialog.PROGRESS_TYPE);
         pDialog.show();
 
         countDownTimer = new CountDownTimer(800 * 7, 800) {
             public void onTick(long millisUntilFinished) {
 
-                // you can change the progress bar color by ProgressHelper every 800 millis
                 if (netTyp) {
-                    Log.e(TAG, "onTick: " + netTyp);
                     pDialog.cancel();
                     pDialog.dismiss();
                     this.cancel();
                 }
-                i++;
                 switch (i) {
                     case 0:
                         pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blue_btn_bg_color));
@@ -169,83 +169,40 @@ public class BaseActivity extends Activity implements IChatMessageInteface {
             }
 
             public void onFinish() {
-
-                Log.e(TAG, "onFinish: netType " + netTyp);
                 i = -1;
-
                 if (netTyp == false) {
-                    pDialog.setTitleText("链接失败!")
-                            .setContentText("请检查您的网络")
-                            .setConfirmText("重试")
-                            .setCancelText("退出")
+                    pDialog.cancel();
+                    pDialog.dismiss();
+
+                    final SweetAlertDialog sb = new SweetAlertDialog(BaseActivity.this, SweetAlertDialog.WARNING_TYPE);
+                    sb.setCancelable(false);
+                    sb.setTitleText(getString(R.string.dialog_net_conn_failure))
+                            .setContentText(getString(R.string.dialog_please_conn_network))
+                            .setCancelText(getString(R.string.dialog_exit))
+                            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.cancel();
+                                    sweetAlertDialog.dismiss();
+                                    finish();
+                                }
+                            })
+                            .setConfirmText(getString(R.string.dialog_try))
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    Log.e(TAG, "onClick: " + "单击对话框");
                                     sweetAlertDialog.cancel();
                                     sweetAlertDialog.dismiss();
                                     progressDiloag();
                                 }
                             })
-                            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    finish();
-                                }
-                            }).changeAlertType(SweetAlertDialog.WARNING_TYPE);
+                            .showCancelButton(true)
+                            .show();
 
                 }
 
             }
         }.start();
-    }
-
-
-    /**
-     * netWork can user
-     *
-     * @param type
-     */
-
-    public void netWorkTypeStart(int type) {
-        switch (NetType.values()[type]) {
-            case TYPE_WIFI:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_WIFI ");
-                netTyp = true;
-                // netCatchGreatRoom();
-                break;
-            case TYPE_4G:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_4G ");
-                netTyp = true;
-                break;
-            case TYPE_3G:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_3G ");
-                netTyp = true;
-                break;
-            case TYPE_2G:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_2G ");
-                netTyp = true;
-                break;
-
-            case TYPE_NULL:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_NULL ");
-                netTyp = false;
-                progressDiloag();
-                break;
-            case TYPE_UNKNOWN:
-                netTyp = false;
-                if (mDebug)
-                    Log.e(TAG, "TYPE_UNKNOWN: ");
-
-            default:
-                break;
-        }
-
     }
 
 

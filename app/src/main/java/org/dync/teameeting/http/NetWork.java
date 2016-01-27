@@ -177,7 +177,6 @@ public class NetWork {
                     msg.what = EventType.MSG_GET_ROOM_LIST_SUCCESS.ordinal();
                     MeetingList meetingList = gson.fromJson(responseString, MeetingList.class);
                     if (meetingList != null) {
-                        TeamMeetingApp.getmSelfData().getMeetingLists().clear();
                         TeamMeetingApp.getmSelfData().setMeetingLists(meetingList.getMeetingList());
                     }
                 } else {

@@ -3,7 +3,6 @@ package org.dync.teameeting.ui.helper;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.CountDownTimer;
 
 import org.dync.teameeting.R;
 
@@ -15,33 +14,31 @@ public class DialogHelper {
 
     @SuppressWarnings("deprecation")
     public static void onClickCopy(Context context, String conpyUrl) {
-
         ClipboardManager cmb = (ClipboardManager) context
                 .getSystemService(Context.CLIPBOARD_SERVICE);
         cmb.setText(conpyUrl);
         new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("复制成功").setContentText("粘贴给朋友邀请加入会议!").show();
+                .setTitleText(context.getString(R.string.dialog_copy_success)).setContentText(context.getString(R.string.dialog_pase_send_friend)).show();
     }
 
 
     public static SweetAlertDialog createNetErroDilaog(Context context, SweetAlertDialog.OnSweetClickListener sweetClickListener) {
         SweetAlertDialog netErrorSweetAlertDialog = new SweetAlertDialog(context,
-                SweetAlertDialog.ERROR_TYPE).setTitleText("网络已断开...")
-                .setConfirmText("ok").setContentText("请连接网络!")
+                SweetAlertDialog.WARNING_TYPE).setTitleText(context.getString(R.string.dialog_network_disconnect))
+                .setConfirmText(context.getString(R.string.dialog_try)).setContentText(context.getString(R.string.dialog_please_conn_network))
                 .setConfirmClickListener(sweetClickListener);
         return netErrorSweetAlertDialog;
     }
 
     public static SweetAlertDialog createWarningCancel(Context context) {
         SweetAlertDialog sb = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
-        sb.setTitleText("确定入会?")
-                .setContentText("当前列表中已经有该会议!")
-                .setCancelText("取消")
-                .setConfirmText("确定")
+        sb.setTitleText(context.getString(R.string.dialog_suer_next_meeting))
+                .setContentText(context.getString(R.string.dialog_meeting_exist))
+                .setCancelText(context.getString(R.string.dialog_cancel))
+                .setConfirmText(context.getString(R.string.dialog_confirm))
                 .showCancelButton(true);
         return sb;
     }
-
 
 
 }

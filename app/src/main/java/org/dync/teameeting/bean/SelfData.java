@@ -65,7 +65,11 @@ public class SelfData {
     }
 
     public void setMeetingLists(List<MeetingListEntity> meetingLists) {
-        this.meetingLists = meetingLists;
+        if (meetingLists != null) {
+            this.meetingLists.clear();
+            this.meetingLists = meetingLists;
+        }
+
     }
 
 

@@ -253,14 +253,14 @@ public class StartFlashActivity extends BaseActivity {
         }
     };
 
-   /* public void netWorkTypeStart(int type) {
+    public void netWorkTypeStart(int type) {
 
         if (type == NetType.TYPE_NULL.ordinal()) {
             mNetErrorSweetAlertDialog.show();
         } else {
             // initNetWork();
         }
-    }*/
+    }
 
 
 
@@ -354,6 +354,8 @@ public class StartFlashActivity extends BaseActivity {
         }).start();
     }
 
+
+
     /**
      * For EventBus callback.
      */
@@ -426,6 +428,5 @@ public class StartFlashActivity extends BaseActivity {
                 break;
         }
     }
-
 
 }
