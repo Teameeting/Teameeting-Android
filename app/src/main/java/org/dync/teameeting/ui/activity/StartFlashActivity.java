@@ -55,7 +55,9 @@ public class StartFlashActivity extends BaseActivity {
     private ImageView mView;
     private Context context;
     private TMMsgSender mMsgSender;
-    private final String mServer = "180.150.179.128";
+    //private final String mServer = "180.150.179.128";
+    private final String mServer = "192.168.7.39";
+
     private final int mPort = 6630;
     private String mUserid;
     private String mSign;
@@ -251,87 +253,15 @@ public class StartFlashActivity extends BaseActivity {
         }
     };
 
-    public void netWorkTypeStart(int type) {
+   /* public void netWorkTypeStart(int type) {
 
         if (type == NetType.TYPE_NULL.ordinal()) {
             mNetErrorSweetAlertDialog.show();
         } else {
             // initNetWork();
         }
-    }
+    }*/
 
-    /**
-     * For EventBus callback.
-     */
-    public void onEventMainThread(Message msg) {
-        switch (EventType.values()[msg.what]) {
-            case MSG_ININT_SUCCESS:
-                if (mDebug)
-                    Log.e(TAG, "MSG_ININT_SUCCESS");
-                mSign = TeamMeetingApp.getmSelfData().getAuthorization();
-                mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
-                chatMessageInint();
-
-                break;
-            case MSG_ININT_FAILED:
-                if (mDebug)
-                    Log.e(TAG, "MSG_ININT_FAILED");
-                break;
-            case MSG_SIGNOUT_SUCCESS:
-                if (mDebug)
-                    Log.e(TAG, "MSG_SIGNOUT_SUCCESS");
-                finish();
-                System.exit(0);
-                break;
-            case MSG_SIGNOUT_FAILED:
-                if (mDebug)
-                    Log.e(TAG, "MSG_SIGNOUT_FAILED");
-                break;
-            case MSG_GET_ROOM_LIST_SUCCESS:
-                if (mDebug)
-                    Log.e(TAG, "MSG_GET_ROOM_LIST_SUCCESS");
-                interfacejump(msg);
-                break;
-            case MSG_GET_ROOM_LIST_FAILED:
-                if (mDebug)
-                    Log.e(TAG, "MSG_GET_ROOM_LIST_FAILED");
-                break;
-            case MSG_NET_WORK_TYPE:
-                if (mDebug)
-                    Log.e(TAG, "MSG_NET_WORK_TYPE");
-                int type = msg.getData().getInt("net_type");
-                netWorkTypeStart(type);
-                break;
-            case MSG_RESPONS_ESTR_NULl:
-                if (mDebug)
-                    Log.e(TAG, "MSG_NET_WORK_TYPE");
-                mNetErrorSweetAlertDialog.show();
-                break;
-            case MSG_MESSAGE_LOGIN_SUCCESS:
-                if (mDebug) {
-                    Log.e(TAG, "MSG_MESSAGE_LOGIN_SUCCESS");
-                }
-
-
-                break;
-            case MSG_MESSAGE_LOGIN_FAILED:
-                if (mDebug) {
-                    Log.e(TAG, "MSG_MESSAGE_LOGIN_FAILED");
-                }
-
-                break;
-            case MSG_MESSAGE_SERVER_CONNECTED:
-                if (mDebug) {
-                    Log.e(TAG, "MSG_MESSAGE_SERVER_CONNECTED");
-                }
-
-
-                break;
-
-            default:
-                break;
-        }
-    }
 
 
     private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
@@ -423,5 +353,79 @@ public class StartFlashActivity extends BaseActivity {
             }
         }).start();
     }
+
+    /**
+     * For EventBus callback.
+     */
+    public void onEventMainThread(Message msg) {
+        switch (EventType.values()[msg.what]) {
+            case MSG_ININT_SUCCESS:
+                if (mDebug)
+                    Log.e(TAG, "MSG_ININT_SUCCESS");
+                mSign = TeamMeetingApp.getmSelfData().getAuthorization();
+                mNetWork.getRoomLists(mSign, 1 + "", 20 + "");
+                chatMessageInint();
+
+                break;
+            case MSG_ININT_FAILED:
+                if (mDebug)
+                    Log.e(TAG, "MSG_ININT_FAILED");
+                break;
+            case MSG_SIGNOUT_SUCCESS:
+                if (mDebug)
+                    Log.e(TAG, "MSG_SIGNOUT_SUCCESS");
+                finish();
+                System.exit(0);
+                break;
+            case MSG_SIGNOUT_FAILED:
+                if (mDebug)
+                    Log.e(TAG, "MSG_SIGNOUT_FAILED");
+                break;
+            case MSG_GET_ROOM_LIST_SUCCESS:
+                if (mDebug)
+                    Log.e(TAG, "MSG_GET_ROOM_LIST_SUCCESS");
+                interfacejump(msg);
+                break;
+            case MSG_GET_ROOM_LIST_FAILED:
+                if (mDebug)
+                    Log.e(TAG, "MSG_GET_ROOM_LIST_FAILED");
+                break;
+            case MSG_NET_WORK_TYPE:
+                if (mDebug)
+                    Log.e(TAG, "MSG_NET_WORK_TYPE");
+                int type = msg.getData().getInt("net_type");
+                netWorkTypeStart(type);
+                break;
+            case MSG_RESPONS_ESTR_NULl:
+                if (mDebug)
+                    Log.e(TAG, "MSG_NET_WORK_TYPE");
+                mNetErrorSweetAlertDialog.show();
+                break;
+            case MSG_MESSAGE_LOGIN_SUCCESS:
+                if (mDebug) {
+                    Log.e(TAG, "MSG_MESSAGE_LOGIN_SUCCESS");
+                }
+
+
+                break;
+            case MSG_MESSAGE_LOGIN_FAILED:
+                if (mDebug) {
+                    Log.e(TAG, "MSG_MESSAGE_LOGIN_FAILED");
+                }
+
+                break;
+            case MSG_MESSAGE_SERVER_CONNECTED:
+                if (mDebug) {
+                    Log.e(TAG, "MSG_MESSAGE_SERVER_CONNECTED");
+                }
+
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
 }

@@ -135,7 +135,7 @@ public class ChatMessageClient implements JMClientHelper {
     public void OnMsgServerConnectionFailure() {
 
         if (mDebug) {
-            Log.e(TAG, "OnMsgServerConnectionFailure: ");
+            Log.i(TAG, "OnMsgServerConnectionFailure: ");
         }
 
     }
@@ -144,7 +144,7 @@ public class ChatMessageClient implements JMClientHelper {
     public void OnMsgServerState(int connStatus) {
 
         if (mDebug) {
-            Log.e(TAG, "OnMsgServerState: " + connStatus);
+            Log.i(TAG, "OnMsgServerState: " + connStatus);
         }
     }
 }

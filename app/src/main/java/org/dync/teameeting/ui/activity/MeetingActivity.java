@@ -840,7 +840,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
         super.onRequesageMsg(requestMsg);
         if (mDebug) {
-            Log.e(TAG, "onRequesageMsg: ");
+            Log.e(TAG, "onRequesageMsg: 1");
         }
 
         int tags = requestMsg.getTags();

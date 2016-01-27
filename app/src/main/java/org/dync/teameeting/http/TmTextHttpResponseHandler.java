@@ -35,9 +35,6 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
         // network or server  problem 
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
-        if (mDebug) {
-            Log.e("TextHttpResponseHandler", "onFailure: responseString" + responseString);
-        }
     }
 
     @Override

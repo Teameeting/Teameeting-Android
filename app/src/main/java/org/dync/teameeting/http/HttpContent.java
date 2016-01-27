@@ -11,7 +11,8 @@ import com.loopj.android.http.RequestParams;
  */
 public class HttpContent {
     // private static final String BASE_URL = "http://api.twitter.com/1/";
-    public static final String NODE_URL = "http://123.59.68.21:8055/";
+    //public static final String NODE_URL = "http://123.59.68.21:8055/";
+    public static final String NODE_URL = "http://192.168.7.45:8055/";//123.59.68.21:8055
 
     public static final String RETURN_TYPE_JSON = "application/json"; // 返回json
     public static final String RETURN_TYPE_XML = "application/xml"; // 返回xml\
