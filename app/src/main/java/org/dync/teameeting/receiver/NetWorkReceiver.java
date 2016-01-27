@@ -14,7 +14,7 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.ypy.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 
 
 public class NetWorkReceiver extends BroadcastReceiver {

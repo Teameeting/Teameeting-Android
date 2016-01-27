@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
-import com.ypy.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 
 import org.anyrtc.AnyrtcM2Mutlier;
 import org.anyrtc.m2multier.M2MPublisher;

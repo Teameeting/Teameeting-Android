@@ -1,16 +1,12 @@
 package org.dync.teameeting.ui.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-
-import com.ypy.eventbus.EventBus;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
@@ -18,10 +14,10 @@ import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.chatmessage.ChatMessageClient;
 import org.dync.teameeting.chatmessage.IChatMessageInteface;
 import org.dync.teameeting.http.NetWork;
-import org.dync.teameeting.structs.NetType;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.greenrobot.event.EventBus;
 
 public class BaseActivity extends Activity implements IChatMessageInteface {
     public NetWork mNetWork;
