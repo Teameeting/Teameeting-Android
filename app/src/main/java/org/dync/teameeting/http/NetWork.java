@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.loopj.android.http.RequestParams;
 import com.orhanobut.logger.Logger;
-import com.ypy.eventbus.EventBus;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -37,6 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import de.greenrobot.event.EventBus;
 
 public class NetWork {
 
@@ -177,7 +178,6 @@ public class NetWork {
                     msg.what = EventType.MSG_GET_ROOM_LIST_SUCCESS.ordinal();
                     MeetingList meetingList = gson.fromJson(responseString, MeetingList.class);
                     if (meetingList != null) {
-                        TeamMeetingApp.getmSelfData().getMeetingLists().clear();
                         TeamMeetingApp.getmSelfData().setMeetingLists(meetingList.getMeetingList());
                     }
                 } else {

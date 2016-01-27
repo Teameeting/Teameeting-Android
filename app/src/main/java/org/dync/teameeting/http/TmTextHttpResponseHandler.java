@@ -6,13 +6,14 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.ypy.eventbus.EventBus;
 
 import org.apache.http.Header;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.structs.EventType;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by zhulang on 2015/12/28 0028.
@@ -35,9 +36,6 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
         // network or server  problem 
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
-        if (mDebug) {
-            Log.e("TextHttpResponseHandler", "onFailure: responseString" + responseString);
-        }
     }
 
     @Override

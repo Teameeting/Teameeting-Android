@@ -2,9 +2,12 @@ package org.dync.teameeting.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
@@ -45,6 +48,8 @@ import org.dync.teameeting.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
@@ -121,6 +126,8 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+    private SweetAlertDialog mWarningCancel;
+    private SweetAlertDialog progressDiloag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +150,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initdata() {
+
+        mWarningCancel = DialogHelper.createWarningCancel(mContext);
         upDataMeetingList();
         mMsgSender = TeamMeetingApp.getmMsgSender();
 
@@ -155,13 +164,39 @@ public class MainActivity extends BaseActivity {
             }
             int position = TeamMeetingApp.getmSelfData().getMeetingIdPosition(mUrlMeetingId);
             if (position >= 0) {
-                enterMeetingActivity(position);
+
+                meetingPositiotrue(position);
+
             } else {
                 Toast.makeText(mContext, R.string.str_join_room_wait, Toast.LENGTH_LONG);
                 mNetWork.getMeetingInfo(mUrlMeetingId, JoinActType.JOIN_LINK_JOIN_ACTIVITY);
             }
         }
 
+
+    }
+
+    private void meetingPositiotrue(final int position) {
+
+        if (mDebug) {
+            Log.e(TAG, "initdata:+position " + position);
+        }
+        mWarningCancel.setCancelClickListener(new OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.cancel();
+                sweetAlertDialog.dismiss();
+            }
+        }).setConfirmClickListener(new OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                sweetAlertDialog.cancel();
+                sweetAlertDialog.dismiss();
+                enterMeetingActivity(position);
+            }
+        });
+        mWarningCancel.show();
 
     }
 
@@ -648,7 +683,6 @@ public class MainActivity extends BaseActivity {
         }
         if (list != null) {
             mRoomMeetingList.clear();
-
             //mRoomMeetingList.addAll();
             mRoomMeetingList = list;
             Logger.e(list.toString() + "----" + mRoomMeetingList.toString());
@@ -660,46 +694,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    /**
-     * netWork can user
-     *
-     * @param type
-     */
-    public void netWorkTypeStart(int type) {
-        switch (NetType.values()[type]) {
-            case TYPE_WIFI:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_WIFI ");
-                // netCatchGreatRoom();
 
-                break;
-            case TYPE_4G:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_4G ");
-                break;
-            case TYPE_3G:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_3G ");
-                break;
-            case TYPE_2G:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_2G ");
-                break;
-
-            case TYPE_NULL:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_NULL ");
-
-                break;
-            case TYPE_UNKNOWN:
-                if (mDebug)
-                    Log.e(TAG, "TYPE_UNKNOWN: ");
-
-            default:
-                break;
-        }
-
-    }
 
     private void netCatchGreatRoom() {
         for (int i = 0; i < mRoomMeetingList.size(); i++) {
@@ -710,7 +705,6 @@ public class MainActivity extends BaseActivity {
                         meetingListEntity.getPushable() + "", 0, i);
             }
             mAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -780,6 +774,52 @@ public class MainActivity extends BaseActivity {
                 break;
         }
     }
+
+    /**
+     * netWork can user
+     *
+     * @param type
+     */
+
+    public void netWorkTypeStart(int type) {
+        switch (NetType.values()[type]) {
+            case TYPE_WIFI:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_WIFI ");
+                netTyp = true;
+                break;
+            case TYPE_4G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_4G ");
+                netTyp = true;
+                break;
+            case TYPE_3G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_3G ");
+                netTyp = true;
+                break;
+            case TYPE_2G:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_2G ");
+                netTyp = true;
+                break;
+
+            case TYPE_NULL:
+                if (mDebug)
+                    Log.e(TAG, "TYPE_NULL ");
+                netTyp = false;
+                progressDiloag();
+                break;
+            case TYPE_UNKNOWN:
+                netTyp = false;
+                if (mDebug)
+                    Log.e(TAG, "TYPE_UNKNOWN: ");
+            default:
+                break;
+        }
+
+    }
+
 
     /**
      * For EventBus callback.
@@ -909,7 +949,8 @@ public class MainActivity extends BaseActivity {
                 int pos = (int) msg.obj;
                 if (mDebug)
                     Log.e(TAG, "onEventMainThread: pos" + pos);
-                enterMeetingActivity(pos);
+                meetingPositiotrue(pos);
+                //enterMeetingActivity(pos);
             default:
                 break;
         }

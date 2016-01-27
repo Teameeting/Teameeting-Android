@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
-import com.ypy.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 
 import org.anyrtc.AnyrtcM2Mutlier;
 import org.anyrtc.m2multier.M2MPublisher;
@@ -841,7 +841,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
         super.onRequesageMsg(requestMsg);
         if (mDebug) {
-            Log.e(TAG, "onRequesageMsg: ");
+            Log.e(TAG, "onRequesageMsg: 1");
         }
 
         int tags = requestMsg.getTags();
