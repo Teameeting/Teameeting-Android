@@ -195,7 +195,7 @@ public class StartFlashActivity extends BaseActivity {
         mMsgSender = new TMMsgSender(this, TeamMeetingApp.getmChatMessageClient());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
         int msg = mMsgSender.TMInit(mUserid, mSign, mNname, mServer, mPort);
-        if (msg == 0) {
+        if (msg >= 0) {
             if (mDebug)
                 Log.e(TAG, "Chat Message Inint successed");
         } else if (mDebug) {

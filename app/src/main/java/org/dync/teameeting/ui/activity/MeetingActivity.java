@@ -227,7 +227,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         leaveMessageDealWith();
 
         int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, mMeetingId, mRname, "");
-        if (code == 0) {
+        if (code >= 0) {
             if (mDebug) {
                 Log.e(TAG, "inintData: " + "TMEnterRoom Successed");
             }
@@ -542,7 +542,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                 case R.id.meeting_hangup:
 
                     int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_LEAVE, mMeetingId, mRname, "");
-                    if (code == 0) {
+                    if (code >= 0) {
                         if (mDebug) {
                             Log.e(TAG, "TMLeaveRoom Successed");
                         }
@@ -652,7 +652,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         mNetWork.pushMeetingMsg(getSign(), mMeetingId, "push message", "notification");
 
         int code = mMsgSender.TMSndMsg(mMeetingId, mRname, pushMsg);
-        if (code == 0) {
+        if (code >= 0) {
             if (mDebug) {
                 Log.e(TAG, "sendMessageChat: " + "TMSndMsg Successed");
             }
@@ -794,7 +794,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         int code = mMsgSender.TMNotifyMsg(mMeetingId, mRname, JMClientType.MCSENDTAGS_SUBSCRIBE, publishId);
 
         if (mDebug) {
-            if (code == 0)
+            if (code >= 0)
                 Log.e(TAG, "PublishOK: Successed ");
             else
                 Log.e(TAG, "PublishOK: failed ");
