@@ -2,16 +2,26 @@ package org.dync.teameeting.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.orhanobut.logger.Logger;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
@@ -21,8 +31,14 @@ import org.dync.teameeting.structs.NetType;
 import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.utils.LocalUserInfo;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.pedant.SweetAlert.SweetAlertDialog.OnSweetClickListener;
 
@@ -39,12 +55,42 @@ public class StartFlashActivity extends BaseActivity {
     private ImageView mView;
     private Context context;
     private TMMsgSender mMsgSender;
-    private final String mServer = "192.168.7.39";
+    private final String mServer = "180.150.179.128";
     private final int mPort = 6630;
     private String mUserid;
     private String mSign;
     private ProgressBar mLoadingProgress;
     private String mUrlMeetingId = null;
+
+    private static final String JPUSH = "JPush";
+
+    Button mSetTag;
+    Button mSetAlias;
+
+    private static final int MSG_SET_ALIAS = 1001;
+    private static final int MSG_SET_TAGS = 1002;
+
+
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_SET_ALIAS:
+                    Log.d(JPUSH, "Set alias in handler.");
+                    JPushInterface.setAliasAndTags(getApplicationContext(), (String) msg.obj, null,
+                            mAliasCallback);
+                    break;
+                case MSG_SET_TAGS:
+                    Log.d(JPUSH, "Set tags in handler.");
+                    JPushInterface.setAliasAndTags(getApplicationContext(), null,
+                            (Set<String>) msg.obj, mTagsCallback);
+                    break;
+                default:
+                    Log.i(JPUSH, "Unhandled msg - " + msg.what);
+            }
+        }
+    };
 
 
     @Override
@@ -55,10 +101,37 @@ public class StartFlashActivity extends BaseActivity {
 
         inintView();
         initData();
-
+        setTag();
         //setPushNotificationBuilderIcon();
     }
 
+
+    private void setTag() {
+
+        String tag = TeamMeetingApp.getTeamMeetingApp().getDevId();
+
+        // 检查 tag 的有效性
+        if (TextUtils.isEmpty(tag)) {
+            Toast.makeText(StartFlashActivity.this, "tag不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Logger.e(tag);
+        // ","隔开的多个 转换成 Set
+        String[] sArray = tag.split(",");
+        Set<String> tagSet = new LinkedHashSet<String>();
+        for (String sTagItme : sArray) {
+            if (!isValidTagAndAlias(sTagItme)) {
+                Toast.makeText(StartFlashActivity.this, "格式不对", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            tagSet.add(sTagItme);
+        }
+
+        // 调用JPush API设置Tag
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_TAGS, tagSet));
+
+    }
 
     /**
      * set Push Style
@@ -258,6 +331,97 @@ public class StartFlashActivity extends BaseActivity {
             default:
                 break;
         }
+    }
+
+
+    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
+        @Override
+        public void gotResult(int code, String alias, Set<String> tags) {
+            String logs;
+            switch (code) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    Log.i(JPUSH, logs);
+                    break;
+
+                case 6002:
+                    logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
+                    Log.i(JPUSH, logs);
+                    if (isConnected(getApplicationContext())) {
+                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias),
+                                1000 * 60);
+                    } else {
+                        Log.i(JPUSH, "No network");
+                    }
+                    break;
+
+                default:
+                    logs = "Failed with errorCode = " + code;
+                    Log.e(JPUSH, logs);
+            }
+
+            showToast(logs, getApplicationContext());
+        }
+
+    };
+
+    private final TagAliasCallback mTagsCallback = new TagAliasCallback() {
+
+        @Override
+        public void gotResult(int code, String alias, Set<String> tags) {
+            String logs;
+            switch (code) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    Log.i(JPUSH, logs);
+                    break;
+
+                case 6002:
+                    logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
+                    Log.i(JPUSH, logs);
+                    if (isConnected(getApplicationContext())) {
+                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_TAGS, tags),
+                                1000 * 60);
+                    } else {
+                        Log.i(JPUSH, "No network");
+                    }
+                    break;
+
+                default:
+                    logs = "Failed with errorCode = " + code;
+                    Log.e(JPUSH, logs);
+            }
+
+            showToast(logs, getApplicationContext());
+        }
+
+    };
+
+    // ******************************Utils*******************************
+    // 校验Tag Alias 只能是数字,英文字母和中文
+    public static boolean isValidTagAndAlias(String s) {
+        Pattern p = Pattern.compile("^[\u4E00-\u9FA50-9a-zA-Z_-]{0,}$");
+        Matcher m = p.matcher(s);
+        return m.matches();
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager conn = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = conn.getActiveNetworkInfo();
+        return (info != null && info.isConnected());
+    }
+
+    public static void showToast(final String toast, final Context context) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Looper.prepare();
+                Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        }).start();
     }
 
 }

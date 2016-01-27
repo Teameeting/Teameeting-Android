@@ -1,6 +1,7 @@
 package org.dync.teameeting.widgets;
 
 import android.content.Context;
+import android.net.MailTo;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -8,6 +9,8 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
+
+import com.orhanobut.logger.Logger;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
@@ -17,11 +20,8 @@ import org.dync.teameeting.utils.ScreenUtils;
  * org.dync.teammeeting.ui.BottomMenu
  *
  * @author ZLang <br/>
- *
  */
-public class BottomMenu extends ViewGroup
-{
-
+public class BottomMenu extends ViewGroup {
     private Context mContext;
     private static String TAG = "BottomMenu";
     private boolean mDebug = TeamMeetingApp.mIsDebug;
@@ -48,35 +48,28 @@ public class BottomMenu extends ViewGroup
     private int mXDiff;
     private View seetingLayout;
 
-    public BottomMenu(Context context)
-    {
+    public BottomMenu(Context context) {
         super(context);
         mContext = context;
         init();
     }
 
-    public BottomMenu(Context context, AttributeSet attrs)
-    {
+    public BottomMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
     }
 
     @Override
-    public void computeScroll()
-    {
-        if (mScroller.computeScrollOffset())
-        {
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
         }
     }
 
-    private void init()
-    {
+    private void init() {
         mScroller = new Scroller(mContext);
-
-
         final float density = mContext.getResources().getDisplayMetrics().density;
 
         int tagHeight = Integer.parseInt(this.getTag().toString());
@@ -85,100 +78,87 @@ public class BottomMenu extends ViewGroup
         mScreenHeight = ScreenUtils.getScreenHeight(getContext());
         speedClose = mTouchSlop * ScreenUtils.getScreenHeight(getContext());
 
-        if (mDebug)
-        {
-            Log.e(TAG, "init: mScreenHeight"+mScreenHeight +"speedClose"+speedClose );
+        if (mDebug) {
+            Log.e(TAG, "init: mScreenHeight" + mScreenHeight + "speedClose" + speedClose);
         }
 
         mTop = mScreenHeight - mMenuHeight;
-        if (TeamMeetingApp.isPad)
-        {
+        if (TeamMeetingApp.isPad) {
             mTop = mTop / 2;
-
+            mMaxTop = 0;
+        } else {
+            mMaxTop = ScreenUtils.dpToP(getResources(), 50);
         }
-        mMaxTop = 0;
 
-        if (mDebug)
-        {
+        if (mDebug) {
             Log.e(TAG, "mMaxTop--" + mMaxTop);
         }
-
 
         if (mDebug)
             Log.e(TAG, "---menuHeight --" + mMenuHeight);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
 
         //测量宽高
         setMeasuredDimension(width, height);
 
-        for (int i = 0; i < getChildCount(); i++)
-        {
+        for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             child.measure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 
     @Override
-    protected void onFinishInflate()
-    {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         seetingLayout = findViewById(R.id.rl_seetingLayout);
-        Log.e(TAG, "onFinishInflate: "+seetingLayout.getMeasuredHeight());
+        Log.e(TAG, "onFinishInflate: " + seetingLayout.getMeasuredHeight());
     }
 
     // layout过程
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b)
-    {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-        Log.e(TAG, "onLayout: "+seetingLayout.getMeasuredHeight() );
+        Log.e(TAG, "onLayout: " + seetingLayout.getMeasuredHeight());
 /*        if (!TeamMeetingApp.isPad)
         {
             t = mTop;
         }*/
 
-        for (int i = 0; i < getChildCount(); i++)
-        {
+        for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            child.layout(l,t, r, b);
+            child.layout(l, t, r, b);
         }
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
-    {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
         // final int action = ev.getAction();
         return super.dispatchTouchEvent(ev);
     }
 
     // @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev)
-    {
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
 
         final float x = ev.getX();
         final float y = ev.getY();
 
-        switch (action)
-        {
+        switch (action) {
             case MotionEvent.ACTION_MOVE:
                 // Log.e(TAG, "onInterceptTouchEvent move");
                 final int xDiff = (int) Math.abs(mLastionMotionX - x);
                 int yDiff = (int) Math.abs(mLastMotionY - y);
 
-                if (Math.abs(xDiff) > Math.abs(yDiff))
-                {
+                if (Math.abs(xDiff) > Math.abs(yDiff)) {
                     return false;
                 }
 
-                if (xDiff > 0)
-                {
+                if (xDiff > 0) {
                     mTouchState = TOUCH_STATE_SCROLLING;
                 }
                 break;
@@ -188,10 +168,8 @@ public class BottomMenu extends ViewGroup
                 mLastionMotionX = x;
                 mLastMotionY = y;
                 // Log.e(TAG, mScroller.isFinished() + "");
-                if (mScroller != null)
-                {
-                    if (!mScroller.isFinished())
-                    {
+                if (mScroller != null) {
+                    if (!mScroller.isFinished()) {
                         mScroller.abortAnimation();
                     }
                 }
@@ -207,8 +185,7 @@ public class BottomMenu extends ViewGroup
                 mTouchState = TOUCH_STATE_REST;
                 break;
         }
-        if (mDebug)
-        {
+        if (mDebug) {
             Log.e(TAG, mTouchState + "====" + TOUCH_STATE_REST);
         }
 
@@ -216,24 +193,19 @@ public class BottomMenu extends ViewGroup
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        if (mVelocityTracker == null)
-        {
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
         }
         mVelocityTracker.addMovement(event);
 
         float x = event.getX();
         float y = event.getY();
-        switch (event.getAction())
-        {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                if (mScroller != null)
-                {
-                    if (!mScroller.isFinished())
-                    {
+                if (mScroller != null) {
+                    if (!mScroller.isFinished()) {
                         mScroller.abortAnimation();
                     }
                 }
@@ -245,8 +217,7 @@ public class BottomMenu extends ViewGroup
                 int detaX = (int) (mLastionMotionX - x);
                 int detaY = (int) (mLastMotionY - y);
 
-                if (Math.abs(detaY) < 500)
-                {
+                if (Math.abs(detaY) < 500) {
                     scrollBy(0, detaY);
                 }
                 mLastionMotionX = x;
@@ -263,17 +234,13 @@ public class BottomMenu extends ViewGroup
                 int velocityY = (int) velocityTracker.getYVelocity();
 
 
-
-                if (velocityY > speedClose)
-                {
-                    if (touchSpeedListener != null)
-                    {
+                if (velocityY > speedClose) {
+                    if (touchSpeedListener != null) {
                         scrollBy(0, -mScreenHeight);
                         touchSpeedListener.touchSpeed(velocityX, velocityY);
                     }
 
-                } else
-                {
+                } else {
                     ScrollView(velocityX, velocityY);
                 }
                 mTouchState = TOUCH_STATE_REST;
@@ -287,22 +254,17 @@ public class BottomMenu extends ViewGroup
         return true;
     }
 
-    private void ScrollView(int velocityX, int velocityY)
-    {
+    private void ScrollView(int velocityX, int velocityY) {
 
-        if (getScrollY() < mMaxTop && getScrollY() >= 0)
-        {
+        if (getScrollY() < mMaxTop && getScrollY() >= 0) {
             mScroller.fling(getScrollX(), getScrollY(), 0, (int) (-velocityY),
                     0, 0, 0, mMaxTop);
 
-        } else
-        {
-            if (getScrollY() < 0)
-            {
+        } else {
+            if (getScrollY() < 0) {
                 mScroller.startScroll(0, getScrollY(), 0, -(getScrollY()),
                         Math.abs(mDyration));
-            } else
-            {
+            } else {
 
                 mScroller.startScroll(0, getScrollY(), 0,
                         -(getScrollY() - mMaxTop), Math.abs(mDyration));
@@ -311,16 +273,14 @@ public class BottomMenu extends ViewGroup
         }
 
         invalidate();
-        if (mVelocityTracker != null)
-        {
+        if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
             mVelocityTracker = null;
         }
 
     }
 
-    public interface OnTouchSpeedListener
-    {
+    public interface OnTouchSpeedListener {
         public void touchSpeed(int velocityX, int velocityY);
     }
 
@@ -329,8 +289,7 @@ public class BottomMenu extends ViewGroup
     private OnTouchSpeedListener touchSpeedListener;
 
     public void setOnTouchQuickSpeedListener(
-            OnTouchSpeedListener touchSpeedListener)
-    {
+            OnTouchSpeedListener touchSpeedListener) {
         this.touchSpeedListener = touchSpeedListener;
     }
 }

@@ -34,8 +34,21 @@ public class SelfData {
     private long requestid;
     private boolean mIsNetConnected;
 
-    private List<MeetingListEntity> meetingLists = new ArrayList<MeetingListEntity>();
 
+    private List<MeetingListEntity> meetingLists = new ArrayList<MeetingListEntity>();
+    private MeetingListEntity meetingListEntity;
+
+    public MeetingListEntity getMeetingListEntity() {
+        if (meetingListEntity == null) {
+            throw new NullPointerException("My Slaf MeetingListEntity NullPointerException");
+        } else {
+            return meetingListEntity;
+        }
+    }
+
+    public void setMeetingListEntity(MeetingListEntity meetingListEntity) {
+        this.meetingListEntity = meetingListEntity;
+    }
 
     private List<MessageListEntity> messageListEntityList = new ArrayList<MessageListEntity>();
 
@@ -98,6 +111,24 @@ public class SelfData {
 
     public void setmIsNetConnected(boolean mIsNetConnected) {
         this.mIsNetConnected = mIsNetConnected;
+    }
+
+    public void addMeetingHeardEntity() {
+        if (meetingListEntity != null) {
+            meetingListEntity.setJointime(System.currentTimeMillis());
+            meetingLists.add(0, meetingListEntity);
+        }
+    }
+
+    public int getMeetingIdPosition(String meetingId) {
+
+        for (int i = 0; i < meetingLists.size(); i++) {
+            MeetingListEntity meetingListEntity = meetingLists.get(i);
+            if (meetingId.equals(meetingListEntity.getMeetingid())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public class InformationEntity {
