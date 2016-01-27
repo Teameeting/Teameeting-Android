@@ -16,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -61,6 +60,7 @@ public class StartFlashActivity extends BaseActivity {
     private String mSign;
     private ProgressBar mLoadingProgress;
     private String mUrlMeetingId = null;
+    private String mNname = "nick name";
 
     private static final String JPUSH = "JPush";
 
@@ -194,7 +194,7 @@ public class StartFlashActivity extends BaseActivity {
 
         mMsgSender = new TMMsgSender(this, TeamMeetingApp.getmChatMessageClient());
         TeamMeetingApp.getTeamMeetingApp().setmMsgSender(mMsgSender);
-        int msg = mMsgSender.TMInit(mUserid, mSign, mServer, mPort);
+        int msg = mMsgSender.TMInit(mUserid, mSign, mNname, mServer, mPort);
         if (msg == 0) {
             if (mDebug)
                 Log.e(TAG, "Chat Message Inint successed");
