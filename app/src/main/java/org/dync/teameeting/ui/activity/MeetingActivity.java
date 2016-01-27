@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
-import com.ypy.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 
 import org.anyrtc.AnyrtcM2Mutlier;
 import org.anyrtc.m2multier.M2MPublisher;
@@ -95,6 +95,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     private PopupWindowCustom mPopupWindowCustom;
     private ShareHelper mShareHelper;
     private String mShareUrl;
+    private String mRname = "room name";
 
 
     // Left distance of this control button relative to its parent
@@ -225,8 +226,8 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
         leaveMessageDealWith();
 
-        int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, mMeetingId, "");
-        if (code == 0) {
+        int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_ENTER, mMeetingId, mRname, "");
+        if (code >= 0) {
             if (mDebug) {
                 Log.e(TAG, "inintData: " + "TMEnterRoom Successed");
             }
@@ -540,8 +541,8 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
                     break;
                 case R.id.meeting_hangup:
 
-                    int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_LEAVE, mMeetingId, "");
-                    if (code == 0) {
+                    int code = mMsgSender.TMOptRoom(JMClientType.MCCMD_LEAVE, mMeetingId, mRname, "");
+                    if (code >= 0) {
                         if (mDebug) {
                             Log.e(TAG, "TMLeaveRoom Successed");
                         }
@@ -650,8 +651,8 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
 
         mNetWork.pushMeetingMsg(getSign(), mMeetingId, "push message", "notification");
 
-        int code = mMsgSender.TMSndMsg(mMeetingId, pushMsg);
-        if (code == 0) {
+        int code = mMsgSender.TMSndMsg(mMeetingId, mRname, pushMsg);
+        if (code >= 0) {
             if (mDebug) {
                 Log.e(TAG, "sendMessageChat: " + "TMSndMsg Successed");
             }
@@ -790,10 +791,10 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void OnRtcPublishOK(String publishId, String rtmpUrl, String hlsUrl) {
         //mAnyM2Mutlier.Subscribe(publishId, true);
         // Toast.makeText(this, "PublishOK id: " + publishId, Toast.LENGTH_SHORT).show();
-        int code = mMsgSender.TMNotifyMsg(mMeetingId, JMClientType.MCSENDTAGS_SUBSCRIBE, publishId);
+        int code = mMsgSender.TMNotifyMsg(mMeetingId, mRname, JMClientType.MCSENDTAGS_SUBSCRIBE, publishId);
 
         if (mDebug) {
-            if (code == 0)
+            if (code >= 0)
                 Log.e(TAG, "PublishOK: Successed ");
             else
                 Log.e(TAG, "PublishOK: failed ");
@@ -840,7 +841,7 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
     public void onRequesageMsg(ReqSndMsgEntity requestMsg) {
         super.onRequesageMsg(requestMsg);
         if (mDebug) {
-            Log.e(TAG, "onRequesageMsg: ");
+            Log.e(TAG, "onRequesageMsg: 1");
         }
 
         int tags = requestMsg.getTags();

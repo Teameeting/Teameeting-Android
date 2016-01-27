@@ -13,18 +13,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ypy.eventbus.EventBus;
-
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
 import org.dync.teameeting.structs.EventType;
-import org.dync.teameeting.structs.ExtraType;
 import org.dync.teameeting.structs.JoinActType;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.greenrobot.event.EventBus;
 
 public class JoinMeetingActivity extends BaseActivity implements View.OnClickListener {
     private final static String TAG = "JoinMeetingActivity";
