@@ -351,14 +351,14 @@ public class MeetingActivity extends MeetingBaseActivity implements M2MultierEve
         int showTime = 500;
         if (moveX > 0 && !mChatLayoutShow) {
             mChatLayoutShow = true;
-            Anims.animateRightMarginTo(mChatLayout, 0, mChatLayout.getWidth() - 10, showTime, Anims.ACCELERATE);
+            Anims.animateRightMarginTo(mChatLayout, 0, mChatLayout.getWidth(), showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mControlLayout, 0, controllMove, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mTvRemind, 0, controllMove, showTime, Anims.ACCELERATE);
             // Anims.animateRightMarginTo(mTvRoomName, 0, controllMove, showTime, Anims.ACCELERATE);
 
         } else if (moveX < 0 && mChatLayoutShow) {
             mChatLayoutShow = false;
-            Anims.animateRightMarginTo(mChatLayout, mChatLayout.getWidth() - 10, 0, showTime, Anims.ACCELERATE);
+            Anims.animateRightMarginTo(mChatLayout, mChatLayout.getWidth(), 0, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mControlLayout, controllMove, 0, showTime, Anims.ACCELERATE);
             Anims.animateRightMarginTo(mTvRemind, controllMove, 0, showTime, Anims.ACCELERATE);
             //Anims.animateRightMarginTo(mTvRoomName, controllMove, 0, showTime, Anims.ACCELERATE);

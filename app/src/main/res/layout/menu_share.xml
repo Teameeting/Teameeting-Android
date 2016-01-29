@@ -39,6 +39,7 @@
         android:textSize="@dimen/larger_txt_size" />
 
     <View
+        android:id="@+id/v_invite_message"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="15dp"
@@ -58,6 +59,7 @@
         android:textSize="@dimen/larger_txt_size" />
 
     <View
+        android:id="@+id/v_invite_weixin"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="15dp"
@@ -77,6 +79,7 @@
         android:textSize="@dimen/larger_txt_size" />
 
     <View
+        android:id="@+id/v_copy_link"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="15dp"

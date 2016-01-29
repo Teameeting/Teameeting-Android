@@ -80,7 +80,7 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
         initLayout();
 
         inintSwitchState();
-        initwidgetState();
+//        initwidgetState();
     }
 
 
@@ -113,7 +113,11 @@ public class RoomSettingActivity extends BaseActivity implements View.OnClickLis
 
         mTvIniviteMessage = (TextView) findViewById(R.id.tv_invite_message);
         mvIniviteMessage = findViewById(R.id.v_invite_message);
-        mTvIniviteMessage.setOnClickListener(this);
+        if (TeamMeetingApp.isPad) {
+            mTvIniviteMessage.setVisibility(View.GONE);
+            mvIniviteMessage.setVisibility(View.GONE);
+            mTvIniviteMessage.setOnClickListener(this);
+        }
 
         mTvInviteWeixin = (TextView) findViewById(R.id.tv_invite_weixin);
         mvInviteWeiXin = findViewById(R.id.v_invite_weixin);
