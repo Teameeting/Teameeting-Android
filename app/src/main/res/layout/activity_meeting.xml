@@ -1,0 +1,178 @@
+<org.dync.teameeting.widgets.VitualKey xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/meet_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_videos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></RelativeLayout>
+    <!-- TopBar -->
+    <RelativeLayout
+        android:id="@+id/rl_meeting_topbar"
+        style="@style/TopBar_Style"
+        android:background="@color/totil_bar_back_alpha_meeting">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
+
+            <ImageButton
+                android:id="@+id/imgbtn_chat"
+                style="@style/Btn_left"
+                android:background="@android:color/transparent"
+                android:src="@drawable/select_chat_ibtn" />
+
+            <TextView
+                android:id="@+id/tv_message_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/unread_count_bg"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_room_name"
+            style="@style/Title_Txt"
+            android:text="Room name"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/top_bar_text_size"
+            android:textStyle="normal" />
+
+        <ImageButton
+            android:visibility="gone"
+            android:id="@+id/btn_reminder"
+            android:layout_width="@dimen/header_width"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_remind"
+            android:scaleType="centerInside"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/imgbtn_invite"
+            android:layout_toStartOf="@+id/imgbtn_invite"
+            android:layout_marginRight="36dp"
+            android:layout_marginEnd="36dp"
+
+            />
+
+        <ImageButton
+            android:id="@+id/imgbtn_invite"
+            style="@style/Btn_right"
+            android:background="@android:color/transparent"
+            android:src="@drawable/select_main_title_ibtn" />
+    </RelativeLayout>
+
+    <!-- Control Layout -->
+
+    <org.dync.teameeting.widgets.RoomControls
+        android:id="@+id/rl_meeting_control"
+        android:layout_width="@dimen/roomControls"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"
+        android:background="@color/transparent"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/meeting_camera"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/select_camera_ibtn" />
+
+        <ImageButton
+            android:id="@+id/meeting_hangup"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/select_hangup_ibtn" />
+
+        <ImageButton
+            android:id="@+id/meeting_voice"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/select_voice_ibtn" />
+
+        <ImageButton
+            android:id="@+id/meeting_camera_switch"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/select_camera_switch_ibtn"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/meeting_camera_off"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/btn_camera_off"
+            android:visibility="gone" />
+    </org.dync.teameeting.widgets.RoomControls>
+
+    <ImageView
+        android:id="@+id/iv_close_voice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rl_meeting_topbar"
+        android:background="@android:color/transparent"
+        android:src="@drawable/small_mic_muted"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_remind"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/remind_buttom"
+        android:gravity="center_horizontal"
+        android:text="@string/str_meeting_remind"
+        android:textColor="@color/white" />
+
+
+    <ImageView
+        android:id="@+id/iv_close_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/video_close"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_chating"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/include_chatting" />
+    </RelativeLayout>
+
+
+</org.dync.teameeting.widgets.VitualKey>

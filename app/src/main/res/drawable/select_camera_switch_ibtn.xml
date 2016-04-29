@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/btn_camera_switch" android:state_window_focused="false" />
+    <item android:drawable="@color/lightBlue" android:state_focused="true"></item>
+    <item android:drawable="@drawable/btn_camera_switch" android:state_focused="true" android:state_pressed="true"></item>
+</selector>

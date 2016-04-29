@@ -1,0 +1,225 @@
+<resources>
+
+    <attr name="expand_gravity">
+        <flag name="left" value="0x03" />
+        <flag name="right" value="0x05" />
+    </attr>
+    <attr name="drawableWidth" format="reference|dimension" />
+    <attr name="drawableHeight" format="reference|dimension" />
+    <attr name="drawablePadding" format="reference|dimension" />
+    <attr name="span" format="reference|dimension" />
+    <attr name="fixedAlong">
+        <enum name="width" value="0" />
+        <enum name="height" value="1" />
+    </attr>
+
+    <declare-styleable name="SlidingMenu">
+        <attr name="mode">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+        </attr>
+        <attr name="viewAbove" format="reference" />
+        <attr name="viewBehind" format="reference" />
+        <attr name="behindOffset" format="dimension" />
+        <attr name="behindWidth" format="dimension" />
+        <attr name="behindSecondaryWidth" format="dimension" />
+        <attr name="behindScrollScale" format="float" />
+        <attr name="touchModeAbove">
+            <enum name="margin" value="0" />
+            <enum name="fullscreen" value="1" />
+        </attr>
+        <attr name="touchModeBehind">
+            <enum name="margin" value="0" />
+            <enum name="fullscreen" value="1" />
+        </attr>
+        <attr name="shadowDrawable" format="reference" />
+        <attr name="shadowWidth" format="dimension" />
+        <attr name="fadeEnabled" format="boolean" />
+        <attr name="fadeDegree" format="float" />
+        <attr name="selectorEnabled" format="boolean" />
+        <attr name="selectorDrawable" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="PullToRefresh">
+        <attr name="ptrAdapterViewBackground" format="reference|color" />
+        <attr name="ptrHeaderBackground" format="reference|color" />
+        <attr name="ptrHeaderTextColor" format="reference|color" />
+        <attr name="ptrHeaderSubTextColor" format="reference|color" />
+        <attr name="ptrMode">
+            <flag name="disabled" value="0x0" />
+            <flag name="pullDownFromTop" value="0x1" />
+            <flag name="pullUpFromBottom" value="0x2" />
+            <flag name="both" value="0x3" />
+        </attr>
+        <attr name="ptrShowIndicator" format="reference|boolean" />
+        <attr name="ptrDrawable" format="reference" />
+        <attr name="ptrDrawableTop" format="reference" />
+        <attr name="ptrDrawableBottom" format="reference" />
+        <attr name="ptrOverScroll" format="reference|boolean" />
+        <attr name="ptrHeaderTextAppearance" format="reference" />
+        <attr name="ptrSubHeaderTextAppearance" format="reference" />
+        <attr name="ptrAnimationStyle">
+            <flag name="rotate" value="0x0" />
+            <flag name="flip" value="0x1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="ArcMenu">
+        <attr name="fromDegrees" format="float" />
+        <attr name="toDegrees" format="float" />
+        <attr name="childSize" format="dimension" />
+        <attr name="hitDrawable" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="RayMenu">
+        <attr name="leftHolderWidth" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="ShowcaseView">
+        <attr name="backgroundColor" format="color|reference" />
+    </declare-styleable>
+    <declare-styleable name="RectangleImage">
+        <attr name="widthScale" format="float" />
+        <attr name="fixedAlong" />
+    </declare-styleable>
+    <declare-styleable name="SquareImage">
+        <attr name="fixedAlong" />
+    </declare-styleable>
+    <declare-styleable name="IconCompoundWidget">
+        <attr name="drawableLeft" format="reference" />
+        <attr name="drawableRight" format="reference" />
+        <attr name="drawableTop" format="reference" />
+        <attr name="drawableBottom" format="reference" />
+        <attr name="drawablePadding" />
+        <attr name="drawableWidth" />
+        <attr name="drawableHeight" />
+        <attr name="drawableMode">
+            <enum name="center" value="0" />
+            <enum name="text_center" value="1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="IconMenuWidget">
+        <attr name="drawable" format="reference" />
+        <attr name="drawableRelativeTopPosition" format="float" />
+        <attr name="drawableRelativeCenterPosition" format="float" />
+        <attr name="textRelativePosition" format="float" />
+        <attr name="isSquare" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AutoFitImageWidget">
+        <attr name="imageScale" format="float" />
+    </declare-styleable>
+    <declare-styleable name="CustomProgressBar">
+        <attr name="size" format="dimension" />
+        <attr name="color" format="color|reference" />
+        <attr name="span" />
+        <attr name="number" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="ExpandCollapseTextView">
+        <attr name="text" format="reference|string" />
+        <attr name="textSize" format="reference|dimension" />
+        <attr name="textColor" format="reference|color" />
+        <attr name="expandText" format="reference|string" />
+        <attr name="expandTextColor" format="reference|color" />
+        <attr name="collapseText" format="reference|string" />
+        <attr name="collapseTextColor" format="reference|color" />
+        <attr name="expandDrawable" format="reference" />
+        <attr name="collapseDrawable" format="reference" />
+        <attr name="maxLine" format="integer" />
+        <attr name="showDrawable" format="boolean" />
+        <attr name="expandTextBold" format="boolean" />
+        <attr name="drawableWidth" />
+        <attr name="drawableHeight" />
+        <attr name="drawablePadding" />
+        <attr name="span" />
+        <attr name="expand_gravity" />
+    </declare-styleable>
+    <declare-styleable name="SwipeListView">
+        <attr name="swipeOpenOnLongPress" format="boolean" />
+        <attr name="swipeAnimationTime" format="integer" />
+        <attr name="swipeOffsetLeft" format="dimension" />
+        <attr name="swipeOffsetRight" format="dimension" />
+        <attr name="swipeCloseAllItemsWhenMoveList" format="boolean" />
+        <attr name="swipeFrontView" format="reference" />
+        <attr name="swipeBackView" format="reference" />
+        <attr name="swipeMode" format="enum">
+            <enum name="none" value="0" />
+            <enum name="both" value="1" />
+            <enum name="right" value="2" />
+            <enum name="left" value="3" />
+        </attr>
+        <attr name="swipeActionLeft" format="enum">
+            <enum name="reveal" value="0" />
+            <enum name="dismiss" value="1" />
+        </attr>
+        <attr name="swipeActionRight" format="enum">
+            <enum name="reveal" value="0" />
+            <enum name="dismiss" value="1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="FancyCoverFlow">
+        <attr name="unselectedAlpha" format="float" />
+        <attr name="unselectedSaturation" format="float" />
+        <attr name="unselectedScale" format="float" />
+        <attr name="maxRotation" format="integer" />
+        <attr name="scaleDownGravity" format="float" />
+        <attr name="actionDistance" format="integer">
+            <enum name="auto" value="2147483647" />
+        </attr>
+    </declare-styleable>
+
+    <attr name="progressButtonStyle" format="reference" />
+
+    <declare-styleable name="ProgressButton">
+        <attr name="progress" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="circleColor" format="color" />
+        <attr name="progressColor" format="color" />
+        <attr name="pinnedDrawable" format="reference" />
+        <attr name="unpinnedDrawable" format="reference" />
+        <attr name="buttonShadowDrawable" format="reference" />
+        <attr name="innerSize" format="dimension" />
+        <attr name="pinned" format="boolean" />
+        <attr name="android:selectableItemBackground" />
+        <attr name="android:clickable" />
+        <attr name="android:focusable" />
+    </declare-styleable>
+    <declare-styleable name="RoundImageView">
+        <attr name="edgeWidth" format="dimension" />
+        <attr name="edgeColor" format="color" />
+    </declare-styleable>
+    <declare-styleable name="ScratchView">
+        <attr name="contentText" format="reference|string" />
+        <attr name="drawableForeground" format="reference" />
+        <attr name="paintColor" format="integer" />
+        <attr name="brushWidth" format="integer" />
+        <attr name="textPaintSize" format="integer" />
+        <attr name="threshold" format="float" />
+    </declare-styleable>
+    <declare-styleable name="FixedAspectRatioFrameLayout">
+        <attr name="aspectRatio" format="float" />
+    </declare-styleable>
+    <declare-styleable name="swipelistviewstyle">
+        <attr name="right_width" format="reference"></attr>
+        <attr name="left_width" format="reference"></attr>
+    </declare-styleable>
+
+    <!-- 圆角图片属性 -->
+    <attr name="borderRadius" format="dimension" />
+    <attr name="type">
+        <enum name="circle" value="0" />
+        <enum name="round" value="1" />
+    </attr>
+    <attr name="src" format="reference"></attr>
+
+    <declare-styleable name="CustomImageView">
+        <attr name="borderRadius" />
+        <attr name="type" />
+        <attr name="src" />
+    </declare-styleable>
+    
+    <declare-styleable name="slideswitch">
+        <attr name="themeColor" format="color" />
+        <attr name="isOpen" format="boolean" />
+        <attr name="shape">
+            <enum name="rect" value="1" />
+            <enum name="circle" value="2" />
+        </attr>
+    </declare-styleable>
+
+</resources>

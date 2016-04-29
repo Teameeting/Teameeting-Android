@@ -1,0 +1,19 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+
+    <corners android:radius="5dip" />
+
+
+    <!-- size设置形状的大小 -->
+    <size
+        android:width="6dp"
+        android:height="6dp" />
+    <stroke
+        android:width="1dip"
+        android:color="#aaFFFFFF">
+
+    </stroke>
+    <!-- gradient设置渐变 -->
+
+</shape>
