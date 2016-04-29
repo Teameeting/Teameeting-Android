@@ -4,7 +4,7 @@
 铂渊信息技术（上海）有限公司。一个专注移动端的高清实时通话云服务解决方案。AnyRTC云适用于有音视频通话需求的所有领域。
 
 ### 项目主页
-[www.teameeting.cn](www.teameeting.cn)
+[www.teameeting.cn](http://www.anyrtc.io/)
 
 ---
 ####[App下载地址](http://www.pgyer.com/7PAH)
