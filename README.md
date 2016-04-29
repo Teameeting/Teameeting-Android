@@ -1,9 +1,7 @@
 #Teameeting
 
-### 项目简介
-Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软件研发部门设计并开发的`App`,主要使用本公司实时音视频`SDK`，该SDK可以使您的`App`只需要几条代码即可实现语音视频通信功能，让你app和web无缝融合。具体介绍请进入SDK官网--[AnyRtc](http://www.anyrtc.io/)。公司本着对开源精神的热爱，现将公司项目开源如下；
-
----
+##公司简介<br>
+铂渊信息技术（上海）有限公司。一个专注移动端的高清实时通话云服务解决方案。AnyRTC云适用于有音视频通话需求的所有领域。
 
 ### 项目主页
 [www.teameeting.cn](www.teameeting.cn)
@@ -31,9 +29,7 @@ Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软�
 
 * **目录：**
  
-
- ![App](https://github.com/DyncLang/Teameeting-Android/blob/master/img/protree.png)
-
+ ![App](http://ww2.sinaimg.cn/large/005PCOm1gw1f3de9jbnfjj30g60fjjto.jpg)
 
 ---
 
@@ -67,15 +63,15 @@ Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软�
 
 ---
 
-### 关于我们-GitHub
+### GitHub
 > **上海铂渊电子科技有限公司**
 
 * **GitHub组织:** [https://github.com/Teameeting](https://github.com/Teameeting)
 
 > **Teameeting--APP**
 
-* **Android :** [https://github.com/Teameeting/Teameeting-Android](https://github.com/Teameeting/Teameeting-Android)
 *  **IOS         :** [https://github.com/Teameeting/Teameeting-ios](https://github.com/Teameeting/Teameeting-ios)
+* **Android :** [https://github.com/Teameeting/Teameeting-Android](https://github.com/Teameeting/Teameeting-Android)
 
 > **消息服务**
 
@@ -90,10 +86,5 @@ Teameting是由[上海铂渊电子科技有限公司](http://www.anyrtc.io/)软�
 ##联系方式<br>
 邮箱:dync_dev@dync.cc<br>
 电话:021-65650071
-##公司简介<br>
-铂渊信息技术（上海）有限公司。一个专注移动端的高清实时通话云服务解决方案。AnyRTC云适用于有音视频通话需求的所有领域。
-
-
-
 
 
