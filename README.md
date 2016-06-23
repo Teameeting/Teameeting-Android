@@ -3,8 +3,11 @@
 
 
 ### 项目演示
+
 <iframe src="http://7xirvo.com1.z0.glb.clouddn.com/meizuhuitest.mp4" frameborder="0" allowfullscreen="true" width="480" height="800"></iframe>
 
+
+[演示地址](http://7xirvo.com1.z0.glb.clouddn.com/meizuhuitest.mp4)
 
 ### 项目功能
 1. 高清多人视频通话；
