@@ -1,10 +1,13 @@
-### Teameeting 简介
+### [Teameeting 简介](http://xblvip.cn/Teameeting-Android/)
 一款用集成多人视频通话，群聊功能应用，多达4同时实现通话，多人群聊，同时拥有**Android - IOS - Web- TV盒子**全平台所有版本，轻松实现**全平台**视频通话以及聊天功能。**开放所有源码**，**音频清晰**，断点续传，自适应网速优先音频传输；
 
 
 ### 项目演示
+
 <iframe src="http://7xirvo.com1.z0.glb.clouddn.com/meizuhuitest.mp4" frameborder="0" allowfullscreen="true" width="480" height="800"></iframe>
 
+
+[演示地址](http://7xirvo.com1.z0.glb.clouddn.com/meizuhuitest.mp4)
 
 ### 项目功能
 1. 高清多人视频通话；
@@ -21,7 +24,9 @@
 
 ### 下载地址 
 [Android 下载地址](http://app.mi.com/detail/366425)
+
 [Android-TV 盒子  ](#)
+
 [    -- IOS  --    下载地址](https://github.com/Teameeting/Teameeting-ios)
 
 
@@ -69,12 +74,13 @@
 * **Link:** [https://github.com/greenrobot/greenDAO](https://github.com/greenrobot/greenDAO)
 
 ##联系方式<br>
+
 **QQ群:** **201517194**
+
 **邮箱:**[zhulang@dync.cc](zhulang@dync.cc)<br>
 
 *欢迎小伙伴们加入该项目和我们一起交流，如果对你有帮助给个`star`吧,欢迎`pull requests`(^_^），我们为做得更好而不懈努力；*
 
-**开源协议**
 
 **该项目只做交流和学习不做商业用途**
 
