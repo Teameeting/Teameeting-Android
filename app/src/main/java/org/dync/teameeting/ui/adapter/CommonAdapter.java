@@ -14,11 +14,7 @@ import android.widget.BaseAdapter;
 
 import org.dync.teameeting.bean.MeetingListEntity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * com.example.menu.adapter.CommonAdapter
@@ -61,7 +57,6 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 
 
     public int getMeetingIdPosition(String meetingId) {
-
         for (int i = 0; i < mDatas.size(); i++) {
             MeetingListEntity meetingListEntity = (MeetingListEntity) mDatas.get(i);
             if (meetingId.equals(meetingListEntity.getMeetingid())) {

@@ -2,7 +2,7 @@
     <dimen name="seeting_padding">200dp</dimen>
     <dimen name="btn_control_width">80dp</dimen>
     <dimen name="chact_margin_left">350dp</dimen>
-    <dimen name="chact_margin_left_margin">-350dp</dimen>
+    <dimen name="chact_margin_left_margin">-355dp</dimen>
     <dimen name="roomControls">380dp</dimen>
     <dimen name="height_top_bar">60dp</dimen>
     <dimen name="top_bar_text_size">20sp</dimen>

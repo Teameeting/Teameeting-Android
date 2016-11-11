@@ -1,11 +1,10 @@
 package org.dync.teameeting.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.SeekBar;
 
-import org.apache.http.io.SessionOutputBuffer;
 import org.dync.teameeting.bean.ReqSndMsgEntity;
 import org.dync.teameeting.db.chatdao.ChatCacheEntity;
 import org.dync.teameeting.db.chatdao.ChatCacheEntityDao;
@@ -68,25 +67,21 @@ public class CRUDChat {
 
     public static ChatCacheEntity selectTopChatMessage(Context context, String meetingId) {
 
-        /**
-         *  Late modify Efficient Query
-         */
         DaoSession session = getSession(context);
-        ChatCacheEntityDao chatEnity = session.getChatCacheEntityDao();
-        List<ChatCacheEntity> list = new ArrayList<ChatCacheEntity>();
+        String tablename = session.getChatCacheEntityDao().getTablename();
 
-        /**
-         *       // zhulang TODO: 2016/1/15
-         *
-         *       Modify database statements
-         *
-         *       Current statement is not efficient
-         */
-        list = chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).list();
-        //  chatEnity.queryBuilder().where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).limit(1);
-        closeDB(session);
-        if (list.size() > 0) {
-            return list.get(list.size() - 1);
+        String sql = "select *from " + tablename + " where _id = (select max(_id) from "
+                + tablename + " where meetingid ='" + meetingId + "')";
+        Cursor cursor = session.getDatabase().rawQuery(sql, null);
+
+        if (cursor.moveToFirst() == true) {
+            String meeting = cursor.getString(cursor.getColumnIndex(ChatCacheEntity.MEETINGID));
+            String sendtime = cursor.getString(cursor.getColumnIndex(ChatCacheEntity.SENDTIME));
+            String userId = cursor.getString(cursor.getColumnIndex(ChatCacheEntity.USERID));
+            String content = cursor.getString(cursor.getColumnIndex(ChatCacheEntity.CONTENT));
+            boolean isRead = cursor.getInt(cursor.getColumnIndex(ChatCacheEntity.ISREAD)) == 0 ? false : true;
+            cursor.close();
+            return new ChatCacheEntity(meetingId, userId, content, sendtime, isRead);
         }
         return null;
     }
@@ -118,7 +113,6 @@ public class CRUDChat {
         DeleteQuery<ChatCacheEntity> bd = qb.where(ChatCacheEntityDao.Properties.Meetingid.eq(meetingId)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
         closeDB(session);
-
     }
 
 

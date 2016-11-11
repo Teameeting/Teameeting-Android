@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 public class Anims
 {
     public static final Interpolator ACCELERATE = new AccelerateInterpolator();
-    ;
     public static final Interpolator LINEA = new LinearInterpolator();
     public static final Interpolator EASE_IN_EASE_OUT = new AccelerateDecelerateInterpolator();
     public static final Interpolator EASE_OUT = new DecelerateInterpolator();
@@ -44,8 +43,7 @@ public class Anims
         {
             public void onAnimationUpdate(ValueAnimator paramAnonymousValueAnimator)
             {
-                localLayoutParams.bottomMargin = ((Integer) paramAnonymousValueAnimator
-                        .getAnimatedValue()).intValue();
+                localLayoutParams.bottomMargin = ((Integer) paramAnonymousValueAnimator.getAnimatedValue()).intValue();
                 paramView.requestLayout();
             }
         });
@@ -93,12 +91,13 @@ public class Anims
         paramView.setVisibility(View.VISIBLE);
     }
 
-    public static void ScaleAnim(View view, float from, long to,long time)
+    public static void ScaleAnim(View view, float from, float to,long time)
     {
         ScaleAnimation scaleAnimation = new ScaleAnimation(from,to,from,to, Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF,0.5f);
         scaleAnimation.setDuration(time);
         scaleAnimation.setFillAfter(true);
         view.startAnimation(scaleAnimation);
+
     }
 
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:swipe="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,7 +31,9 @@
             android:id="@+id/ibtn_join_meeting"
             style="@style/Btn_right"
             android:paddingRight="15dp"
-            android:src="@drawable/btn_invite" />
+            android:src="@drawable/btn_invite"
+            android:focusable="true"
+            />
 
     </RelativeLayout>
 
@@ -55,6 +56,7 @@
             android:paddingLeft="20dp"
             android:paddingTop="10dp"
             android:singleLine="true"
+            android:focusable="true"
             android:textColor="@color/white"
             android:textColorHint="@color/black"
             android:textCursorDrawable="@null"
@@ -71,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:headerDividersEnabled="true"
+                android:focusable="true"
                 android:scrollbars="none" />
 
 
@@ -85,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_create_room_height"
         android:layout_alignParentBottom="true"
-
+        android:focusable="true"
         android:background="@drawable/btn_get_room"
         android:text="@string/str_get_room"
         android:textColor="@color/white"

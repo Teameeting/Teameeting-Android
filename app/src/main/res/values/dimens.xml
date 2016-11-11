@@ -43,8 +43,12 @@
     <dimen name="seeting_padding">200dp</dimen>
     <dimen name="roomControls">270dp</dimen>
     <dimen name="top_bar_text_size">20sp</dimen>
-    <dimen name="btn_send_width">100dp</dimen>
+    <dimen name="btn_send_width">80dp</dimen>
+    <dimen name="chat_padding_top">30dp</dimen>
 
+    <dimen name="alert_width">290dp</dimen>
+    <dimen name="common_circle_width">3dp</dimen>
+    <dimen name="progress_circle_radius">34dp</dimen>
 
 
 </resources>

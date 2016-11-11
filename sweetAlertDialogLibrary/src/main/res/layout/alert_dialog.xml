@@ -136,7 +136,7 @@
         android:textAlignment="center"
         android:gravity="center"
         android:textColor="#797979"
-        android:visibility="gone" />
+       />
 
     <LinearLayout
         android:layout_marginTop="10dp"

@@ -8,31 +8,13 @@ import java.util.List;
  */
 public class SelfData {
 
-    /**
-     * authorization : 6d10ffe96955d5f5a9afdd9934c2d969f59705625dfb98d002807c43015d6b8d
-     * code : 200
-     * information : {"uactype":2,"ulogindev":2,"uname":"12210836","upushtoken":"TeamMeeting","uregtime":1449470013699,"uregtype":0,"userid":"cc1f0115b54c46a1","ustatus":1}
-     * message : user init success
-     * requestid : 1451283887167
-     */
-
     private String authorization;
     private int code;
-    /**
-     * uactype : 2
-     * ulogindev : 2
-     * uname : 12210836
-     * upushtoken : TeamMeeting
-     * uregtime : 1449470013699
-     * uregtype : 0
-     * userid : cc1f0115b54c46a1
-     * ustatus : 1
-     */
-
     private InformationEntity information;
     private String message;
     private long requestid;
     private boolean mIsNetConnected;
+
 
 
     private List<MeetingListEntity> meetingLists = new ArrayList<MeetingListEntity>();
@@ -71,7 +53,9 @@ public class SelfData {
         }
 
     }
-
+    public boolean ismIsNetConnected() {
+        return mIsNetConnected;
+    }
 
     public void setAuthorization(String authorization) {
         this.authorization = authorization;

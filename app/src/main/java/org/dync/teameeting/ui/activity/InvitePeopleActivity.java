@@ -13,6 +13,7 @@ import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.MeetingListEntity;
 import org.dync.teameeting.structs.ExtraType;
+import org.dync.teameeting.structs.ShareUrl;
 import org.dync.teameeting.ui.helper.ShareHelper;
 import org.dync.teameeting.widgets.BottomMenu;
 import org.dync.teameeting.widgets.BottomMenu.OnTouchSpeedListener;
@@ -27,9 +28,6 @@ public class InvitePeopleActivity extends Activity {
     private ShareHelper mShareHelper;
     private MeetingListEntity mMeetingEntity;
     private String mMeetingId;
-    private View mvMessageInviteTV;
-    private View mvWeixinInviteTV;
-    private View mvCopyLinkTV;
 
 
     @Override
@@ -52,29 +50,19 @@ public class InvitePeopleActivity extends Activity {
             Log.e(TAG, " mMeetingId " + mMeetingId);
         }
 
-        mShareUrl = "Let us see in a meeting!:" + "http://115.28.70.232/share_meetingRoom/#" + mMeetingId;
+        mShareUrl = ShareUrl.SHARE_URL + mMeetingId;
         mShareHelper = new ShareHelper(mContext);
     }
 
     private void inintView() {
 
         mCloseTV = (TextView) findViewById(R.id.tv_close);
-
         mMessageInviteTV = (TextView) findViewById(R.id.tv_invite_message);
-        mvMessageInviteTV = findViewById(R.id.v_invite_message);
-
         mWeixinInviteTV = (TextView) findViewById(R.id.tv_invite_weixin);
-        mvWeixinInviteTV = findViewById(R.id.v_invite_weixin);
-
         mCopyLinkTV = (TextView) findViewById(R.id.tv_copy_link);
-        mvCopyLinkTV = findViewById(R.id.v_copy_link);
 
         mCloseTV.setOnClickListener(mOnClickListener);
-        if (TeamMeetingApp.isPad) {
-            mMessageInviteTV.setVisibility(View.GONE);
-            mvMessageInviteTV.setVisibility(View.GONE);
-            mMessageInviteTV.setOnClickListener(mOnClickListener);
-        }
+        mMessageInviteTV.setOnClickListener(mOnClickListener);
         mWeixinInviteTV.setOnClickListener(mOnClickListener);
         mCopyLinkTV.setOnClickListener(mOnClickListener);
 
@@ -107,7 +95,7 @@ public class InvitePeopleActivity extends Activity {
                     finishActivity();
                     break;
                 case R.id.tv_invite_weixin:
-                    mShareHelper.shareWeiXin("Share into ... ", "", mShareUrl);
+                    mShareHelper.shareWeiXin(mShareUrl);
                     finishActivity();
                     break;
                 case R.id.tv_copy_link:

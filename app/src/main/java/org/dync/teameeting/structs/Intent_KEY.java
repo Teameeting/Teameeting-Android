@@ -7,4 +7,5 @@ public class Intent_KEY
 {
     public static String MEETING_ENTY = "meeting_enty";
     public static String POSITION = "position";
+    public static String URL_MEETING_ID = "url_meeting_id";
 }

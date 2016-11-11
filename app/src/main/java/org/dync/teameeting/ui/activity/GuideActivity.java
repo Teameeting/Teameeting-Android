@@ -34,14 +34,9 @@ public class GuideActivity extends Activity {
     private String[] titles;
     private int[] imageResId;
     private List<View> dots;
-    // private TextView tv_title;
+
     private Button mGuideButton;
     private int currentItem = 0;
-
-    // An ExecutorService that can schedule commands to run after a given delay,
-    // or to execute periodically.
-    private ScheduledExecutorService scheduledExecutorService;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

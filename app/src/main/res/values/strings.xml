@@ -9,6 +9,7 @@
     <string name="str_no_internet_tip">我们遇到了一些麻烦,因为你的设备没有连接到互联网</string>
     <string name="str_connect_internet">连接网络</string>
     <string name="str_content_empty">您还没有填写信息呢...</string>
+
     <!-- 主界面 -->
     <string name="str_get_room">创建房间</string>
     <string name="str_hintm">会议名称 （可选）</string>
@@ -38,15 +39,16 @@
     <string name="title_activity_push_set">PushSetActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="room_emty_tite">创建你的第一个房间</string>
-    <string name="room_empty_content_str">创建一个带视屏的房间，把房间分享给您的同事或者好友，无论你在哪里，他们都能看到你</string>
+    <string name="room_empty_content_str">创建一个带视频的房间，把房间分享给您的同事或者好友，无论你在哪里，他们都能看到你</string>
     <string name="str_join_room_wait">正在进入会议请等待</string>
     <string name="str_create">"创建  :  "</string>
     <string name="str_join">"加入  :  "</string>
+    <string name="str_user_name_null">用户名不能为空</string>
 
     <!-- 进入会议界面  -->
 
     <string name="str_join_meeting">加入会议</string>
-    <string name="str_edittext_meeting_id_hint">请输入会议 ID</string>
+    <string name="str_edittext_meeting_id_hint">请输入10位会议 ID</string>
     <string name="str_meeting_id_error">会议 ID 格式错误</string>
     <string name="str_meeting_deleted">会议已经无效</string>
     <string name="str_meeting_privated">私密会议不能加入</string>
@@ -58,6 +60,7 @@
     <string name="chat_time_string_hour_age">小时以前</string>
     <string name="chat_time_string_day_age">天以前</string>
     <string name="meeting_delete_create">会议已经被创建者删除</string>
+    <string name="meeting_not_exist">会议不存在</string>
 
     <!--会议室-->
 
@@ -67,6 +70,9 @@
     <string name="newadays">今天</string>
     <string name="work">星期</string>
 
+    <string name="str_refresh_pull">下拉刷新</string>
+    <string name="str_refresh_loading">正在加载数据</string>
+    <string name="str_refresh_relese">松开可以加载数据</string>
     <!--dilaog -->
 
     <string name="dialog_copy_success">复制成功</string>
@@ -75,6 +81,8 @@
     <string name="dialog_try">重试</string>
     <string name="dialog_please_conn_network">请连接网络!</string>
     <string name="dialog_suer_next_meeting">确定入会?</string>
+    <string name="dialog_open_prive">私密设置</string>
+    <string name="dialog_prive_not_share">打开私密会议后,你将无法分享会议给好友!</string>
     <string name="dialog_meeting_exist">当前列表中已经有该会议!</string>
     <string name="dialog_cancel">取消</string>
     <string name="dialog_confirm">确定</string>
@@ -82,4 +90,22 @@
     <string name="dialog_net_exception">网络异常</string>
     <string name="dialog_net_conn_failure">链接失败!</string>
     <string name="dialog_exit">退出</string>
+    <string name="toast_seeting_success">设置成功</string>
+    <string name="chat_output_name">我</string>
+
+    <string name="notifi_str_new_message">有新消息 :</string>
+    <string name="notifi_str_enter_room">进入"room name"房间正在等你哦~</string>
+    <string name="notifi_str_notifation_room">在"room name"房间喊你入会了~</string>
+    <string name="toast_plase_roon_name">请输入会议名称</string>
+    <string name="chat_str_new_message">新消息:</string>
+    <string name="str_share">http://www.teameeting.cn/share_meetingRoom/#/MeetingIdMeeting</string>
+    <string name="share_str_nomsg">请安装短信应用</string>
+    <string name="share_str_weixing_title">视频邀请</string>
+
+
+    <!--Meeting Activity -->
+    <string name="meeting_dialog_anyrtc_leave">请去AnyRTC官网申请账号,如有疑问请联系客服!</string>
+    <string name="meeting_dialog_anyrtc_leave_title">时间已到</string>
+    <string name="meeting_dialog_OK">重试</string>
+
 </resources>

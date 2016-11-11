@@ -90,5 +90,12 @@
     <color name="setting_bg_p">#f5f5f5</color>
     <color name="setting_line_color">#cccccc</color>
     <color name="pull_refresh_textview">#000000</color>
+    <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+    <color name="gray_btn_bg_color">#D0D0D0</color>
+    <color name="blue_btn_bg_color">#AEDEF4</color>
+    <color name="blue_btn_bg_pressed_color">#96BFD2</color>
+
+
+    <color name="chat_bg">#ab000000</color>
 
 </resources>

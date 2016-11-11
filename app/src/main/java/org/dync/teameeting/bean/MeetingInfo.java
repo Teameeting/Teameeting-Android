@@ -2,18 +2,18 @@ package org.dync.teameeting.bean;
 
 import java.io.Serializable;
 
+
 /**
  * Created by zhangqilu on 2016/1/12.
  */
 public class MeetingInfo {
-
-/*    info {"meetingid":"400000000492","userid":"b1ea95e9-157f-4c7e-a144-e5636d582ba6","meetname":"1225","meetdesc":"","meetusable":1,
-            "pushable":1,"meettype1":0,"memnumber":0,"crttime":1452497084808}*/
+    /*    info {"meetingid":"400000000492","userid":"b1ea95e9-157f-4c7e-a144-e5636d582ba6","meetname":"1225","meetdesc":"","meetusable":1,
+                "pushable":1,"meettype1":0,"memnumber":0,"crttime":1452497084808}*/
     private String meetingid;
     private String userid;
     private String meetname;
     private String meetdesc;
-    private int meetusable;
+    private int meetenable;
     private int pushable;
     private int meettype1;
     private int memnumber;
@@ -51,12 +51,12 @@ public class MeetingInfo {
         this.meetdesc = meetdesc;
     }
 
-    public int getMeetusable() {
-        return meetusable;
+    public int getMeetenable() {
+        return meetenable;
     }
 
-    public void setMeetusable(int meetusable) {
-        this.meetusable = meetusable;
+    public void setMeetenable(int meetenable) {
+        this.meetenable = meetenable;
     }
 
     public int getPushable() {
@@ -91,19 +91,12 @@ public class MeetingInfo {
         this.crttime = crttime;
     }
 
-
     @Override
     public String toString() {
-        return "MeetingInfo{" +
-                "meetingid='" + meetingid + '\'' +
-                ", userid='" + userid + '\'' +
-                ", meetname='" + meetname + '\'' +
-                ", meetdesc='" + meetdesc + '\'' +
-                ", meetusable=" + meetusable +
-                ", pushable=" + pushable +
-                ", meettype1=" + meettype1 +
-                ", memnumber=" + memnumber +
-                ", crttime=" + crttime +
-                '}';
+        return "MeetingInfo{" + "meetingid='" + meetingid + '\'' +
+                ", userid='" + userid + '\'' + ", meetname='" + meetname + '\'' +
+                ", meetdesc='" + meetdesc + '\'' + ", meetusable=" + meetenable +
+                ", pushable=" + pushable + ", meettype1=" + meettype1 + ", memnumber=" +
+                memnumber + ", crttime=" + crttime + '}';
     }
 }

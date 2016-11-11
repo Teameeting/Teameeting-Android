@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingRight="20dp"
-    android:paddingTop="20dp" >
+    android:paddingRight="30dp"
+    android:paddingTop="@dimen/chat_padding_top">
 
     <View
         android:layout_width="0dp"
@@ -14,44 +14,45 @@
 
     <LinearLayout
         android:id="@+id/ll_chat_layout"
-        android:layout_width="0dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
         android:background="@color/orange_yellow"
         android:orientation="vertical"
-        android:padding="15dp" >
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tv_chat_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/chat_message"
             android:lineSpacingExtra="8dp"
             android:text="干嘛呢！ 吃饭了吗？ "
-            android:textColor="@color/ivory"
-            android:textSize="17sp" />
+            android:textColor="@color/ivory" />
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/gainsboro"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_send_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/chat_time_name"
                 android:text="-卡卡西-   "
-                android:textColor="@color/gainsboro"
-                android:textSize="12dp" />
+                android:textColor="@color/gainsboro" />
 
             <TextView
-                android:id="@+id/tv_send_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@id/tv_send_time"
+                style="@style/chat_time_name"
                 android:layout_marginLeft="10dp"
                 android:text="27秒前"
-                android:textColor="@color/gainsboro"
-                android:textSize="12dp" />
+                android:textColor="@color/gainsboro" />
         </LinearLayout>
     </LinearLayout>
 

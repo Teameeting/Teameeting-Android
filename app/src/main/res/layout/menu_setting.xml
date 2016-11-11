@@ -132,6 +132,7 @@
                 android:layout_width="31dp"
                 android:layout_height="@dimen/more_item_height"
                 android:layout_marginLeft="5dp"
+                android:visibility="invisible"
                 android:src="@drawable/view_notifications_no"
                 />
 

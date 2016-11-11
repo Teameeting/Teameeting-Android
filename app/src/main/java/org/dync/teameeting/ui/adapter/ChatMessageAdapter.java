@@ -16,74 +16,72 @@ import java.util.List;
 
 /**
  * @author zhulang <br/>
- *         <p>
- *  下午3:18:45
+ *         <p/>
+ *         下午3:18:45
  */
-public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
-{
-    public ChatMessageAdapter(Context context, List<ChatMessage> datas)
-    {
+public class ChatMessageAdapter extends CommonAdapter<ChatMessage> {
+    public ChatMessageAdapter(Context context, List<ChatMessage> datas) {
         super(context, datas);
     }
     /**
      * Receive the message is 1　，send the messagea is 0
      */
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         ChatMessage msg = mDatas.get(position);
         return msg.getType() == Type.INPUT ? 1 : 0;
     }
 
     @Override
-    public int getViewTypeCount()
-    {
+    public int getViewTypeCount() {
         return 2;
     }
 
     @SuppressLint("ViewHolder")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         ChatMessage chatMessage = mDatas.get(position);
 
         ViewHolder mHolder = null;
-        if (convertView == null)
-        {
+        if (convertView == null) {
 
-            if (chatMessage.getType() == Type.INPUT)
-            {
+            if (chatMessage.getType() == Type.INPUT) {
                 convertView = mInflater.inflate(R.layout.chat_input_msg, null);
-            } else
-            {
+            } else {
                 convertView = mInflater.inflate(R.layout.chat_output_msg, null);
             }
 
             mHolder = mHolder.fromValues(convertView);
             convertView.setTag(mHolder);
 
-        } else
-        {
+        } else {
             mHolder = (ViewHolder) convertView.getTag();
         }
 
-        mHolder.tvContent.setText(chatMessage.getContent());
-        // mHolder.tvSendName.setText(chatMessage.getContent());
-         mHolder.tvTime.setText(StringHelper.formatDuration(chatMessage.getDateStr(),mResources));
+        setData(chatMessage, mHolder);
 
         return convertView;
     }
 
-    private static class ViewHolder
-    {
+    private void setData(ChatMessage chatMessage, ViewHolder mHolder) {
+        mHolder.tvContent.setText(chatMessage.getContent());
+
+        if (chatMessage.getType() == Type.INPUT) {
+            mHolder.tvSendName.setText(chatMessage.getUsername());
+        } else {
+            mHolder.tvSendName.setText(R.string.chat_output_name);
+        }
+        mHolder.tvTime.setText(StringHelper.format(chatMessage.getDateStr(), mResources));
+    }
+
+    private static class ViewHolder {
         public LinearLayout llChatLayout;
         public TextView tvContent;
         public TextView tvSendName;
         public TextView tvTime;
 
         private ViewHolder(LinearLayout llChatLayout, TextView tvContent, TextView tvSendName,
-                           TextView tvTime)
-        {
+                           TextView tvTime) {
             super();
             this.llChatLayout = llChatLayout;
             this.tvContent = tvContent;
@@ -91,8 +89,7 @@ public class ChatMessageAdapter extends CommonAdapter<ChatMessage>
             this.tvTime = tvTime;
         }
 
-        public static ViewHolder fromValues(View view)
-        {
+        public static ViewHolder fromValues(View view) {
             return new ViewHolder((LinearLayout) view.findViewById(R.id.ll_chat_layout),
                     (TextView) view.findViewById(R.id.tv_chat_content),
                     (TextView) view.findViewById(R.id.tv_send_name),

@@ -85,13 +85,13 @@
 
             <ImageButton
                 android:id="@+id/imgbtn_more_setting"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@color/transparent"
+                android:background="@null"
                 android:scaleType="centerInside"
-                android:src="@drawable/btn_more_setteing" />
+                android:src="@drawable/select_more_seeting_ibtn" />
 
             <ProgressBar
                 android:id="@+id/pb_creat"

@@ -6,7 +6,6 @@
 package org.dync.teameeting.ui.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,8 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-
-import com.orhanobut.logger.Logger;
 
 import org.dync.teameeting.R;
 import org.dync.teameeting.bean.MeetingListEntity;
@@ -110,7 +107,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
 
     private void setData(MeetingListEntity meetingListEntity, ViewHolder mHolder) {
         mHolder.mRoomName.setText("" + meetingListEntity.getMeetname());
-        mHolder.mRoomPeopleCount.setText("" + meetingListEntity.getMemnumber());
+      //  mHolder.mRoomPeopleCount.setText("" + meetingListEntity.getMemnumber());
 
         if (meetingListEntity.getMemnumber() > 0) {
             mHolder.mNotificationsClose.setVisibility(View.GONE);
@@ -136,7 +133,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
             mHolder.mMoreSetting.setVisibility(View.VISIBLE);
         }
 
-        if (meetingListEntity.getMeetusable() == HttpApiTpye.RoomEnablePrivate) {
+        if (meetingListEntity.getMeetenable() == HttpApiTpye.RoomEnablePrivate) {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
             if (meetingListEntity.getOwner() != 1) {
                 mHolder.mIvPrivate.setVisibility(View.INVISIBLE);
@@ -148,7 +145,7 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
 
         if (meetingListEntity.getOwner() == 1) {
             mHolder.mRoomName.setTextColor(mResources.getColor(R.color.orange));
-            if (meetingListEntity.getMeetusable() == HttpApiTpye.RoomEnablePrivate) {
+            if (meetingListEntity.getMeetenable() == HttpApiTpye.RoomEnablePrivate) {
                 mHolder.mIvPrivate.setVisibility(View.VISIBLE);
             }
         } else {
@@ -221,7 +218,6 @@ public class SwipeListAdapter extends CommonAdapter<MeetingListEntity> {
         public void onClick(View v) {
             Integer postion = (Integer) v.getTag();
             mSwipeListOnClick.onItemClickListener(v, postion);
-
         }
     };
 

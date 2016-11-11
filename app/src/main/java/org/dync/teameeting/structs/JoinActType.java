@@ -12,4 +12,7 @@ public class JoinActType {
     public static String JOIN_ENTER_ACTIVITY = "join_enter_activity";
     public static String JOIN_ENTER_JOIN_ACTIVITY = "join_enter_join_activity";
     public static String JOIN_LINK_JOIN_ACTIVITY = "join_link_join_activity";
+
+    public static String JOIN_URL_ACTVITY="join_url_activity";
+    public static String JOIN_INSERT_URL_ACTIVITY="join_insert_url_activity";
 }

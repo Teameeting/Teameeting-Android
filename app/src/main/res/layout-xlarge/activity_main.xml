@@ -36,8 +36,8 @@
             <ImageButton
                 android:id="@+id/ibtn_join_meeting"
                 style="@style/Btn_right"
-
-                android:src="@drawable/btn_invite" />
+                android:nextFocusRight="@id/btn_get_room"
+                android:src="@drawable/select_main_title_ibtn" />
         </RelativeLayout>
 
         <LinearLayout
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_create_room_height"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/btn_get_room"
+            android:background="@drawable/select_create_btn"
             android:text="@string/str_get_room"
             android:textColor="@color/white"
             android:textSize="@dimen/largest_most_txt_size" />

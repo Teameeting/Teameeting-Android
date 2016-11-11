@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.orhanobut.logger.Logger;
 
 import org.apache.http.Header;
 import org.dync.teameeting.TeamMeetingApp;
@@ -19,6 +20,7 @@ import de.greenrobot.event.EventBus;
  * Created by zhulang on 2015/12/28 0028.
  */
 public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
+    String TAG = this.getClass().getSimpleName();
     public boolean mDebug = TeamMeetingApp.mIsDebug;
     public Gson gson = null;
     public Bundle bundle;
@@ -33,7 +35,8 @@ public class TmTextHttpResponseHandler extends TextHttpResponseHandler {
 
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-        // network or server  problem 
+        // network or server  problem
+        Logger.e("onFailure: "+statusCode+"-----responseString" +responseString);
         msg.what = EventType.MSG_RESPONS_ESTR_NULl.ordinal();
         EventBus.getDefault().post(msg);
     }

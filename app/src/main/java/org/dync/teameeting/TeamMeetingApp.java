@@ -1,5 +1,6 @@
 package org.dync.teameeting;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -7,39 +8,99 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings.Secure;
-import android.util.Log;
 import android.widget.Toast;
 
-import org.anyrtc.Anyrtc;
+import com.pgyersdk.crash.PgyCrashManager;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+
+import org.anyrtc.AnyRTC;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.chatmessage.ChatMessageClient;
 import org.dync.teameeting.receiver.NetWorkReceiver;
-import org.dync.teameeting.sdkmsgclientandroid.msgs.TMMsgSender;
+import org.dync.teameeting.sdkmsgclient.msgs.TMMsgSender;
 import org.dync.teameeting.utils.ScreenUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
 
 public class TeamMeetingApp extends Application {
 
     private Context context;
-    public static boolean mIsDebug = true;// debug deal with
+    public static boolean mIsDebug = true;//
     private static final String TAG = "Application";
-    private static final boolean mDebug = true;
     private static TeamMeetingApp mTeamMeetingApp;
     private static ChatMessageClient mChatMessageClient;
+    public static boolean isInitFalg = false;  // APP in the running state
 
     private static SelfData mSelfData;
     private NetWorkReceiver mNetReceiver;
     public static boolean isPad = false;
     private static TMMsgSender mMsgSender;
+    private MediaPlayer mediaPlayer;
+
+    public static List<String> mMeetingActivityList = new ArrayList<String>();
+
+    public static Activity getMainActivity() {
+        return mainActivity;
+    }
+
+    public static void setMainActivity(Activity mainActivity) {
+        TeamMeetingApp.mainActivity = mainActivity;
+    }
+
+    public void startMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+        }
+        mediaPlayer = MediaPlayer.create(context, R.raw.ring);
+        mediaPlayer.start();
+    }
+
+    public void stopMediaplayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
+    public static Activity mainActivity;
+
+    public static List<String> getMeetingActivityList() {
+        return mMeetingActivityList;
+    }
+
+    public static TeamMeetingApp getTeamMeetingApp() {
+        return mTeamMeetingApp;
+    }
+
+    /*chat message deal with*/
+    public static TMMsgSender getmMsgSender() {
+        return mMsgSender;
+    }
+
+    public void setmMsgSender(TMMsgSender msgSender) {
+        mMsgSender = msgSender;
+    }
+
+    public static void setSelfData(SelfData selfData) {
+        mSelfData = selfData;
+    }
+
+    public static SelfData getmSelfData() {
+        return mSelfData;
+    }
 
     public static ChatMessageClient getmChatMessageClient() {
         return mChatMessageClient;
     }
+
+    private IWXAPI api;
 
     @Override
     public void onCreate() {
@@ -51,13 +112,18 @@ public class TeamMeetingApp extends Application {
         registerReceiver();
 
         isPad = ScreenUtils.isPad(this);
-        if (mDebug) {
-            Log.e(TAG, "onCreate: isPad" + isPad);
-        }
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
+        // refWatcher = LeakCanary.install(this);
 
-        Anyrtc.InitAnyrtc("mzw0001", "defq34hj92mxxjhaxxgjfdqi1s332dd", "d74TcmQDMB5nWx9zfJ5al7JdEg3XwySwCkhdB9lvnd1", "org.dync.app");
+        PgyCrashManager.register(this);
+
+        AnyRTC.InitAnyRTCWithAppKey("teameetingtest", "c4cd1ab6c34ada58e622e75e41b46d6d", "OPJXF3xnMqW+7MMTA4tRsZd6L41gnvrPcI25h9JCA4M", "meetingtest");
+    }
+
+
+    public Context getContext() {
+        return context;
     }
 
     /**
@@ -75,30 +141,6 @@ public class TeamMeetingApp extends Application {
         mTeamMeetingApp = this;
     }
 
-
-    public static TeamMeetingApp getTeamMeetingApp() {
-
-        return mTeamMeetingApp;
-    }
-
-
-    /*chat message deal with*/
-    public static TMMsgSender getmMsgSender() {
-        return mMsgSender;
-    }
-
-    public void setmMsgSender(TMMsgSender msgSender) {
-        mMsgSender = msgSender;
-    }
-
-
-    public static void setSelfData(SelfData selfData) {
-        mSelfData = selfData;
-    }
-
-    public static SelfData getmSelfData() {
-        return mSelfData;
-    }
 
     /**
      * get the Token from manifest.xml
@@ -123,7 +165,7 @@ public class TeamMeetingApp extends Application {
 
     public void Destroy() {
         unregisterReceiver(mNetReceiver);
-        if (mMsgSender!=null)
+        if (mMsgSender != null)
             mMsgSender.TMUnin();
     }
 

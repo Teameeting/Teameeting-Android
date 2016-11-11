@@ -2,20 +2,17 @@ package org.dync.teameeting.bean;
 
 import android.content.Context;
 
-import com.orhanobut.logger.Logger;
-
 import org.dync.teameeting.db.CRUDChat;
 import org.dync.teameeting.db.chatdao.ChatCacheEntity;
 import org.dync.teameeting.utils.StringHelper;
 
 import java.io.Serializable;
-import java.util.List;
+
 
 /**
  * Created by zhulang on 2016/1/8 0008.
  */
 public class MeetingListEntity implements Serializable {
-
     private String anyrtcid;
     private long createtime;
     private long jointime;
@@ -24,14 +21,22 @@ public class MeetingListEntity implements Serializable {
     private String userid;
     private String meetname;
     private int meettype;
-    private int meetusable;
+    private int meetenable;
     private int memnumber;
     private int owner;
     private int pushable;
     private int mMeetType2 = 0;
     private boolean isRead = true;
     private String unReadMessage;
+    private boolean applyTyep = true; //true:success  false : wait
 
+    public int getMeetenable() {
+        return meetenable;
+    }
+
+    public void setMeetenable(int meetenable) {
+        this.meetenable = meetenable;
+    }
 
     public long getCreatetime() {
         return createtime;
@@ -44,8 +49,9 @@ public class MeetingListEntity implements Serializable {
     public boolean isRead(Context context) {
         if (meetingid != null) {
             long l = CRUDChat.selectLoadListSize(context, meetingid);
-            isRead = l > 0 ? false : true;
+            isRead = (l > 0) ? false : true;
         }
+
         return isRead;
     }
 
@@ -61,9 +67,6 @@ public class MeetingListEntity implements Serializable {
         this.unReadMessage = unReadMessage;
     }
 
-
-    private boolean applyTyep = true; //true:success  false : wait
-
     public boolean isApplyTyep() {
         return applyTyep;
     }
@@ -71,7 +74,6 @@ public class MeetingListEntity implements Serializable {
     public void setApplyTyep(boolean applyTyep) {
         this.applyTyep = applyTyep;
     }
-
 
     public void setJointime(long jointime) {
         this.jointime = jointime;
@@ -85,17 +87,12 @@ public class MeetingListEntity implements Serializable {
         this.meetingid = meetingid;
     }
 
-
     public void setMeetname(String meetname) {
         this.meetname = meetname;
     }
 
     public void setMeettype(int meettype) {
         this.meettype = meettype;
-    }
-
-    public void setMeetusable(int meetusable) {
-        this.meetusable = meetusable;
     }
 
     public void setMemnumber(int memnumber) {
@@ -154,10 +151,6 @@ public class MeetingListEntity implements Serializable {
         return meettype;
     }
 
-    public int getMeetusable() {
-        return meetusable;
-    }
-
     public int getMemnumber() {
         return memnumber;
     }
@@ -178,9 +171,14 @@ public class MeetingListEntity implements Serializable {
         this.mMeetType2 = mMeetType2;
     }
 
+    /**
+     * 初始化未读消息
+     * @param context
+     */
     public void initUnReadMessage(Context context) {
         if (!isRead(context)) {
-            ChatCacheEntity chatCacheEntity = CRUDChat.selectTopChatMessage(context, meetingid);
+            ChatCacheEntity chatCacheEntity = CRUDChat.selectTopChatMessage(context,
+                    meetingid);
             long l = CRUDChat.selectLoadListSize(context, meetingid);
             long sendtimeOrlong = chatCacheEntity.getSendtimeOrlong();
             setUnReadMessage(StringHelper.unReadMessageStr(l, sendtimeOrlong, context.getResources()));
@@ -189,23 +187,14 @@ public class MeetingListEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "MeetingListEntity{" +
-                "anyrtcid='" + anyrtcid + '\'' +
-                ", createtime=" + createtime +
-                ", jointime=" + jointime +
-                ", meetdesc='" + meetdesc + '\'' +
-                ", meetingid='" + meetingid + '\'' +
-                ", userid='" + userid + '\'' +
-                ", meetname='" + meetname + '\'' +
-                ", meettype=" + meettype +
-                ", meetusable=" + meetusable +
-                ", memnumber=" + memnumber +
-                ", owner=" + owner +
-                ", pushable=" + pushable +
-                ", mMeetType2=" + mMeetType2 +
-                ", isRead=" + isRead +
-                ", unReadMessage='" + unReadMessage + '\'' +
-                ", applyTyep=" + applyTyep +
-                '}';
+        return "MeetingListEntity{" + "anyrtcid='" + anyrtcid + '\'' +
+                ", createtime=" + createtime + ", jointime=" + jointime +
+                ", meetdesc='" + meetdesc + '\'' + ", meetingid='" + meetingid + '\'' +
+                ", userid='" + userid + '\'' + ", meetname='" + meetname + '\'' +
+                ", meettype=" + meettype + ", meetusable=" + meetenable +
+                ", memnumber=" + memnumber + ", owner=" + owner + ", pushable=" +
+                pushable + ", mMeetType2=" + mMeetType2 + ", isRead=" + isRead +
+                ", unReadMessage='" + unReadMessage + '\'' + ", applyTyep=" +
+                applyTyep + '}';
     }
 }

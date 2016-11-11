@@ -1,17 +1,12 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<org.dync.teameeting.widgets.VitualKey xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/meet_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:layout_height="match_parent">
 
-    <android.opengl.GLSurfaceView
-        android:id="@+id/glview_call"
+    <RelativeLayout
+        android:id="@+id/rl_videos"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <!-- TopBar -->
-
-    <!-- Control Layout -->
 
     <org.dync.teameeting.widgets.RoomControls
         android:id="@+id/rl_meeting_control"
@@ -30,8 +25,11 @@
             android:layout_height="@dimen/btn_control_width"
             android:layout_weight="1"
             android:background="@null"
+            android:focusable="true"
+            android:nextFocusDown="@id/imgbtn_chat"
+            android:nextFocusUp="@id/imgbtn_chat"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_camera_on" />
+            android:src="@drawable/select_camera_ibtn" />
 
         <ImageButton
             android:id="@+id/meeting_hangup"
@@ -39,8 +37,12 @@
             android:layout_height="@dimen/btn_control_width"
             android:layout_weight="1"
             android:background="@null"
+            android:focusable="true"
+            android:nextFocusDown="@id/imgbtn_chat"
+            android:nextFocusUp="@id/imgbtn_chat"
+
             android:scaleType="centerInside"
-            android:src="@drawable/btn_hang_up" />
+            android:src="@drawable/select_hangup_ibtn" />
 
         <ImageButton
             android:id="@+id/meeting_voice"
@@ -48,8 +50,11 @@
             android:layout_height="@dimen/btn_control_width"
             android:layout_weight="1"
             android:background="@null"
+            android:focusable="true"
+            android:nextFocusDown="@id/imgbtn_chat"
+            android:nextFocusUp="@id/imgbtn_chat"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_voice_on" />
+            android:src="@drawable/select_voice_ibtn" />
 
         <ImageButton
             android:id="@+id/meeting_camera_switch"
@@ -57,8 +62,12 @@
             android:layout_height="@dimen/btn_control_width"
             android:layout_weight="1"
             android:background="@null"
+            android:focusable="true"
+            android:nextFocusDown="@id/imgbtn_chat"
+            android:nextFocusUp="@id/imgbtn_chat"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_camera_switch"
+            android:src="@drawable/select_camera_switch_ibtn"
+
             android:visibility="gone" />
 
         <ImageButton
@@ -67,8 +76,11 @@
             android:layout_height="@dimen/btn_control_width"
             android:layout_weight="1"
             android:background="@null"
+            android:focusable="true"
+            android:nextFocusDown="@id/imgbtn_chat"
+            android:nextFocusUp="@id/imgbtn_chat"
             android:scaleType="centerInside"
-            android:src="@drawable/btn_camera_off"
+            android:src="@drawable/select_camera_off_ibtn"
             android:visibility="gone" />
     </org.dync.teameeting.widgets.RoomControls>
 
@@ -78,8 +90,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/rl_meeting_topbar"
-        android:background="@color/white"
-        android:src="@drawable/mic_muted"
+        android:background="@color/transparent"
+        android:src="@drawable/small_mic_muted"
         android:visibility="invisible" />
 
     <RelativeLayout
@@ -90,53 +102,6 @@
         android:visibility="visible">
 
         <include layout="@layout/include_chatting" />
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/rl_meeting_topbar"
-        style="@style/TopBar_Style"
-        android:layout_height="@dimen/height_top_bar"
-        android:background="@color/totil_bar_back_alpha_meeting">
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp">
-
-            <ImageButton
-                android:id="@+id/imgbtn_chat"
-                style="@style/Btn_left"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/btn_chat" />
-
-            <TextView
-                android:id="@+id/tv_message_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:background="@drawable/unread_count_bg"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:visibility="gone" />
-
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_room_name"
-            style="@style/Title_Txt"
-            android:text="Room name"
-            android:textColor="#ffffff"
-            android:textStyle="normal" />
-
-        <ImageButton
-            android:id="@+id/imgbtn_invite"
-            style="@style/Btn_right"
-            android:layout_centerVertical="true"
-            android:src="@drawable/btn_invite" />
     </RelativeLayout>
 
     <TextView
@@ -150,5 +115,79 @@
         android:text="@string/str_meeting_remind"
         android:textColor="@color/white" />
 
+    <ImageView
+        android:id="@+id/iv_close_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/video_close"
+        android:visibility="gone" />
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_meeting_topbar"
+        style="@style/TopBar_Style"
+        android:background="@color/totil_bar_back_alpha_meeting">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
+
+            <ImageButton
+                android:id="@+id/imgbtn_chat"
+                style="@style/Btn_left"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:nextFocusLeft="@id/imgbtn_invite"
+                android:nextFocusRight="@id/imgbtn_invite"
+                android:src="@drawable/select_chat_ibtn" />
+
+            <TextView
+                android:id="@+id/tv_message_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/unread_count_bg"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_room_name"
+            style="@style/Title_Txt"
+            android:text="Room name"
+            android:textColor="#ffffff"
+            android:textStyle="normal" />
+        <ImageButton
+            android:visibility="gone"
+            android:id="@+id/btn_reminder"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/btn_remind"
+
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/imgbtn_invite"
+            android:layout_toStartOf="@+id/imgbtn_invite"
+            android:layout_marginRight="36dp"
+            android:layout_marginEnd="36dp"
+
+            />
+
+        <ImageButton
+            android:id="@+id/imgbtn_invite"
+            style="@style/Btn_right"
+            android:layout_centerVertical="true"
+            android:nextFocusDown="@id/meeting_camera"
+            android:nextFocusLeft="@id/imgbtn_chat"
+            android:nextFocusRight="@id/imgbtn_chat"
+            android:nextFocusUp="@id/meeting_camera"
+            android:src="@drawable/select_main_title_ibtn" />
+    </RelativeLayout>
+
+
+</org.dync.teameeting.widgets.VitualKey>

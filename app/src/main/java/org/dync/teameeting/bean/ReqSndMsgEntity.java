@@ -5,26 +5,9 @@ package org.dync.teameeting.bean;
  */
 public class ReqSndMsgEntity {
 
-    /**
-     * mtype : 3
-     * cmd :
-     * action : 1
-     * tags : 1  //maoge
-     * type : 1
-     * nmem : 0
-     * ntime : 1452338777912
-     * mseq : 14
-     * from : 436d31bd40689af7
-     * room : 400000000482
-     * sess :
-     * to :
-     * cont : dff
-     * pass : 4d142459e0316f0285264c380b40b760e50cf306bb64b52ef272b5a20941a687
-     * code : 0
-     * status :
-     */
-
     private int mtype;
+    private int messagetype;
+    private int signaltype;
     private int cmd;
     private int action;
     private int tags;
@@ -34,15 +17,23 @@ public class ReqSndMsgEntity {
     private int mseq;
     private String from;
     private String room;
-    private String sess;
     private String to;
     private String cont;
     private String pass;
+    private String nname;
+    private String rname;
     private int code;
-    private String status;
 
     public void setMtype(int mtype) {
         this.mtype = mtype;
+    }
+
+    public void setMessagetype(int messagetype) {
+        this.messagetype = messagetype;
+    }
+
+    public void setSignaltype(int signaltype) {
+        this.signaltype = signaltype;
     }
 
     public void setCmd(int cmd) {
@@ -81,10 +72,6 @@ public class ReqSndMsgEntity {
         this.room = room;
     }
 
-    public void setSess(String sess) {
-        this.sess = sess;
-    }
-
     public void setTo(String to) {
         this.to = to;
     }
@@ -97,16 +84,28 @@ public class ReqSndMsgEntity {
         this.pass = pass;
     }
 
+    public void setNname(String nname) {
+        this.nname = nname;
+    }
+
+    public void setRname(String rname) {
+        this.rname = rname;
+    }
+
     public void setCode(int code) {
         this.code = code;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public int getMtype() {
         return mtype;
+    }
+
+    public int getMessagetype() {
+        return messagetype;
+    }
+
+    public int getSignaltype() {
+        return signaltype;
     }
 
     public int getCmd() {
@@ -145,10 +144,6 @@ public class ReqSndMsgEntity {
         return room;
     }
 
-    public String getSess() {
-        return sess;
-    }
-
     public String getTo() {
         return to;
     }
@@ -161,22 +156,39 @@ public class ReqSndMsgEntity {
         return pass;
     }
 
-    public int getCode() {
-        return code;
+    public String getNname() {
+        return nname;
     }
 
-    public String getStatus() {
-        return status;
+    public String getRname() {
+        return rname;
+    }
+
+    public int getCode() {
+        return code;
     }
 
     @Override
     public String toString() {
         return "ReqSndMsgEntity{" +
-                "ntime=" + ntime +
+                "mtype=" + mtype +
+                ", messagetype=" + messagetype +
+                ", signaltype=" + signaltype +
+                ", cmd=" + cmd +
+                ", action=" + action +
+                ", tags=" + tags +
+                ", type=" + type +
+                ", nmem=" + nmem +
+                ", ntime=" + ntime +
+                ", mseq=" + mseq +
                 ", from='" + from + '\'' +
                 ", room='" + room + '\'' +
                 ", to='" + to + '\'' +
-                ", status='" + status + '\'' +
+                ", cont='" + cont + '\'' +
+                ", pass='" + pass + '\'' +
+                ", nname='" + nname + '\'' +
+                ", rname='" + rname + '\'' +
+                ", code=" + code +
                 '}';
     }
 }

@@ -1,124 +1,133 @@
 package org.dync.teameeting.ui.helper;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.widget.Toast;
+
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.SendMessageToWX;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.mm.sdk.openapi.WXMediaMessage;
+import com.tencent.mm.sdk.openapi.WXWebpageObject;
+import com.tencent.mm.sdk.platformtools.Util;
+
+import org.dync.teameeting.R;
 
 import java.util.List;
 
 /**
- * 
  * @author zhulang <br/>
  *         org.dync.teameeting.helper ShareHelper create at 2015-12-22
  *         上午10:59:20
  */
-public class ShareHelper
-{
-	private Context context;
+public class ShareHelper {
+    private Context context;
+    private static final String App_ID = "wx40db3ffd58b0c6a9";
+    private IWXAPI api;
 
-	public ShareHelper(Context context)
-	{
-		this.context = context;
-	}
+    public ShareHelper(Context context) {
+        this.context = context;
+        api = WXAPIFactory.createWXAPI(context, App_ID, true);
+        api.registerApp(App_ID);
+    }
+
+    /**
+     * 调用系统界面，给指定的号码发送短信，并附带短信内容
+     *
+     * @param context
+     * @param number
+     * @param body
+     */
+    public void shareSMS(Context context, String number, String body) {
+
+        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+        sendIntent.setData(Uri.parse("smsto:" + number));
+        sendIntent.putExtra("sms_body", body);
+        context.startActivity(sendIntent);
+
+    }
+
+    /**
+     * Share Weixing
+     * @param webUrl
+     */
+    public void shareWeiXin(String webUrl) {
+        String msgTitle = context.getString(R.string.app_name);
+        String msgText = context.getString(R.string.share_str_weixing_title);
+        shareWeiXin(webUrl, msgTitle, msgText);
+    }
+
+    /**
+     * Share Wei Xin
+     * @param msgTitle
+     * @param msgText
+     * @param webUrl
+     */
+    public void shareWeiXin( String webUrl,String msgTitle, String msgText) {
+        shareToWeiXin(webUrl, msgTitle, msgText);
+    }
 
 
-	/**
-	 * 调用系统界面，给指定的号码发送短信，并附带短信内容
-	 *
-	 * @param context
-	 * @param number
-	 * @param body
-	 */
-	public void shareSMS(Context context, String number, String body) {
-		Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-		sendIntent.setData(Uri. parse("smsto:" + number));
-		sendIntent.putExtra( "sms_body", body);
-		context.startActivity(sendIntent);
-	}
+    /**
+     * WeChat share meeting
+     *
+     * @param webpageUrl
+     * @param title
+     * @param description
+     */
+    public void shareToWeiXin(String webpageUrl, String title, String description) {
 
-	public void shareWeiXin(String msgTitle, String msgText, String webUrl)
-	{
-		msgText = msgText + webUrl;
-		ShareItem share = new ShareItem("分享到.....",
-				"com.tencent.mm.ui.tools.ShareImgUI", "com.tencent.mm");
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = webpageUrl;
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = title;
+        msg.description = description;
+        Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.drawable.app_ico);
+        msg.thumbData = Util.bmpToByteArray(thumb, true);
 
-		shareMsg(msgTitle, msgText, share);
-	}
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = buildTransaction("webpage");
+        req.message = msg;
+        req.scene = SendMessageToWX.Req.WXSceneSession;
+        api.sendReq(req);
 
-	/**
-	 * 
-	 * 
-	 * @param context
-	 * @param msgTitle
-	 * @param msgText
-	 * @param share
-	 */
-	private void shareMsg(String msgTitle, String msgText, ShareItem share)
-	{
-		if (!share.packageName.isEmpty() && !isAvilible(share.packageName))
-		{
-			Toast.makeText(context, "请安装微信" + share.title, Toast.LENGTH_SHORT)
-					.show();
-			return;
-		}
+    }
 
-		Intent intent = new Intent("android.intent.action.SEND");
-		if (msgText.equals(""))
-		{
-			intent.setType("text/plain");
-		}
+    private String buildTransaction(final String type) {
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
 
-		intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
-		intent.putExtra(Intent.EXTRA_TEXT, msgText);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		if (!share.packageName.isEmpty())
-		{
-			intent.setComponent(new ComponentName(share.packageName,
-					share.activityName));
-			context.startActivity(intent);
-		} else
-		{
-			context.startActivity(Intent.createChooser(intent, msgTitle));
-		}
-	}
 
-	/**
-	 * 
-	 * @param context
-	 * @param packageName
-	 * @return
-	 */
-	public boolean isAvilible(String packageName)
-	{
-		PackageManager packageManager = context.getPackageManager();
+    /**
+     * @param packageName
+     * @return
+     */
+    public boolean isAvilible(String packageName) {
+        PackageManager packageManager = context.getPackageManager();
 
-		List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
-		for (int i = 0; i < pinfo.size(); i++)
-		{
-			if (((PackageInfo) pinfo.get(i)).packageName
-					.equalsIgnoreCase(packageName))
-				return true;
-		}
-		return false;
-	}
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        for (int i = 0; i < pinfo.size(); i++) {
+            if (((PackageInfo) pinfo.get(i)).packageName.equalsIgnoreCase(packageName))
+                return true;
+        }
+        return false;
+    }
 
-	private class ShareItem
-	{
-		String title;
+    private class ShareItem {
+        String title;
 
-		String activityName;
-		String packageName;
+        String activityName;
+        String packageName;
 
-		public ShareItem(String title, String activityName, String packageName)
-		{
-			this.title = title;
-			this.activityName = activityName;
-			this.packageName = packageName;
-		}
-	}
+        public ShareItem(String title, String activityName, String packageName) {
+            this.title = title;
+            this.activityName = activityName;
+            this.packageName = packageName;
+        }
+    }
 
 }

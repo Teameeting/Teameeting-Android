@@ -4,78 +4,119 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 
-import org.dync.teameeting.ui.TestActivity;
+import org.dync.teameeting.TeamMeetingApp;
+import org.dync.teameeting.structs.EventType;
+import org.dync.teameeting.ui.activity.StartFlashActivity;
+import org.dync.teameeting.ui.helper.ActivityTaskHelp;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
+import de.greenrobot.event.EventBus;
 
-/**
- * 自定义接收器
- * 
- * 如果不定义这个 Receiver，则： 1) 默认用户会打开主界面 2) 接收不到自定义消息
- */
-public class MyReceiver extends BroadcastReceiver
-{
-	private static final String TAG = "JPush";
+public class MyReceiver extends BroadcastReceiver {
+    private boolean mDebug = TeamMeetingApp.mIsDebug;
+    private static final String TAG = "JPush";
+    public static final String ACTIVITY_ACTION_NOTIFACTION = "action_notifation";
 
-	@Override
-	public void onReceive(Context context, Intent intent)
-	{
-		Bundle bundle = intent.getExtras();
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Bundle bundle = intent.getExtras();
+        if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
+            chackNotifiaction(context, bundle);
+        }
 
-		if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction()))
-		{
-			String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
-			Log.d(TAG, "[MyReceiver] 接收Registration Id : " + regId);
-			// send the Registration Id to your server...
+        /*
+        if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
+            chackNotifiaction(context, bundle);
+        } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction())) {
+            boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE, false);
+            Log.e(TAG, "[MyReceiver]" + intent.getAction() + " connected state change to " + connected);
+        } else {
+            Log.e(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction());
+        }*/
+    }
 
-		} else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
-		{
-			Log.d(TAG,
-					"[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
-			processCustomMessage(context, bundle);
+    /**
+     * on click ontifiatin
+     *
+     * @param context
+     * @param bundle
+     */
+    private void chackNotifiaction(Context context, Bundle bundle) {
 
-		} else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction()))
-		{
-			Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
-			int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
-			Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
+        String notifaction = bundle.getString(JPushInterface.EXTRA_EXTRA);
 
-		} else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction()))
-		{
-			Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
+        int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
+        JPushInterface.clearNotificationById(TeamMeetingApp.getTeamMeetingApp(), notifactionId);
+        Boolean userInfoBoolean = TeamMeetingApp.isInitFalg;
+        if (mDebug) {
+            Log.e(TAG, "chackNotifiaction: IsAppRun" + userInfoBoolean);
+            Log.e(TAG, "notifaction" + notifaction + "notifactionID" + notifactionId);
+        }
 
-			// 打开自定义的Activity
-			Intent i = new Intent(context, TestActivity.class);
-			i.putExtras(bundle);
-			// i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			context.startActivity(i);
+        if (userInfoBoolean) {
+            runAppFacation(context, bundle);
+        } else {
+            startfalshActivity(context, bundle);
+        }
+    }
 
-		} else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction()))
-		{
-			Log.d(TAG,
-					"[MyReceiver] 用户收到到RICH PUSH CALLBACK: "
-							+ bundle.getString(JPushInterface.EXTRA_EXTRA));
-			// 在这里根据 JPushInterface.EXTRA_EXTRA 的内容处理代码，比如打开新的Activity，
-			// 打开一个网页等..
+    public void startfalshActivity(Context context, Bundle bundle) {
+        Intent i = new Intent(context, StartFlashActivity.class);
+        i.setAction(ACTIVITY_ACTION_NOTIFACTION);
+        i.putExtras(bundle);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(i);
+    }
 
-		} else if (JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction()))
-		{
-			boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE,
-					false);
-			Log.w(TAG, "[MyReceiver]" + intent.getAction() + " connected state change to "
-					+ connected);
-		} else
-		{
-			Log.d(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction());
-		}
-	}
+    private void runAppFacation(Context context, Bundle bundle) {
+        String notifaction = bundle.getString(JPushInterface.EXTRA_EXTRA);
+        Message msg = new Message();
+        msg.setData(bundle);
 
-	// send msg to MainActivity
-	private void processCustomMessage(Context context, Bundle bundle)
-	{
+        String meetingId = null;
+        try {
+            JSONObject json = new JSONObject(notifaction);
+            meetingId = json.getString("roomid");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-	}
+        List<String> activityList = TeamMeetingApp.getMeetingActivityList();
+        if (mDebug) {
+            //fan
+            Log.e
+                    (TAG, "activityList Size: " + activityList.size());
+        }
+        if (activityList.size() == 1) {
+            String notifiMeetingId = activityList.get(0);
+            boolean packageNameonResume = ActivityTaskHelp.isPackageNameonResume(context, null);
+            if (mDebug) {
+                Log.e(TAG, "MeetingId: " + notifiMeetingId + "packageNameonResume--" + packageNameonResume);
+            }
+            if (notifiMeetingId.equals(meetingId)) {
+                msg.what = EventType.MSG_NOTIFICATION_MEETINGID_EQUAL.ordinal();
+                Log.e(TAG, "----- meetingId equqals ");
+            } else {
+                msg.what = EventType.MSG_NOTIFICATION_MEETING_CLOSE_MAIN.ordinal();
+                Log.e(TAG, "----- meetingId not equals");
+            }
+        } else {
+            msg.what = EventType.MSG_NOTIFICATION_MAIN.ordinal();
+            Log.e(TAG, "---- activityList === 0 ");
+        }
+        EventBus.getDefault().post(msg);
+    }
+
+
 }

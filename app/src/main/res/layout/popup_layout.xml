@@ -80,7 +80,7 @@
                     android:layout_height="70dp"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
-                    android:src="@drawable/popup_email" />
+                    android:src="@drawable/popup_weixin" />
 
                 <TextView
                     android:id="@+id/tv_email"
@@ -117,6 +117,9 @@
             android:background="@drawable/popup_copy_text"
             android:gravity="center_vertical|center_horizontal"
             android:text="cnblogs.com/sunzn"
+            android:singleLine="true"
+            android:padding="5dp"
+            android:ellipsize="middle"
             android:textSize="@dimen/larger_txt_size" />
 
         <Button

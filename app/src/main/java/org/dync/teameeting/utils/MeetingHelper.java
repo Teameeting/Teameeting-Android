@@ -18,7 +18,7 @@ public class MeetingHelper {
     public static int getMeetingIdPosition(List<MeetingListEntity> mDatas, String meetingId) {
 
         for (int i = 0; i < mDatas.size(); i++) {
-            MeetingListEntity meetingListEntity = (MeetingListEntity) mDatas.get(i);
+            MeetingListEntity meetingListEntity = mDatas.get(i);
             if (meetingId.equals(meetingListEntity.getMeetingid())) {
                 return i;
             }
