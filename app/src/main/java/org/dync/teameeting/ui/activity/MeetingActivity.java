@@ -244,7 +244,6 @@ public class MeetingActivity extends MeetingBaseActivity implements RTMeetHelper
 
         mMeetKit = new RTMeetKit(this, this);
         mMeetKit.InitEngineWithAnyrtcInfo("teameetingtest", "c4cd1ab6c34ada58e622e75e41b46d6d", "OPJXF3xnMqW+7MMTA4tRsZd6L41gnvrPcI25h9JCA4M", "meetingtest");
-//        mMeetKit.InitEngineWithAnyrtcInfo("16864513", "com.dync.anyrtc", "rF55qBISN/g8RoWGw3ZwIFdRAWnAbUq9lfMIjBvnDs4", "3a7010165a22964673e631e162ae2877");
         mVideoView = new RTCVideoView(mAnyrtcViewLayout, this, mMeetKit.Egl(), mCloseVoice, mCloseVideo);
         mVideoView.setVideoViewPeopleNumEvent(mVideoViewPeopleNumEvent);
 
