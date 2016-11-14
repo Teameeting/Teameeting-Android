@@ -28,9 +28,8 @@ import android.widget.Toast;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
-import org.anyrtc.AnyRTC;
-import org.anyrtc.AnyRTCMeetKit;
-import org.anyrtc.common.AnyRTCMeetEvents;
+import org.anyrtc.meet_kit.RTMeetHelper;
+import org.anyrtc.meet_kit.RTMeetKit;
 import org.dync.teameeting.R;
 import org.dync.teameeting.TeamMeetingApp;
 import org.dync.teameeting.bean.ChatMessage;
@@ -51,13 +50,14 @@ import org.dync.teameeting.ui.helper.DialogHelper;
 import org.dync.teameeting.ui.helper.MeetingAnim;
 import org.dync.teameeting.ui.helper.MeetingAnim.AnimationEndListener;
 import org.dync.teameeting.ui.helper.ShareHelper;
-import org.dync.teameeting.utils.AnyRTCViews;
+import org.dync.teameeting.utils.RTCVideoView;
 import org.dync.teameeting.utils.ScreenUtils;
 import org.dync.teameeting.widgets.PopupWindowCustom;
 import org.dync.teameeting.widgets.PopupWindowCustom.OnPopupWindowClickListener;
 import org.dync.teameeting.widgets.ReFlashListView;
 import org.dync.teameeting.widgets.RoomControls;
 import org.dync.teameeting.widgets.VitualKey;
+import org.webrtc.VideoRenderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ import de.greenrobot.event.EventBus;
  *         2015-12-11 5:02:32
  */
 
-public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEvents, ReFlashListView.IReflashListener {
+public class MeetingActivity extends MeetingBaseActivity implements RTMeetHelper, RTCVideoView.VideoViewPeopleEvent, ReFlashListView.IReflashListener {
     // Local preview screen position before call is connected.
     private static final boolean mDebug = TeamMeetingApp.mIsDebug;
     private static final String TAG = "MeetingActivity";
@@ -79,8 +79,8 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
     private static final int ANIMATOR_TANSLATION = 0X01;
     private static final int MESSAGE_UPDATE = 0X02;
     boolean MCSENDTAGS_SUBSCRIBE = false;
-    // private AnyrtcM2Mutlier mAnyM2Mutlier;
-    private AnyRTCMeetKit mAnyM2Mutlier;
+    // private AnyrtcM2Mutlier mMeetKit;
+    private RTMeetKit mMeetKit;
     private MeetingAnim mMettingAnim;
     private ImageButton mChatButton, mInviteButton;
     private RoomControls mControlLayout;
@@ -97,7 +97,7 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
     private ShareHelper mShareHelper;
     private String mShareUrl;
 
-    private AnyRTCViews mAnyrtcViews;
+    private RTCVideoView mVideoView;
     private RelativeLayout mAnyrtcViewLayout;
     private boolean isBreakLeave = false;
     // Left distance of this control button relative to its parent
@@ -128,6 +128,7 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
     private int state = 1;
     private MyCountDownTimer m;
     private SweetAlertDialog mSweetAlertDialog;
+    private String mAnyrtcId;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -214,12 +215,6 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
 
         mIMM = (InputMethodManager) MeetingActivity.this.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
 
-
-        mAnyrtcViews = new AnyRTCViews(mAnyrtcViewLayout, TeamMeetingApp.getTeamMeetingApp().getContext(), mCloseVoice, mCloseVideo);
-        mAnyrtcViews.setVideoViewPeopleNumEvent(mVideoViewPeopleNumEvent);
-        mAnyM2Mutlier = new AnyRTCMeetKit(TeamMeetingApp.getMainActivity(), this, mAnyrtcViews);
-
-
         Intent intent = getIntent();
 /*        mMeetingId = intent.getStringExtra("meetingId");
         mUserId = intent.getStringExtra("userId");
@@ -235,7 +230,7 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
         mUserId = TeamMeetingApp.getTeamMeetingApp().getDevId();
         mNotifTags = intent.getIntExtra("tags", 0);
         mRoomName = meetingListEntity.getMeetname();
-        String anyrtcId = meetingListEntity.getAnyrtcid();
+        mAnyrtcId = meetingListEntity.getAnyrtcid();
         mMeetingType = meetingListEntity.getMeetenable();
         mTvRoomName.setText(mRoomName);
 
@@ -247,8 +242,15 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
             mBtnReminder.setVisibility(View.VISIBLE);
         }
 
-        mAnyM2Mutlier.Join(anyrtcId);
-        //mAnyM2Mutlier.InitAnyRTCViewEvents(mAnyrtcViews);
+        mMeetKit = new RTMeetKit(this, this);
+        mMeetKit.InitEngineWithAnyrtcInfo("teameetingtest", "c4cd1ab6c34ada58e622e75e41b46d6d", "OPJXF3xnMqW+7MMTA4tRsZd6L41gnvrPcI25h9JCA4M", "meetingtest");
+//        mMeetKit.InitEngineWithAnyrtcInfo("16864513", "com.dync.anyrtc", "rF55qBISN/g8RoWGw3ZwIFdRAWnAbUq9lfMIjBvnDs4", "3a7010165a22964673e631e162ae2877");
+        mVideoView = new RTCVideoView(mAnyrtcViewLayout, this, mMeetKit.Egl(), mCloseVoice, mCloseVideo);
+        mVideoView.setVideoViewPeopleNumEvent(mVideoViewPeopleNumEvent);
+
+        VideoRenderer render = mVideoView.OnRtcOpenLocalRender();
+        mMeetKit.SetVideoCapturer(render.GetRenderPointer(), true);
+        mMeetKit.Join(mAnyrtcId);
 
 
         mMsgSender = TeamMeetingApp.getmMsgSender();
@@ -283,7 +285,6 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
             }
         }
     }
-
 
     /* Init UI */
     private void initView() {
@@ -335,7 +336,7 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
                 mSweetAlertDialog.dismiss();
-                mSweetAlertDialog=null;
+                mSweetAlertDialog = null;
                 msgSenderLeave();
             }
         });
@@ -416,13 +417,13 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
                         -mTopbarLayout.getHeight());
                 ViewPropertyAnimator.animate(mCloseVoice).translationY(
                         -mTopbarLayout.getHeight());
-                mAnyrtcViews.MoveVideoView(true);
+                mVideoView.MoveVideoView(true);
 
             } else {
                 mControlLayout.show();
                 ViewPropertyAnimator.animate(mTopbarLayout).translationY(0f);
                 ViewPropertyAnimator.animate(mCloseVoice).translationY(0f);
-                mAnyrtcViews.MoveVideoView(false);
+                mVideoView.MoveVideoView(false);
             }
         }
     }
@@ -434,8 +435,8 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
             mPopupWindowCustom = null;
         }
 
-        if (mAnyrtcViews != null) {
-            mAnyrtcViews.onScreenChanged();
+        if (mVideoView != null) {
+            mVideoView.onScreenChanged();
         }
 
 
@@ -556,7 +557,7 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
                     break;
                 case R.id.meeting_camera_switch:
 
-                    mAnyM2Mutlier.SwitchCamera();
+                    mMeetKit.SwitchCamera();
 
                     break;
                 case R.id.meeting_camera_off:
@@ -609,6 +610,11 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
 
 
     };
+
+    @Override
+    public void OnPeopleNumChange(int peopleNum) {
+        numberOfDisplay(peopleNum);
+    }
 
     class MyCountDownTimer extends CountDownTimer {
 
@@ -722,12 +728,12 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
 
     private void videoSetting() {
         if (!mMeetingCameraOffFlag) {
-            mAnyM2Mutlier.SetLocalVideoEnable(true);
+            mMeetKit.SetVideoEnable(true);
             mCameraButton.setImageResource(R.drawable.btn_camera_on);
             mMeetingCameraOffFlag = true;
-            if (mAnyrtcViews.LocalVideoTrack() != null) {
-                mAnyrtcViews.LocalVideoTrack().setEnabled(true);
-                mAnyrtcViews.updateLocalVideoImage(true);
+            if (mVideoView.getLocalVideoRenderer() != null) {
+//                mVideoView.getLocalVideoRenderer().setEnabled(true);
+//                mVideoView.updateLocalVideoImage(true);
             }
             return;
         }
@@ -762,10 +768,24 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
         mMeetingCameraFlag = !mMeetingCameraFlag;
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        videoSetting();
+    /**
+     * voice Setting
+     */
+    private void voiceSetting() {
+
+        if (mMeetingVoiceFlag) {
+            mVoiceButton.setImageResource(R.drawable.btn_voice_off);
+//            mVideoView.updateLocalVoiceImage(false);
+            mMeetKit.SetAudioEnable(false);
+
+        } else {
+            mVoiceButton.setImageResource(R.drawable.btn_voice_on);
+//            mVideoView.updateLocalVoiceImage(true);
+            mMeetKit.SetAudioEnable(true);
+
+        }
+        mMeetingVoiceFlag = !mMeetingVoiceFlag;
+
     }
 
     /**
@@ -773,10 +793,10 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
      */
     private void videoCloseSetting() {
 
-        if (mAnyrtcViews.LocalVideoTrack() != null) {
-            mAnyrtcViews.LocalVideoTrack().setEnabled(false);
-            mAnyrtcViews.updateLocalVideoImage(false);
-            mAnyM2Mutlier.SetLocalVideoEnable(false);
+        if (mVideoView.getLocalVideoRenderer() != null) {
+//            mVideoView.getLocalVideoRenderer().setEnabled(false);
+//            mVideoView.updateLocalVideoImage(false);
+            mMeetKit.SetVideoEnable(false);
         }
 
         mCameraButton.setImageResource(R.drawable.btn_camera_off_select);
@@ -790,28 +810,6 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
         mMeetingCameraOffFlag = false;
         mMeetingCameraFlag = true;
     }
-
-
-    /**
-     * voice Setting
-     */
-    private void voiceSetting() {
-
-        if (mMeetingVoiceFlag) {
-            mVoiceButton.setImageResource(R.drawable.btn_voice_off);
-            mAnyrtcViews.updateLocalVoiceImage(false);
-            mAnyM2Mutlier.SetLocalAudioEnable(false);
-
-        } else {
-            mVoiceButton.setImageResource(R.drawable.btn_voice_on);
-            mAnyrtcViews.updateLocalVoiceImage(true);
-            mAnyM2Mutlier.SetLocalAudioEnable(true);
-
-        }
-        mMeetingVoiceFlag = !mMeetingVoiceFlag;
-
-    }
-
 
     /**
      * sendMessageChat
@@ -869,10 +867,16 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        videoSetting();
+    }
+
+    @Override
     public void onPause() {
         Log.e(TAG, "onPause: ");
         super.onPause();
-        mAnyM2Mutlier.OnPause();
+//        mMeetKit.OnPause();
 
     }
 
@@ -881,11 +885,10 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
         super.onResume();
         Log.e(TAG, "-----------------------------onResume: ");
         mChatButton.requestFocus();
-        mAnyM2Mutlier.OnResume();
 /*        if (mVideoView.LocalVideoTrack() != null) {
             mVideoView.LocalVideoTrack().setEnabled(true);
         }
-        mAnyM2Mutlier.SetLocalVideoEnabled(true);*/
+        mMeetKit.SetLocalVideoEnabled(true);*/
     }
 
     @Override
@@ -907,14 +910,14 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
         activityList.clear();
         //mVideoView.CloseLocalRender();
         {// Close all
-            if (mAnyM2Mutlier != null) {
-                mAnyM2Mutlier.Leave();
-                mAnyM2Mutlier = null;
+            if (mMeetKit != null) {
+                mMeetKit.Clear();
+                mMeetKit = null;
             }
         }
-        if (mAnyrtcViews != null) {
-            mAnyrtcViews.destoryAnyRTCViews();
-            mAnyrtcViews = null;
+        if (mVideoView != null) {
+            mVideoView.OnRtcRemoveLocalRender();
+            mVideoView = null;
         }
         mMeetingId = null;
 
@@ -934,13 +937,13 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
             if (screenHeight - b > 300) {
                 mChatView.setSelection(mDatas.size() - 1);
             }// Vitual key
-            else if (mAnyrtcViews != null) {
-                mAnyrtcViews.onScreenChanged();
+            else if (mVideoView != null) {
+                mVideoView.onScreenChanged();
             }
         }
     };
 
-    private AnyRTCViews.VideoViewPeopleNumEvent mVideoViewPeopleNumEvent = new AnyRTCViews.VideoViewPeopleNumEvent() {
+    private RTCVideoView.VideoViewPeopleEvent mVideoViewPeopleNumEvent = new RTCVideoView.VideoViewPeopleEvent() {
         @Override
         public void OnPeopleNumChange(int peopleNum) {
             if (mDebug) {
@@ -983,7 +986,7 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
     }
 
     @Override
-    public void OnRtcJoinMeetFailed(String s, AnyRTC.AnyRTCErrorCode anyRTCErrorCode, String s1) {
+    public void OnRtcJoinMeetFailed(String s, int i, String s1) {
 
     }
 
@@ -994,6 +997,46 @@ public class MeetingActivity extends MeetingBaseActivity implements AnyRTCMeetEv
         if (code != 0) {
             mSweetAlertDialog.show();
         }
+    }
+
+    @Override
+    public void OnRTCOpenVideoRender(final String strLivePeerID) {
+        MeetingActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final VideoRenderer render = mVideoView.OnRtcOpenRemoteRender(strLivePeerID);
+                if (null != render) {
+                    mMeetKit.SetRTCVideoRender(strLivePeerID, render.GetRenderPointer());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void OnRTCCloseVideoRender(final String strLivePeerID) {
+        MeetingActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mMeetKit != null) {
+                    mMeetKit.SetRTCVideoRender(strLivePeerID, 0);
+                }
+                if (mVideoView != null) {
+                    mVideoView.OnRtcRemoveRemoteRender(strLivePeerID);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void OnRTCAVStatus(final String sstrLivePeerID, final boolean audio, final boolean video) {
+        MeetingActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mVideoView != null) {
+                    mVideoView.OnRTCAVStatus(sstrLivePeerID, audio, video);
+                }
+            }
+        });
     }
 
 

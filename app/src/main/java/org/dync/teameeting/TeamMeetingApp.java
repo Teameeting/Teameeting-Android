@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 
-import org.anyrtc.AnyRTC;
+import org.anyrtc.meet_kit.RTMeetKit;
 import org.dync.teameeting.bean.SelfData;
 import org.dync.teameeting.chatmessage.ChatMessageClient;
 import org.dync.teameeting.receiver.NetWorkReceiver;
@@ -44,6 +44,8 @@ public class TeamMeetingApp extends Application {
     public static boolean isPad = false;
     private static TMMsgSender mMsgSender;
     private MediaPlayer mediaPlayer;
+
+    private RTMeetKit mMeetKit;
 
     public static List<String> mMeetingActivityList = new ArrayList<String>();
 
@@ -118,7 +120,6 @@ public class TeamMeetingApp extends Application {
 
         PgyCrashManager.register(this);
 
-        AnyRTC.InitAnyRTCWithAppKey("teameetingtest", "c4cd1ab6c34ada58e622e75e41b46d6d", "OPJXF3xnMqW+7MMTA4tRsZd6L41gnvrPcI25h9JCA4M", "meetingtest");
     }
 
 

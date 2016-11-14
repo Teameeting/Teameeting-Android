@@ -422,7 +422,10 @@ public class MainActivity extends BaseActivity {
         if (mDebug)
             Log.e(TAG, "onDestroy=--- !+pushStopped" + pushStopped);
         LocalUserInfo.getInstance(this).setUserInfoBoolean(LocalUserInfo.MAIN_ACTIVE, false);
-        TeamMeetingApp.getmMsgSender().TMUnin();
+        TMMsgSender tmMsgSender = TeamMeetingApp.getmMsgSender();
+        if (tmMsgSender != null) {
+            tmMsgSender.TMUnin();
+        }
         System.exit(0);
     }
 
