@@ -3,7 +3,7 @@
 <RelativeLayout
     android:id="@+id/rl_seetingLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:slideswitch="http://schemas.android.com/apk/res/org.dync.teameeting"
+    xmlns:slideswitch="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"

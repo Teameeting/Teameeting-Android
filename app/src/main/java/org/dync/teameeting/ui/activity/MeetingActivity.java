@@ -244,6 +244,7 @@ public class MeetingActivity extends MeetingBaseActivity implements RTMeetHelper
 
         mMeetKit = new RTMeetKit(this, this);
         mMeetKit.InitEngineWithAnyrtcInfo("teameetingtest", "c4cd1ab6c34ada58e622e75e41b46d6d", "OPJXF3xnMqW+7MMTA4tRsZd6L41gnvrPcI25h9JCA4M", "meetingtest");
+        mMeetKit.ConfigServerForPriCloud("teameeting.anyrtc.io", 9060);
         mVideoView = new RTCVideoView(mAnyrtcViewLayout, this, mMeetKit.Egl(), mCloseVoice, mCloseVideo);
         mVideoView.setVideoViewPeopleNumEvent(mVideoViewPeopleNumEvent);
 
