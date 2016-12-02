@@ -2,7 +2,7 @@
 <LinearLayout
     android:id="@+id/rl_seetingLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:slideswitch="http://schemas.android.com/apk/res/org.dync.teameeting"
+    xmlns:slideswitch="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

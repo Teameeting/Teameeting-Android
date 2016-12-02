@@ -152,7 +152,7 @@
         android:layout_marginBottom="@dimen/remind_buttom"
         android:gravity="center_horizontal"
         android:text="@string/str_meeting_remind"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
 
 
     <ImageView

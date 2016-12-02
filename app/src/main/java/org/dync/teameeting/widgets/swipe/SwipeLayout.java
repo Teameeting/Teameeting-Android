@@ -99,7 +99,7 @@ public class SwipeLayout extends FrameLayout implements SwipeLayoutInterface
 		{
 
 			return mDragDistance;
-		};
+		}
 
 		@Override
 		public int clampViewPositionHorizontal(View child, int left, int dx)
@@ -151,7 +151,7 @@ public class SwipeLayout extends FrameLayout implements SwipeLayoutInterface
 			}
 
 			return newLeft;
-		};
+		}
 
 		@Override
 		public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy)
@@ -185,7 +185,7 @@ public class SwipeLayout extends FrameLayout implements SwipeLayoutInterface
 				processBackViewRelease(xvel, yvel);
 			}
 			invalidate();
-		};
+		}
 
 	};
 	private float mDownX;

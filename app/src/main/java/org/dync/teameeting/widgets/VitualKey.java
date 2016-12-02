@@ -2,7 +2,6 @@ package org.dync.teameeting.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 /**
@@ -33,7 +32,9 @@ public class VitualKey extends RelativeLayout {
         super.onLayout(changed, l, t, r, b);
         //Log.e("onLayout", "onLayout: b "+b);
         if(changed)
-            mLayoutKeyChange.onLayoutKeyChange(b);
+            if (mLayoutKeyChange != null) {
+                mLayoutKeyChange.onLayoutKeyChange(b);
+            }
     }
 
 
