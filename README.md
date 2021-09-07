@@ -1,10 +1,18 @@
-# 提醒
+# 重要提醒
 anyRTC 对该版本已经不再维护，如需多人音视频会议，请前往:https://github.com/anyRTC-UseCase/ARCall, 新版本SDK支持上麦人数50人，观看人数不限制，大大提高了视频会议的效率~
+
+新版本一行代码，30分钟即可使应用有音视频能力，新版本开源示例如下：
+
 **[直播连麦，PK连麦，旁路推流开源示例](https://github.com/anyRTC-UseCase/VideoLive)**
+
 **[音频连麦，语音开黑，音频直播开源示例](https://github.com/anyRTC-UseCase/AudioLive)**
+
 **[音频连麦，语音开黑，音频直播开源示例](https://github.com/anyRTC-UseCase/AudioLive)**
+
 **[语聊房，语音开黑，狼人杀等开源示例](https://github.com/anyRTC-UseCase/ARChatRoom)**
+
 **[高仿ClubHouse](https://github.com/anyRTC-UseCase/anyHouse)**
+
 **[在线自习室开源示例](https://github.com/anyRTC-UseCase/StudyLive)**
 
 更多示列请前往**公司网址： [www.anyrtc.io](https://www.anyrtc.io)**
